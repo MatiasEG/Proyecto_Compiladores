@@ -14,8 +14,8 @@ public class FileManager {
     private int previousContent;
 
     public FileManager(File file){
-        row = 0;
-        column = 0;
+        row = 1;
+        column = 1;
         previousContent = -1;
         this.file = file;
         try {

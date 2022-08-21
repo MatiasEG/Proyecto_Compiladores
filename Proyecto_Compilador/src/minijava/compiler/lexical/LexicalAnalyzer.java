@@ -59,6 +59,14 @@ public class LexicalAnalyzer {
             updateLexeme();
             updateActualCharacter();
             return e10();
+        }else if (actualCharacter == '\''){
+            updateLexeme();
+            updateActualCharacter();
+            return e21();
+        }else if (actualCharacter == '/'){
+            updateActualCharacter();
+            e16();
+            return e0();
         }else if (actualCharacter == '{'){
             updateLexeme();
             updateActualCharacter();
@@ -70,7 +78,9 @@ public class LexicalAnalyzer {
         }else if (fileManager.isEOF()){
             return ex();
         }else if (Character.isWhitespace(actualCharacter)){
-            updateActualCharacter();
+            while(Character.isWhitespace(actualCharacter)){
+                updateActualCharacter();
+            }
             return e0();
         }else{
             updateLexeme();
@@ -180,13 +190,9 @@ public class LexicalAnalyzer {
     }
 
     private Token e11() throws LexicalException {
-        if (actualCharacter == '"'){
-            updateLexeme();
-            updateActualCharacter();
-            return e10();
-        }else{
-            throw new LexicalException(lexeme, fileManager.getRow());
-        }
+        updateLexeme();
+        updateActualCharacter();    // TODO chquear si cualquier char me sirve
+        return e10();
     }
 
     // String recognizer
@@ -207,6 +213,91 @@ public class LexicalAnalyzer {
     // "}" recognizer
     private Token e15(){
         return new Token("Corchete que cierra", lexeme, fileManager.getRow());
+    }
+
+    private void e16() throws LexicalException {
+        if (actualCharacter == '/') {
+            updateActualCharacter();
+            e17();
+        }else if (actualCharacter == '*'){
+            updateActualCharacter();
+            e18();
+        }else{
+            throw new LexicalException(lexeme, fileManager.getRow());
+        }
+    }
+
+    // One line comment recognizer
+    private void e17() throws LexicalException {
+        if ((Character.isLetterOrDigit(actualCharacter) || Character.isWhitespace(actualCharacter)) & (actualCharacter != '\n')){
+            updateActualCharacter();
+            e17();
+        }else if ((Character.getNumericValue(actualCharacter) == Character.getNumericValue('\n')) ||
+                actualCharacter == '\u0000'){ // Comment finished
+        }else{
+            throw new LexicalException(lexeme, fileManager.getRow());
+        }
+    }
+
+    private void e18() throws LexicalException {
+        if (    Character.isLetterOrDigit(actualCharacter) ||
+                Character.isWhitespace(actualCharacter) ||
+                actualCharacter == '\n'){
+            updateActualCharacter();
+            e18();
+        }else if (actualCharacter == '*'){
+            updateActualCharacter();
+            e19();
+        }else{
+            throw new LexicalException(lexeme, fileManager.getRow());
+        }
+    }
+
+    private void e19() throws LexicalException {
+        if (actualCharacter == '/'){
+            updateActualCharacter();
+            e20();
+        }else{
+            throw new LexicalException(lexeme, fileManager.getRow());
+        }
+    }
+
+    // Multi-line commentary recognizer
+    private void e20(){ /* Comment finished */ }
+
+    private Token e21() throws LexicalException {
+        if (actualCharacter == '\\'){
+            updateLexeme();
+            updateActualCharacter();
+            return e24();
+        }else if (actualCharacter != '\\' && actualCharacter != '\''){
+            updateLexeme();
+            updateActualCharacter();
+            return e22();
+        }else{
+            throw new LexicalException(lexeme, fileManager.getRow());
+        }
+    }
+
+    private Token e22() throws LexicalException {
+        if (actualCharacter == '\''){
+            updateLexeme();
+            updateActualCharacter();
+            return e23();
+        }else{
+            throw new LexicalException(lexeme, fileManager.getRow());
+        }
+    }
+
+    // Character recognizer
+    private Token e23(){
+        return new Token("Caracter", lexeme, fileManager.getRow());
+    }
+
+    private Token e24(){
+        updateLexeme();
+        updateActualCharacter();    // TODO consultar si puedo agregar cualquier cosa
+        return e23();
     }
 
     // EOF recognizer

@@ -12,12 +12,14 @@ public class Main {
 
         ReservedWords.init();
 
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/lexSinErrores02.java"));
+        FileManager fileManager = new FileManager(new File("resources/sinErrores/comment.java"));
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
 
         Token token1 = null;
 
+        System.out.println("Value 1: "+ Character.getNumericValue('\n')+" // Value 2: "+Character.getNumericValue(' '));
+        System.out.println("Boolean: "+ ('\n' == ' '));
 
         //TODO test
         for(int i = 0; i<7; i++){
