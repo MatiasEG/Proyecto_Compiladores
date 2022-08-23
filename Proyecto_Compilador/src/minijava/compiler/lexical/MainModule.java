@@ -9,10 +9,11 @@ public class MainModule {
 
     public static void main(String[]args){
         String lastToken = "";
+        boolean error = false;
 
         ReservedWords.init();
 
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/lexSinErrores02.java"));
+        FileManager fileManager = new FileManager(new File("resources/sinErrores/comment.java"));
 
 //        FileManager fileManager = new FileManager(new File(args[0]));
 
@@ -26,7 +27,8 @@ public class MainModule {
                 token = lexicalAnalyzer.nextToken();
                 lastToken = token.getToken();
             }catch(LexicalException e){
-                e.printStackTrace();
+                System.out.println(e.getMessage());
+                error = true;
             }
 
             if(token != null){
@@ -37,7 +39,7 @@ public class MainModule {
             }
         }
 
-        System.out.println("[SinErrores]");
+        if(!error) System.out.println("[SinErrores]");
     }
 
 }

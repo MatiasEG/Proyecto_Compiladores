@@ -375,7 +375,7 @@ public class LexicalAnalyzer {
         }else{
             updateLexeme();
             updateActualCharacter();
-            return e23();
+            return e22();
         }
     }
 

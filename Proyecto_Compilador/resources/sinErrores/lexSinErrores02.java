@@ -1,6 +1,6 @@
 
-"hola pepe"
+"hola \n pepe"
 v1 +   chau
  // manola
-        1234567890
+        12345678 'n
 if class{
