@@ -27,7 +27,7 @@ public class LexicalAnalyzer {
     }
 
     private Token e0() throws LexicalException {
-        if(Character.isDigit(actualCharacter)){
+        if(Character.isDigit(actualCharacter)){ // TODO contar hasta 9 digitos
             updateLexeme();
             updateActualCharacter();
             return e1();
@@ -132,14 +132,26 @@ public class LexicalAnalyzer {
     }
 
     // Digit recognizer
-    private Token e1(){
-        if(Character.isDigit(actualCharacter)){
+    // TODO esta bien pensado con el while? o estoy rompiendo el esquema de la maquina de estados demasiado?
+    private Token e1() throws LexicalException {
+        int cantDigits = 1;
+        while(Character.isDigit(actualCharacter)){
+            cantDigits++;
             updateLexeme();
             updateActualCharacter();
-            return e1();
-        }else{
-            return new Token("Entero", lexeme, fileManager.getRow());
         }
+        if(cantDigits <= 9){
+            return new Token("Entero", lexeme, fileManager.getRow());
+        }else{
+            throw new LexicalException(lexeme, fileManager.getRow());
+        }
+//        if(Character.isDigit(actualCharacter)){
+//            updateLexeme();
+//            updateActualCharacter();
+//            return e1();
+//        }else{
+//            return new Token("Entero", lexeme, fileManager.getRow());
+//        }
     }
 
     // Identifier recognizer
