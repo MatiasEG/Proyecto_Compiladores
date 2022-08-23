@@ -51,9 +51,7 @@ public class FileManager {
         }
     }
 
-    public boolean isEOF(){
-        return actualContent == -1;
-    }
+    public boolean isEOF(){ return actualContent == -1; }
 
     public int getRow() { return row; }
 
