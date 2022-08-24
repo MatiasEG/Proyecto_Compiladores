@@ -49,8 +49,7 @@ public class TesterDeCasosConErrores {
     public TesterDeCasosConErrores(String input){
         this.input = input;
     }
-       
-        
+
     @Test
     public void test1() {
         probarFallo(input);
@@ -65,7 +64,6 @@ public class TesterDeCasosConErrores {
         assertThat("No se encontro el codigo: " + errorCode,  outContent.toString(), CoreMatchers.containsString(errorCode));
     }
 
-
     String getErrorCode(String testCaseFilePath)  {
         String lineWithTheCode = null;
         try {
@@ -78,14 +76,4 @@ public class TesterDeCasosConErrores {
         return errorCode;
     }
 
-
-
-
-
-    
-
-    
-    
-    
-    
 }

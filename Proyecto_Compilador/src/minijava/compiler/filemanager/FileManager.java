@@ -3,6 +3,8 @@ package minijava.compiler.filemanager;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class FileManager {
 
@@ -11,12 +13,10 @@ public class FileManager {
     private File file;
     private FileReader fileReader;
     private int actualContent;
-    private int previousContent;
 
     public FileManager(File file){
         row = 1;
-        column = 1;
-        previousContent = -1;
+        column = 0;
         this.file = file;
         try {
             fileReader = new FileReader(file);
@@ -27,12 +27,12 @@ public class FileManager {
 
     public char getNextChar(){
         char character2return = '\0';   //\0 represents an empty char
-        updatePreviousContent(actualContent);
+        checkNewLine();
         try{
             actualContent = fileReader.read();
+            if( (char) actualContent == '\r') actualContent = fileReader.read();
             if(actualContent != -1){
                 character2return = (char) actualContent;
-                checkNewLine();
                 column++;
             }
         }catch(IOException e){
@@ -41,14 +41,15 @@ public class FileManager {
         return character2return;
     }
 
-    private void updatePreviousContent(int actualContent){
-        previousContent = actualContent;
-    }
-
     private void checkNewLine(){
         if('\n' == actualContent){
             row++;
+            column = 0;
         }
+    }
+
+    public String getLine(int line) throws IOException {
+        return Files.readAllLines(Paths.get(file.getPath())).get(line);
     }
 
     public boolean isEOF(){ return actualContent == -1; }

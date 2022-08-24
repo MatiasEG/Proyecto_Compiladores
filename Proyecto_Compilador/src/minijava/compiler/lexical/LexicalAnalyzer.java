@@ -27,7 +27,7 @@ public class LexicalAnalyzer {
     }
 
     private Token e0() throws LexicalException {
-        if(Character.isDigit(actualCharacter)){ // TODO contar hasta 9 digitos
+        if(Character.isDigit(actualCharacter)){
             updateLexeme();
             updateActualCharacter();
             return e1();
@@ -120,38 +120,25 @@ public class LexicalAnalyzer {
         }else if (fileManager.isEOF()){
             return ex();
         }else if (Character.isWhitespace(actualCharacter)){
-            while(Character.isWhitespace(actualCharacter)){
-                updateActualCharacter();
-            }
+            updateActualCharacter();
             return e0();
         }else{
             updateLexeme();
             updateActualCharacter();
-            throw new LexicalException(lexeme, fileManager.getRow());
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Error al analizar el siguiente token.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
     // Digit recognizer
-    // TODO esta bien pensado con el while? o estoy rompiendo el esquema de la maquina de estados demasiado?
     private Token e1() throws LexicalException {
-        int cantDigits = 1;
-        while(Character.isDigit(actualCharacter)){
-            cantDigits++;
+        if(Character.isDigit(actualCharacter)){
             updateLexeme();
             updateActualCharacter();
-        }
-        if(cantDigits <= 9){
-            return new Token("Entero", lexeme, fileManager.getRow());
+            return e39();
         }else{
-            throw new LexicalException(lexeme, fileManager.getRow());
+            return new Token("Entero", lexeme, fileManager.getRow());
         }
-//        if(Character.isDigit(actualCharacter)){
-//            updateLexeme();
-//            updateActualCharacter();
-//            return e1();
-//        }else{
-//            return new Token("Entero", lexeme, fileManager.getRow());
-//        }
     }
 
     // Identifier recognizer
@@ -237,7 +224,8 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e12();
         }else if (actualCharacter == '\n' || actualCharacter == '\u0000'){
-            throw new LexicalException(lexeme, fileManager.getRow());
+            String msg = "Error lexico en linea "+fileManager.getRow()+": El string no fue cerrado correctamente.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
             updateLexeme();
             updateActualCharacter();
@@ -247,7 +235,8 @@ public class LexicalAnalyzer {
 
     private Token e11() throws LexicalException {
         if(actualCharacter == '\n' || actualCharacter == '\u0000'){
-            throw new LexicalException(lexeme, fileManager.getRow());
+            String msg = "Error lexico en linea "+fileManager.getRow()+": El string no fue cerrado correctamente.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
             updateLexeme();
             updateActualCharacter();
@@ -315,7 +304,8 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             e19();
         }else if (actualCharacter == '\u0000'){
-            throw new LexicalException(lexeme, fileManager.getRow());
+            String msg = "Error lexico en linea "+fileManager.getRow()+": El comentario no fue cerrado correctamente.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }else {
             updateLexeme();
             updateActualCharacter();
@@ -324,12 +314,17 @@ public class LexicalAnalyzer {
     }
 
     private void e19() throws LexicalException {
-        if (actualCharacter == '/'){
+        if (actualCharacter == '/') {
             updateLexeme();
             updateActualCharacter();
             e20();
+        }else if (actualCharacter == '*'){
+            updateLexeme();
+            updateActualCharacter();
+            e19();
         }else if (actualCharacter == '\u0000'){
-            throw new LexicalException(lexeme, fileManager.getRow());
+            String msg = "Error lexico en linea "+fileManager.getRow()+": El comentario multilinea no fue cerrado correctamente.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
             updateLexeme();
             updateActualCharacter();
@@ -349,8 +344,12 @@ public class LexicalAnalyzer {
             updateLexeme();
             updateActualCharacter();
             return e22();
+        }else if (actualCharacter != '\''){
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter invalido en literal caracter.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
-            throw new LexicalException(lexeme, fileManager.getRow());
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter no fue cerrado correctamente.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
@@ -360,7 +359,8 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e23();
         }else{
-            throw new LexicalException(lexeme, fileManager.getRow());
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter no fue cerrado correctamente.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
@@ -371,7 +371,8 @@ public class LexicalAnalyzer {
 
     private Token e24() throws LexicalException {
         if(actualCharacter == '\n' || actualCharacter == '\u0000'){
-            throw new LexicalException(lexeme, fileManager.getRow());
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter no fue cerrado correctamente.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
             updateLexeme();
             updateActualCharacter();
@@ -431,7 +432,8 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e34();
         }else{
-            throw new LexicalException(lexeme, fileManager.getRow());
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Falto '&' para representar el operador logico AND";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
@@ -446,7 +448,8 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e36();
         }else{
-            throw new LexicalException(lexeme, fileManager.getRow());
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Falto '|' para representar el operador logico OR.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
@@ -465,8 +468,154 @@ public class LexicalAnalyzer {
         return new Token("AsignacionCompuestaResta", lexeme, fileManager.getRow());
     }
 
+    private Token e39() throws LexicalException {
+        if(Character.isDigit(actualCharacter)){
+            updateLexeme();
+            updateActualCharacter();
+            return e40();
+        }else{
+            return new Token("Entero", lexeme, fileManager.getRow());
+        }
+    }
+
+    private Token e40() throws LexicalException {
+        if(Character.isDigit(actualCharacter)){
+            updateLexeme();
+            updateActualCharacter();
+            return e41();
+        }else{
+            return new Token("Entero", lexeme, fileManager.getRow());
+        }
+    }
+
+    private Token e41() throws LexicalException {
+        if(Character.isDigit(actualCharacter)){
+            updateLexeme();
+            updateActualCharacter();
+            return e42();
+        }else{
+            return new Token("Entero", lexeme, fileManager.getRow());
+        }
+    }
+
+    private Token e42() throws LexicalException {
+        if(Character.isDigit(actualCharacter)){
+            updateLexeme();
+            updateActualCharacter();
+            return e43();
+        }else{
+            return new Token("Entero", lexeme, fileManager.getRow());
+        }
+    }
+
+    private Token e43() throws LexicalException {
+        if(Character.isDigit(actualCharacter)){
+            updateLexeme();
+            updateActualCharacter();
+            return e44();
+        }else{
+            return new Token("Entero", lexeme, fileManager.getRow());
+        }
+    }
+
+    private Token e44() throws LexicalException {
+        if(Character.isDigit(actualCharacter)){
+            updateLexeme();
+            updateActualCharacter();
+            return e45();
+        }else{
+            return new Token("Entero", lexeme, fileManager.getRow());
+        }
+    }
+
+    private Token e45() throws LexicalException {
+        if(Character.isDigit(actualCharacter)){
+            updateLexeme();
+            updateActualCharacter();
+            return e46();
+        }else{
+            return new Token("Entero", lexeme, fileManager.getRow());
+        }
+    }
+
+    private Token e46() throws LexicalException {
+        if(Character.isDigit(actualCharacter)){
+            updateLexeme();
+            updateActualCharacter();
+            return e47();
+        }else{
+            return new Token("Entero", lexeme, fileManager.getRow());
+        }
+    }
+
+    private Token e47() throws LexicalException {
+        if(Character.isDigit(actualCharacter)){
+            updateLexeme();
+            updateActualCharacter();
+            return e47();
+        }else{
+            String msg = "Error lexico en linea "+fileManager.getRow()+": El entero no puede ser representado, posee mas de 9 digitos.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+        }
+    }
+
+    private Token e48() throws LexicalException {
+        if(Character.isDigit(actualCharacter) ||
+                ((Character.getNumericValue(actualCharacter) <= Character.getNumericValue('F')) &&
+                        (Character.getNumericValue(actualCharacter) >= Character.getNumericValue('A')))){
+            updateLexeme();
+            updateActualCharacter();
+            return e49();
+        }else{
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+        }
+    }
+
+    private Token e49() throws LexicalException {
+        if(Character.isDigit(actualCharacter) ||
+                ((Character.getNumericValue(actualCharacter) <= Character.getNumericValue('F')) &&
+                        (Character.getNumericValue(actualCharacter) >= Character.getNumericValue('A')))){
+            updateLexeme();
+            updateActualCharacter();
+            return e50();
+        }else{
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+        }
+    }
+
+    private Token e50() throws LexicalException {
+        if(Character.isDigit(actualCharacter) ||
+                ((Character.getNumericValue(actualCharacter) <= Character.getNumericValue('F')) &&
+                        (Character.getNumericValue(actualCharacter) >= Character.getNumericValue('A')))){
+            updateLexeme();
+            updateActualCharacter();
+            return e51();
+        }else{
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+        }
+    }
+
+    private Token e51() throws LexicalException {
+        if(Character.isDigit(actualCharacter) ||
+                ((Character.getNumericValue(actualCharacter) <= Character.getNumericValue('F')) &&
+                        (Character.getNumericValue(actualCharacter) >= Character.getNumericValue('A')))){
+            updateLexeme();
+            updateActualCharacter();
+            return e52();
+        }else{
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
+            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+        }
+    }
+
+    private Token e52() throws LexicalException {
+        return new Token("CaracterUnicode", lexeme, fileManager.getRow());
+    }
+
     // EOF recognizer
-    // TODO cual es el lexema del EOF?
     private Token ex(){
         return new Token("EOF", lexeme, fileManager.getRow());
     }
