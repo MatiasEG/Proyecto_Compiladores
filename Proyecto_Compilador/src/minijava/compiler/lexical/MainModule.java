@@ -9,12 +9,11 @@ import java.io.IOException;
 public class MainModule {
 
     public static void main(String[]args){
-        String lastToken = "";
         boolean error = false;
 
         ReservedWords.init();
 
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/comment.java"));
+        FileManager fileManager = new FileManager(new File("resources/sinErrores/lexSinErrores02.java"));
 
 //        FileManager fileManager = new FileManager(new File(args[0]));
 
@@ -63,8 +62,6 @@ public class MainModule {
         System.out.println(e.getDetailedMsg());
         try {
             System.out.println("Detalle: "+fileManager.getLine(e.getLineError()-1));
-            //TODO preguntar si esta bien contar los espacios asi?
-            // el problema es que si el error es producido por un \n la flecha queda flotando
             String spaces = String.format("%"+(e.getColumnError()+8)+"s", "");
             System.out.println(spaces+"^");
         } catch (IOException ex) {

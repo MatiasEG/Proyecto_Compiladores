@@ -8,7 +8,12 @@ public class LexicalAnalyzer {
     private char actualCharacter;
     private FileManager fileManager;
 
+    private int multilineCommentLine;
+    private int multilineCommentColumn;
+
     public LexicalAnalyzer(FileManager fileManager){
+        multilineCommentLine = -1;
+        multilineCommentColumn = -1;
         this.fileManager = fileManager;
         actualCharacter = fileManager.getNextChar();
     }
@@ -31,10 +36,14 @@ public class LexicalAnalyzer {
             updateLexeme();
             updateActualCharacter();
             return e1();
-        }else if(Character.isLetter(actualCharacter)){
+        }else if(Character.isLetter(actualCharacter) && actualCharacter <= 'z' && actualCharacter >= 'a'){
             updateLexeme();
             updateActualCharacter();
             return e2();
+        }else if(Character.isLetter(actualCharacter) && actualCharacter <= 'Z' && actualCharacter >= 'A'){
+            updateLexeme();
+            updateActualCharacter();
+            return e53();
         }else if (actualCharacter == '+'){
             updateLexeme();
             updateActualCharacter();
@@ -50,9 +59,7 @@ public class LexicalAnalyzer {
         }else if (actualCharacter == '/'){
             updateLexeme();
             updateActualCharacter();
-            Token tAux = e16();
-            if(tAux == null) return e0();
-            else return tAux;
+            return e16();
         }else if (actualCharacter == '%'){
             updateLexeme();
             updateActualCharacter();
@@ -125,6 +132,7 @@ public class LexicalAnalyzer {
         }else{
             updateLexeme();
             updateActualCharacter();
+            // TODO lexicalexceptiongeneric
             String msg = "Error lexico en linea "+fileManager.getRow()+": Error al analizar el siguiente token.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
@@ -142,7 +150,6 @@ public class LexicalAnalyzer {
     }
 
     // Identifier recognizer
-    // TODO tenemos que reconocer si corresponde a una palabra reservada, clase o variable?
     private Token e2(){
         if(Character.isLetterOrDigit(actualCharacter)){
             updateLexeme();
@@ -151,7 +158,7 @@ public class LexicalAnalyzer {
         }else if (ReservedWords.belongs(lexeme)){
             return new Token("Palabra reservada", lexeme, fileManager.getRow());
         }else{
-            return new Token("Identificador", lexeme, fileManager.getRow());
+            return new Token("IdentificadorMetodoVariable", lexeme, fileManager.getRow());
         }
     }
 
@@ -224,6 +231,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e12();
         }else if (actualCharacter == '\n' || actualCharacter == '\u0000'){
+            // TODO lexicalexceptionstring
             String msg = "Error lexico en linea "+fileManager.getRow()+": El string no fue cerrado correctamente.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
@@ -235,6 +243,7 @@ public class LexicalAnalyzer {
 
     private Token e11() throws LexicalException {
         if(actualCharacter == '\n' || actualCharacter == '\u0000'){
+            // TODO lexicalexceptionstring
             String msg = "Error lexico en linea "+fileManager.getRow()+": El string no fue cerrado correctamente.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
@@ -274,80 +283,100 @@ public class LexicalAnalyzer {
         if (actualCharacter == '/') {
             updateLexeme();
             updateActualCharacter();
-            e17();
-            return null;
+            return e17();
         }else if (actualCharacter == '*'){
             updateLexeme();
             updateActualCharacter();
-            e18();
-            return null;
+            multilineCommentLine = -1;
+            multilineCommentColumn = fileManager.getColumn()-2;
+            return e18();
         }else{
             return new Token("Division", lexeme, fileManager.getRow());
         }
     }
 
     // One line comment recognizer
-    // TODO en los comentarios multilinea el lexema toma los enter y cuando muestra un error queda horrible.
-    private void e17(){
+    private Token e17() throws LexicalException {
         if (actualCharacter == '\n' || actualCharacter == '\u0000'){
             lexeme = ""; /* Comment finished */
+            return e0();
         }else{
             updateLexeme();
             updateActualCharacter();
-            e17();
+            return e17();
         }
     }
 
-    private void e18() throws LexicalException {
+    private Token e18() throws LexicalException {
         if (actualCharacter == '*'){
-            updateLexeme();
+            if(multilineCommentLine == -1) updateLexeme();
             updateActualCharacter();
-            e19();
+            return e19();
         }else if (actualCharacter == '\u0000'){
-            String msg = "Error lexico en linea "+fileManager.getRow()+": El comentario no fue cerrado correctamente.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
-        }else {
-            updateLexeme();
+            if(multilineCommentLine == -1){
+                // TODO lexicalexceptioncommentary
+                String msg = "Error lexico en linea "+fileManager.getRow()+": El comentario no fue cerrado correctamente.";
+                throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            }else{
+                // TODO lexicalexceptioncommentary
+                String msg = "Error lexico en linea "+multilineCommentLine+": El comentario no fue cerrado correctamente.";
+                throw new LexicalException(msg, lexeme, multilineCommentLine, multilineCommentColumn);
+            }
+        }else{
+            if(multilineCommentLine == -1){
+                multilineCommentLine = fileManager.getRow();
+                actualCharacter = ' ';
+                updateLexeme();
+            }
             updateActualCharacter();
-            e18();
+            return e18();
         }
     }
 
-    private void e19() throws LexicalException {
+    private Token e19() throws LexicalException {
         if (actualCharacter == '/') {
-            updateLexeme();
+            if(multilineCommentLine == -1) updateLexeme();
             updateActualCharacter();
-            e20();
+            return e20();
         }else if (actualCharacter == '*'){
-            updateLexeme();
+            if(multilineCommentLine == -1) updateLexeme();
             updateActualCharacter();
-            e19();
+            return e19();
         }else if (actualCharacter == '\u0000'){
-            String msg = "Error lexico en linea "+fileManager.getRow()+": El comentario multilinea no fue cerrado correctamente.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            if(multilineCommentLine == -1){
+                // TODO lexicalexceptioncommentary
+                String msg = "Error lexico en linea "+fileManager.getRow()+": El comentario no fue cerrado correctamente.";
+                throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            }else{
+                // TODO lexicalexceptioncommentary
+                String msg = "Error lexico en linea "+multilineCommentLine+": El comentario no fue cerrado correctamente.";
+                throw new LexicalException(msg, lexeme, multilineCommentLine, multilineCommentColumn);
+            }
         }else{
-            updateLexeme();
+            if(multilineCommentLine == -1) updateLexeme();
             updateActualCharacter();
-            e18();
+            return e18();
         }
     }
 
     // Multi-line commentary recognizer
-    private void e20(){ lexeme = ""; /* Comment finished */ }
+    private Token e20() throws LexicalException { lexeme = ""; return e0(); /* Comment finished */ }
 
     private Token e21() throws LexicalException {
         if (actualCharacter == '\\'){
             updateLexeme();
             updateActualCharacter();
             return e24();
-        }else if (actualCharacter != '\\' && actualCharacter != '\''){
+        }else if (actualCharacter != '\''){
             updateLexeme();
             updateActualCharacter();
             return e22();
         }else if (actualCharacter != '\''){
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter invalido en literal caracter.";
+            // TODO lexicalexceptionliteralcaracterempty
+            String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter vacio.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
+            // TODO lexicalexceptionliteralcaracternotclosed
             String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter no fue cerrado correctamente.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
@@ -359,6 +388,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e23();
         }else{
+            // TODO lexicalexceptionliteralcaracternotclosed
             String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter no fue cerrado correctamente.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
@@ -371,6 +401,7 @@ public class LexicalAnalyzer {
 
     private Token e24() throws LexicalException {
         if(actualCharacter == '\n' || actualCharacter == '\u0000'){
+            // TODO lexicalexceptionliteralcaracternotclosed
             String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter no fue cerrado correctamente.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
@@ -432,6 +463,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e34();
         }else{
+            // TODO lexicalexceptionlogicand
             String msg = "Error lexico en linea "+fileManager.getRow()+": Falto '&' para representar el operador logico AND";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
@@ -448,6 +480,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e36();
         }else{
+            // TODO lexicalexceptionlogicor
             String msg = "Error lexico en linea "+fileManager.getRow()+": Falto '|' para representar el operador logico OR.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
@@ -554,6 +587,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e47();
         }else{
+            // TODO lexicalexceptionint
             String msg = "Error lexico en linea "+fileManager.getRow()+": El entero no puede ser representado, posee mas de 9 digitos.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
@@ -567,6 +601,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e49();
         }else{
+            // TODO lexicalexceptionunicode
             String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
@@ -580,6 +615,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e50();
         }else{
+            // TODO lexicalexceptionunicode
             String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
@@ -593,6 +629,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e51();
         }else{
+            // TODO lexicalexceptionunicode
             String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
@@ -606,13 +643,24 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e52();
         }else{
+            // TODO lexicalexceptionunicode
             String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
             throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
-    private Token e52() throws LexicalException {
+    private Token e52(){
         return new Token("CaracterUnicode", lexeme, fileManager.getRow());
+    }
+
+    private Token e53(){
+        if(Character.isLetterOrDigit(actualCharacter)){
+            updateLexeme();
+            updateActualCharacter();
+            return e53();
+        }else{
+            return new Token("IdentificadorClase", lexeme, fileManager.getRow());
+        }
     }
 
     // EOF recognizer
