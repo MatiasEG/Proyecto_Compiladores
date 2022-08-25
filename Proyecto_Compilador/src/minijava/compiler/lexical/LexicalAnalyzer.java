@@ -151,7 +151,7 @@ public class LexicalAnalyzer {
 
     // Identifier recognizer
     private Token e2(){
-        if(Character.isLetterOrDigit(actualCharacter)){
+        if(Character.isLetterOrDigit(actualCharacter) || actualCharacter == '_'){
             updateLexeme();
             updateActualCharacter();
             return e2();
@@ -654,7 +654,7 @@ public class LexicalAnalyzer {
     }
 
     private Token e53(){
-        if(Character.isLetterOrDigit(actualCharacter)){
+        if(Character.isLetterOrDigit(actualCharacter) || actualCharacter == '_'){
             updateLexeme();
             updateActualCharacter();
             return e53();

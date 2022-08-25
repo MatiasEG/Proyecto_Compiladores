@@ -13,7 +13,7 @@ public class MainModule {
 
         ReservedWords.init();
 
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/lexSinErrores02.java"));
+        FileManager fileManager = new FileManager(new File("resources/sinErrores/lexSEPalabraClave_03.java"));
 
 //        FileManager fileManager = new FileManager(new File(args[0]));
 
@@ -22,23 +22,6 @@ public class MainModule {
         Token nullToken = new Token("", "", -1);
 
         Token token = nullToken;
-
-//        System.out.println("Valor: "+(Character.getNumericValue('a') < Character.getNumericValue('b')));
-
-//        System.out.println("a: "+Character.getNumericValue('a'));
-//        System.out.println("b: "+Character.getNumericValue('b'));
-//        System.out.println("c: "+Character.getNumericValue('c'));
-//        System.out.println("d: "+Character.getNumericValue('d'));
-//        System.out.println("e: "+Character.getNumericValue('e'));
-//        System.out.println("f: "+Character.getNumericValue('f'));
-//        System.out.println("A: "+Character.getNumericValue('A'));
-//        System.out.println("B: "+Character.getNumericValue('B'));
-//        System.out.println("C: "+Character.getNumericValue('C'));
-//        System.out.println("D: "+Character.getNumericValue('D'));
-//        System.out.println("E: "+Character.getNumericValue('E'));
-//        System.out.println("F: "+Character.getNumericValue('F'));
-//        System.out.println("Valor: "+(Character.getNumericValue('F') < Character.getNumericValue('b')));
-//        System.out.println("Valor: "+('F' < 'b'));
 
         //TODO test
         do{
