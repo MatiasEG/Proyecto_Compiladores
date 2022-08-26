@@ -58,5 +58,4 @@ public class FileManager {
 
     public int getColumn() { return column; }
 
-    public int getActualContent() { return actualContent; }
 }

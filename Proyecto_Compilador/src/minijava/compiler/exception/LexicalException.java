@@ -22,4 +22,6 @@ public class LexicalException extends Exception{
     public int getLineError(){ return lineError; }
 
     public int getColumnError(){ return columnError; }
+
+    public String getLexemeError() { return lexemeError; }
 }

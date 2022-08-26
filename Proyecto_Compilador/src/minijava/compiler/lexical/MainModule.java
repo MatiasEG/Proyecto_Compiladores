@@ -16,15 +16,11 @@ public class MainModule {
         //TODO si el comentario multilinea tiene una unica linea,
         // el piquito que seniala el error va al principio del comentario tambien?
 
-        //TODO los test de error no pasan porque detectan el detalle del error, como lo oculto?
-
-        //TODO el test tiene un error que hace que mi caso de prueba de comentariomultilinea_02 falle porque tiene la informacion del comentariomultilinea_01
-
         //TODO test
 
-//        FileManager fileManager = new FileManager(new File("resources/sinErrores/lexSECodigoJavaEstandar.java"));
+        FileManager fileManager = new FileManager(new File("resources/conErrores/lexCEIdentificadores_01.java"));
 
-        FileManager fileManager = new FileManager(new File(args[0]));
+//        FileManager fileManager = new FileManager(new File(args[0]));
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
 
@@ -44,7 +40,7 @@ public class MainModule {
             if(token != nullToken){
                 System.out.println("("+ token.getToken()+", "+token.getLexeme()+", "+token.getLineNumber()+")\n");
             }
-        }while(token.getToken() != "EOF");
+        }while(!token.getToken().equals("EOF"));
 
         if(!error) System.out.println("[SinErrores]");
     }
