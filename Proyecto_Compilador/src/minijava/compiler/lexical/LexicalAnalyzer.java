@@ -1,6 +1,7 @@
 package minijava.compiler.lexical;
 
-import minijava.compiler.exception.LexicalException;
+import minijava.compiler.exception.*;
+import minijava.compiler.exception.specificexceptions.*;
 import minijava.compiler.filemanager.FileManager;
 
 public class LexicalAnalyzer {
@@ -20,6 +21,8 @@ public class LexicalAnalyzer {
 
     public Token nextToken() throws LexicalException {
         lexeme = "";
+        multilineCommentColumn = -1;
+        multilineCommentLine = -1;
         return e0();
     }
 
@@ -43,7 +46,7 @@ public class LexicalAnalyzer {
         }else if(Character.isLetter(actualCharacter) && actualCharacter <= 'Z' && actualCharacter >= 'A'){
             updateLexeme();
             updateActualCharacter();
-            return e53();
+            return e54();
         }else if (actualCharacter == '+'){
             updateLexeme();
             updateActualCharacter();
@@ -132,9 +135,7 @@ public class LexicalAnalyzer {
         }else{
             updateLexeme();
             updateActualCharacter();
-            // TODO lexicalexceptiongeneric
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Error al analizar el siguiente token.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionGeneric(lexeme, fileManager.getRow(), fileManager.getColumn()-1);
         }
     }
 
@@ -145,7 +146,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e39();
         }else{
-            return new Token("Entero", lexeme, fileManager.getRow());
+            return new Token("idInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -156,9 +157,9 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e2();
         }else if (ReservedWords.belongs(lexeme)){
-            return new Token("Palabra reservada", lexeme, fileManager.getRow());
+            return new Token("idKeyWord", lexeme, fileManager.getRow());
         }else{
-            return new Token("IdentificadorMetodoVariable", lexeme, fileManager.getRow());
+            return new Token("idMetVar", lexeme, fileManager.getRow());
         }
     }
 
@@ -169,13 +170,13 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e4();
         }else{
-            return new Token("Mayor", lexeme, fileManager.getRow());
+            return new Token("opGreater", lexeme, fileManager.getRow());
         }
     }
 
-    // ">=" & "<=" recognizer
+    // ">=" recognizer
     private Token e4(){
-        return new Token(lexeme+"Igual", lexeme, fileManager.getRow());
+        return new Token("opGreaterOrEqual", lexeme, fileManager.getRow());
     }
 
     // "<" recognizer
@@ -183,9 +184,9 @@ public class LexicalAnalyzer {
         if (actualCharacter == '='){
             updateLexeme();
             updateActualCharacter();
-            return e4();
+            return e55();
         }else{
-            return new Token("Menor", lexeme, fileManager.getRow());
+            return new Token("opLess", lexeme, fileManager.getRow());
         }
     }
 
@@ -196,7 +197,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e9();
         }else{
-            return new Token("Negacion", lexeme, fileManager.getRow());
+            return new Token("opNegation", lexeme, fileManager.getRow());
         }
     }
 
@@ -207,18 +208,18 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e8();
         }else{
-            return new Token("Asignacion", lexeme, fileManager.getRow());
+            return new Token("assignment", lexeme, fileManager.getRow());
         }
     }
 
     // "==" recognizer
     private Token e8(){
-        return new Token("Igual", lexeme, fileManager.getRow());
+        return new Token("opEqual", lexeme, fileManager.getRow());
     }
 
     // "!=" recognizer
     private Token e9(){
-        return new Token("Distinto", lexeme, fileManager.getRow());
+        return new Token("opDistinct", lexeme, fileManager.getRow());
     }
 
     private Token e10() throws LexicalException {
@@ -231,9 +232,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e12();
         }else if (actualCharacter == '\n' || actualCharacter == '\u0000'){
-            // TODO lexicalexceptionstring
-            String msg = "Error lexico en linea "+fileManager.getRow()+": El string no fue cerrado correctamente.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionString(lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
             updateLexeme();
             updateActualCharacter();
@@ -243,9 +242,7 @@ public class LexicalAnalyzer {
 
     private Token e11() throws LexicalException {
         if(actualCharacter == '\n' || actualCharacter == '\u0000'){
-            // TODO lexicalexceptionstring
-            String msg = "Error lexico en linea "+fileManager.getRow()+": El string no fue cerrado correctamente.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionString(lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
             updateLexeme();
             updateActualCharacter();
@@ -255,7 +252,7 @@ public class LexicalAnalyzer {
 
     // String recognizer
     private Token e12(){
-        return new Token("String", lexeme, fileManager.getRow());
+        return new Token("stringLiteral", lexeme, fileManager.getRow());
     }
 
     // "+" recognizer
@@ -265,18 +262,18 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e37();
         }else{
-            return new Token("Suma", lexeme, fileManager.getRow());
+            return new Token("opAddition", lexeme, fileManager.getRow());
         }
     }
 
     // "{" recognizer
     private Token e14(){
-        return new Token("Corchete que abre", lexeme, fileManager.getRow());
+        return new Token("punctuationOpeningBracket", lexeme, fileManager.getRow());
     }
 
     // "}" recognizer
     private Token e15(){
-        return new Token("Corchete que cierra", lexeme, fileManager.getRow());
+        return new Token("punctuationClosingBracket", lexeme, fileManager.getRow());
     }
 
     private Token e16() throws LexicalException {
@@ -287,11 +284,10 @@ public class LexicalAnalyzer {
         }else if (actualCharacter == '*'){
             updateLexeme();
             updateActualCharacter();
-            multilineCommentLine = -1;
             multilineCommentColumn = fileManager.getColumn()-2;
             return e18();
         }else{
-            return new Token("Division", lexeme, fileManager.getRow());
+            return new Token("opDivision", lexeme, fileManager.getRow());
         }
     }
 
@@ -314,20 +310,18 @@ public class LexicalAnalyzer {
             return e19();
         }else if (actualCharacter == '\u0000'){
             if(multilineCommentLine == -1){
-                // TODO lexicalexceptioncommentary
-                String msg = "Error lexico en linea "+fileManager.getRow()+": El comentario no fue cerrado correctamente.";
-                throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+                throw new LexicalExceptionCommentary(lexeme, fileManager.getRow(), multilineCommentColumn);
             }else{
-                // TODO lexicalexceptioncommentary
-                String msg = "Error lexico en linea "+multilineCommentLine+": El comentario no fue cerrado correctamente.";
-                throw new LexicalException(msg, lexeme, multilineCommentLine, multilineCommentColumn);
+                throw new LexicalExceptionCommentary(lexeme, multilineCommentLine, multilineCommentColumn);
             }
-        }else{
+        }else if (actualCharacter == '\n'){
             if(multilineCommentLine == -1){
                 multilineCommentLine = fileManager.getRow();
-                actualCharacter = ' ';
-                updateLexeme();
             }
+            updateActualCharacter();
+            return e18();
+        }else{
+            if(multilineCommentLine == -1) updateLexeme();
             updateActualCharacter();
             return e18();
         }
@@ -344,13 +338,9 @@ public class LexicalAnalyzer {
             return e19();
         }else if (actualCharacter == '\u0000'){
             if(multilineCommentLine == -1){
-                // TODO lexicalexceptioncommentary
-                String msg = "Error lexico en linea "+fileManager.getRow()+": El comentario no fue cerrado correctamente.";
-                throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+                throw new LexicalExceptionCommentary(lexeme, fileManager.getRow(), fileManager.getColumn());
             }else{
-                // TODO lexicalexceptioncommentary
-                String msg = "Error lexico en linea "+multilineCommentLine+": El comentario no fue cerrado correctamente.";
-                throw new LexicalException(msg, lexeme, multilineCommentLine, multilineCommentColumn);
+                throw new LexicalExceptionCommentary(lexeme, multilineCommentLine, multilineCommentColumn);
             }
         }else{
             if(multilineCommentLine == -1) updateLexeme();
@@ -367,18 +357,14 @@ public class LexicalAnalyzer {
             updateLexeme();
             updateActualCharacter();
             return e24();
-        }else if (actualCharacter != '\''){
+        }else if (actualCharacter == '\''){
+            throw new LexicalExceptionLiteralCharacterEmpty(lexeme, fileManager.getRow(), fileManager.getColumn());
+        }else if (actualCharacter == '\n' || actualCharacter == '\u0000'){
+            throw new LexicalExceptionLiteralCharacterNotClosed(lexeme, fileManager.getRow(), fileManager.getColumn());
+        }else{
             updateLexeme();
             updateActualCharacter();
             return e22();
-        }else if (actualCharacter != '\''){
-            // TODO lexicalexceptionliteralcaracterempty
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter vacio.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
-        }else{
-            // TODO lexicalexceptionliteralcaracternotclosed
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter no fue cerrado correctamente.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
@@ -388,22 +374,22 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e23();
         }else{
-            // TODO lexicalexceptionliteralcaracternotclosed
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter no fue cerrado correctamente.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionLiteralCharacterNotClosed(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
     // Character recognizer
     private Token e23(){
-        return new Token("Caracter", lexeme, fileManager.getRow());
+        return new Token("idCharacter", lexeme, fileManager.getRow());
     }
 
     private Token e24() throws LexicalException {
         if(actualCharacter == '\n' || actualCharacter == '\u0000'){
-            // TODO lexicalexceptionliteralcaracternotclosed
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Literal caracter no fue cerrado correctamente.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionLiteralCharacterNotClosed(lexeme, fileManager.getRow(), fileManager.getColumn());
+        }else if (actualCharacter == 'u'){
+            updateLexeme();
+            updateActualCharacter();
+            return e48();
         }else{
             updateLexeme();
             updateActualCharacter();
@@ -413,27 +399,27 @@ public class LexicalAnalyzer {
 
     // '(' recognizer
     private Token e25(){
-        return new Token("ParentecisAbre", lexeme, fileManager.getRow());
+        return new Token("punctuationOpeningParenthesis", lexeme, fileManager.getRow());
     }
 
     // ')' recognizer
     private Token e26(){
-        return new Token("ParentecisCierra", lexeme, fileManager.getRow());
+        return new Token("punctuationClosingParenthesis", lexeme, fileManager.getRow());
     }
 
     // ';' recognizer
     private Token e27(){
-        return new Token("PuntoYComa", lexeme, fileManager.getRow());
+        return new Token("punctuationSemicolon", lexeme, fileManager.getRow());
     }
 
     // ',' recognizer
     private Token e28(){
-        return new Token("Coma", lexeme, fileManager.getRow());
+        return new Token("punctuationComma", lexeme, fileManager.getRow());
     }
 
     // '.' recognizer
     private Token e29(){
-        return new Token("Punto", lexeme, fileManager.getRow());
+        return new Token("punctuationPoint", lexeme, fileManager.getRow());
     }
 
     // '-' recognizer
@@ -443,18 +429,18 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e38();
         }else{
-            return new Token("Resta", lexeme, fileManager.getRow());
+            return new Token("opSubtraction", lexeme, fileManager.getRow());
         }
     }
 
     // '*' recognizer
     private Token e31(){
-        return new Token("Producto", lexeme, fileManager.getRow());
+        return new Token("opMultiplication", lexeme, fileManager.getRow());
     }
 
     // '%' recognizer
     private Token e32(){
-        return new Token("Porcentaje", lexeme, fileManager.getRow());
+        return new Token("opModule", lexeme, fileManager.getRow());
     }
 
     private Token e33() throws LexicalException {
@@ -463,15 +449,13 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e34();
         }else{
-            // TODO lexicalexceptionlogicand
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Falto '&' para representar el operador logico AND";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionLogicAnd(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
     // '&&' recognizer
     private Token e34(){
-        return new Token("OperadorLogicoAnd", lexeme, fileManager.getRow());
+        return new Token("opLogicAnd", lexeme, fileManager.getRow());
     }
 
     private Token e35() throws LexicalException {
@@ -480,25 +464,23 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e36();
         }else{
-            // TODO lexicalexceptionlogicor
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Falto '|' para representar el operador logico OR.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionLogicOr(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
     // '||' recognizer
     private Token e36(){
-        return new Token("OperadorLogicoOr", lexeme, fileManager.getRow());
+        return new Token("opLogicOr", lexeme, fileManager.getRow());
     }
 
     // '+=' recognizer
     private Token e37(){
-        return new Token("AsignacionCompuestaSuma", lexeme, fileManager.getRow());
+        return new Token("assignmentAddition", lexeme, fileManager.getRow());
     }
 
     // '-=' recognizer
     private Token e38(){
-        return new Token("AsignacionCompuestaResta", lexeme, fileManager.getRow());
+        return new Token("assignmentSubtraction", lexeme, fileManager.getRow());
     }
 
     private Token e39() throws LexicalException {
@@ -507,7 +489,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e40();
         }else{
-            return new Token("Entero", lexeme, fileManager.getRow());
+            return new Token("idInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -517,7 +499,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e41();
         }else{
-            return new Token("Entero", lexeme, fileManager.getRow());
+            return new Token("idInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -527,7 +509,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e42();
         }else{
-            return new Token("Entero", lexeme, fileManager.getRow());
+            return new Token("idInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -537,7 +519,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e43();
         }else{
-            return new Token("Entero", lexeme, fileManager.getRow());
+            return new Token("idInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -547,7 +529,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e44();
         }else{
-            return new Token("Entero", lexeme, fileManager.getRow());
+            return new Token("idInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -557,7 +539,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e45();
         }else{
-            return new Token("Entero", lexeme, fileManager.getRow());
+            return new Token("idInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -567,7 +549,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e46();
         }else{
-            return new Token("Entero", lexeme, fileManager.getRow());
+            return new Token("idInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -577,7 +559,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e47();
         }else{
-            return new Token("Entero", lexeme, fileManager.getRow());
+            return new Token("idInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -587,9 +569,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e47();
         }else{
-            // TODO lexicalexceptionint
-            String msg = "Error lexico en linea "+fileManager.getRow()+": El entero no puede ser representado, posee mas de 9 digitos.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionInt(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
@@ -601,9 +581,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e49();
         }else{
-            // TODO lexicalexceptionunicode
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionUnicode(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
@@ -615,9 +593,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e50();
         }else{
-            // TODO lexicalexceptionunicode
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionUnicode(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
@@ -629,38 +605,49 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e51();
         }else{
-            // TODO lexicalexceptionunicode
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionUnicode(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
     private Token e51() throws LexicalException {
-        if(Character.isDigit(actualCharacter) ||
+        if (Character.isDigit(actualCharacter) ||
                 ((Character.getNumericValue(actualCharacter) <= Character.getNumericValue('F')) &&
                         (Character.getNumericValue(actualCharacter) >= Character.getNumericValue('A')))){
             updateLexeme();
             updateActualCharacter();
             return e52();
         }else{
-            // TODO lexicalexceptionunicode
-            String msg = "Error lexico en linea "+fileManager.getRow()+": Caracter unicode invalido.";
-            throw new LexicalException(msg, lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionUnicode(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
-    private Token e52(){
-        return new Token("CaracterUnicode", lexeme, fileManager.getRow());
-    }
-
-    private Token e53(){
-        if(Character.isLetterOrDigit(actualCharacter) || actualCharacter == '_'){
+    private Token e52() throws LexicalExceptionUnicode {
+        if (actualCharacter == '\''){
             updateLexeme();
             updateActualCharacter();
             return e53();
         }else{
-            return new Token("IdentificadorClase", lexeme, fileManager.getRow());
+            throw new LexicalExceptionUnicode(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
+    }
+
+    private Token e53(){
+        return new Token("CaracterUnicode", lexeme, fileManager.getRow());
+    }
+
+    private Token e54(){
+        if(Character.isLetterOrDigit(actualCharacter) || actualCharacter == '_'){
+            updateLexeme();
+            updateActualCharacter();
+            return e54();
+        }else{
+            return new Token("idClass", lexeme, fileManager.getRow());
+        }
+    }
+
+    // "<=" recognizer
+    private Token e55(){
+        return new Token("opLessOrEqual", lexeme, fileManager.getRow());
     }
 
     // EOF recognizer

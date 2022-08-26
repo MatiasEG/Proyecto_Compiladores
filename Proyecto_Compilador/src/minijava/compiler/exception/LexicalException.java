@@ -7,12 +7,12 @@ public class LexicalException extends Exception{
     private String lexemeError;
     private String detailedMsg;
 
-    public LexicalException(String msg, String lexemeError, int lineError, int columnError){
+    public LexicalException(String detailedMsg, String lexemeError, int lineError, int columnError){
         super("[Error:"+lexemeError+"|"+lineError+"]");
         this.lineError = lineError;
         this.columnError = columnError;
         this.lexemeError = lexemeError;
-        this.detailedMsg = msg;
+        this.detailedMsg = detailedMsg;
     }
 
     public String getDetailedMsg(){

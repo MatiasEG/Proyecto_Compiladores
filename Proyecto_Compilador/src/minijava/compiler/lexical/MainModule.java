@@ -13,7 +13,15 @@ public class MainModule {
 
         ReservedWords.init();
 
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/lexSEPalabraClave_03.java"));
+        //TODO si el comentario multilinea tiene una unica linea,
+        // el piquito que seniala el error va al principio del comentario tambien?
+
+        //TODO los test de error no pasan porque detectan el detalle del error, como lo oculto?
+
+        //TODO el test tiene un error que hace que mi caso de prueba de comentariomultilinea_02 falle porque tiene la informacion del comentariomultilinea_01
+
+        //TODO test
+        FileManager fileManager = new FileManager(new File("resources/conErrores/lexCEIdentificadores_01.java"));
 
 //        FileManager fileManager = new FileManager(new File(args[0]));
 
@@ -23,7 +31,6 @@ public class MainModule {
 
         Token token = nullToken;
 
-        //TODO test
         do{
             try {
                 token = lexicalAnalyzer.nextToken();
