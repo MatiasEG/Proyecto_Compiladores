@@ -600,10 +600,14 @@ public class LexicalAnalyzer {
     private Token e49() throws LexicalException {
         if(Character.isDigit(actualCharacter) ||
                 ((Character.getNumericValue(actualCharacter) <= Character.getNumericValue('F')) &&
-                        (Character.getNumericValue(actualCharacter) >= Character.getNumericValue('A')))){
+                        (Character.getNumericValue(actualCharacter) >= Character.getNumericValue('A')))) {
             updateLexeme();
             updateActualCharacter();
             return e50();
+        }else if (actualCharacter == 'u'){
+            updateLexeme();
+            updateActualCharacter();
+            return e47();
         }else{
             throw new LexicalExceptionUnicode(lexeme, fileManager.getRow(), fileManager.getColumn());
         }

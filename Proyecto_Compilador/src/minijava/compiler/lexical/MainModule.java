@@ -18,9 +18,9 @@ public class MainModule {
 
         //TODO test
 
-        FileManager fileManager = new FileManager(new File("resources/conErrores/lexCEIdentificadores_01.java"));
+//        FileManager fileManager = new FileManager(new File("resources/sinErrores/.java"));
 
-//        FileManager fileManager = new FileManager(new File(args[0]));
+        FileManager fileManager = new FileManager(new File(args[0]));
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
 
