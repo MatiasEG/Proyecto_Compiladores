@@ -21,7 +21,8 @@ public class MainModule {
         //TODO el test tiene un error que hace que mi caso de prueba de comentariomultilinea_02 falle porque tiene la informacion del comentariomultilinea_01
 
         //TODO test
-//        FileManager fileManager = new FileManager(new File("resources/conErrores/lexCEIdentificadores_01.java"));
+
+//        FileManager fileManager = new FileManager(new File("resources/sinErrores/lexSECodigoJavaEstandar.java"));
 
         FileManager fileManager = new FileManager(new File(args[0]));
 
