@@ -327,11 +327,13 @@ public class LexicalAnalyzer {
         }
     }
 
+    // Multi-line commentary recognizer
     private Token e19() throws LexicalException {
-        if (actualCharacter == '/') {
+        if (actualCharacter == '/') { /* Comment finished */
             if(multilineCommentLine == -1) updateLexeme();
             updateActualCharacter();
-            return e20();
+            lexeme = "";
+            return e0();
         }else if (actualCharacter == '*'){
             if(multilineCommentLine == -1) updateLexeme();
             updateActualCharacter();
@@ -349,18 +351,15 @@ public class LexicalAnalyzer {
         }
     }
 
-    // Multi-line commentary recognizer
-    private Token e20() throws LexicalException { lexeme = ""; return e0(); /* Comment finished */ }
-
     private Token e21() throws LexicalException {
         if (actualCharacter == '\\'){
             updateLexeme();
             updateActualCharacter();
             return e24();
         }else if (actualCharacter == '\''){
-            throw new LexicalExceptionLiteralCharacterEmpty(lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionCharacterEmpty(lexeme, fileManager.getRow(), fileManager.getColumn());
         }else if (actualCharacter == '\n' || actualCharacter == '\u0000'){
-            throw new LexicalExceptionLiteralCharacterNotClosed(lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionCharacterNotClosed(lexeme, fileManager.getRow(), fileManager.getColumn());
         }else{
             updateLexeme();
             updateActualCharacter();
@@ -374,7 +373,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e23();
         }else{
-            throw new LexicalExceptionLiteralCharacterNotClosed(lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionCharacterNotClosed(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
@@ -385,7 +384,7 @@ public class LexicalAnalyzer {
 
     private Token e24() throws LexicalException {
         if(actualCharacter == '\n' || actualCharacter == '\u0000'){
-            throw new LexicalExceptionLiteralCharacterNotClosed(lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionCharacterNotClosed(lexeme, fileManager.getRow(), fileManager.getColumn());
         }else if (actualCharacter == 'u'){
             updateLexeme();
             updateActualCharacter();
@@ -569,7 +568,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e47();
         }else{
-            throw new LexicalExceptionInt(lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionInteger(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
     }
 
