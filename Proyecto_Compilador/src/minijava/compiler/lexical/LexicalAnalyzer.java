@@ -157,7 +157,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e2();
         }else if (ReservedWords.belongs(lexeme)){
-            return new Token("idKeyWord", lexeme, fileManager.getRow());
+            return new Token(ReservedWords.getToken(lexeme), lexeme, fileManager.getRow());
         }else{
             return new Token("idMetVar", lexeme, fileManager.getRow());
         }

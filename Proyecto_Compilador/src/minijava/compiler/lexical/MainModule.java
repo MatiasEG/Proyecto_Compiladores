@@ -13,9 +13,6 @@ public class MainModule {
 
         ReservedWords.init();
 
-        //TODO si el comentario multilinea tiene una unica linea,
-        // el piquito que seniala el error va al principio del comentario tambien?
-
         //TODO test
 
 //        FileManager fileManager = new FileManager(new File("resources/sinErrores/.java"));
