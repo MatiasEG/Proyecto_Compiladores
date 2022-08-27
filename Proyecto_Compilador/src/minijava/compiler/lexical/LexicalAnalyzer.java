@@ -170,7 +170,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e4();
         }else{
-            return new Token("idInteger", lexeme, fileManager.getRow());
+            return new Token("LiteralInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -181,7 +181,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e5();
         }else{
-            return new Token("idInteger", lexeme, fileManager.getRow());
+            return new Token("literalInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -192,7 +192,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e6();
         }else{
-            return new Token("idInteger", lexeme, fileManager.getRow());
+            return new Token("literalInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -203,7 +203,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e7();
         }else{
-            return new Token("idInteger", lexeme, fileManager.getRow());
+            return new Token("literalInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -214,7 +214,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e8();
         }else{
-            return new Token("idInteger", lexeme, fileManager.getRow());
+            return new Token("literalInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -225,7 +225,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e9();
         }else{
-            return new Token("idInteger", lexeme, fileManager.getRow());
+            return new Token("literalInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -236,7 +236,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e10();
         }else{
-            return new Token("idInteger", lexeme, fileManager.getRow());
+            return new Token("literalInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -247,7 +247,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e11();
         }else{
-            return new Token("idInteger", lexeme, fileManager.getRow());
+            return new Token("literalInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -258,7 +258,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e12();
         }else{
-            return new Token("idInteger", lexeme, fileManager.getRow());
+            return new Token("literalInteger", lexeme, fileManager.getRow());
         }
     }
 
@@ -302,7 +302,7 @@ public class LexicalAnalyzer {
 
     // String recognizer
     private Token e15(){
-        return new Token("stringLiteral", lexeme, fileManager.getRow());
+        return new Token("literalString", lexeme, fileManager.getRow());
     }
 
     // "=" recognizer
@@ -580,7 +580,7 @@ public class LexicalAnalyzer {
 
     // Character recognizer
     private Token e47(){
-        return new Token("idCharacter", lexeme, fileManager.getRow());
+        return new Token("literalCharacter", lexeme, fileManager.getRow());
     }
 
     private Token e48() throws LexicalException {
@@ -653,15 +653,10 @@ public class LexicalAnalyzer {
         if (actualCharacter == '\''){
             updateLexeme();
             updateActualCharacter();
-            return e54();
+            return e47();
         }else{
             throw new LexicalExceptionUnicode(lexeme, fileManager.getRow(), fileManager.getColumn());
         }
-    }
-
-    // Unicode character recognizer
-    private Token e54(){
-        return new Token("unicodeCharacter", lexeme, fileManager.getRow());
     }
 
     // EOF recognizer
