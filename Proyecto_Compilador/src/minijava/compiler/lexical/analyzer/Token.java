@@ -1,4 +1,4 @@
-package minijava.compiler.lexical;
+package minijava.compiler.lexical.analyzer;
 
 public class Token {
 
@@ -7,7 +7,7 @@ public class Token {
     private int lineNumber;
 
 
-    Token(String token, String lexeme, int lineNumber){
+    public Token(String token, String lexeme, int lineNumber){
         this.token = token;
         this.lexeme = lexeme;
         this.lineNumber = lineNumber;

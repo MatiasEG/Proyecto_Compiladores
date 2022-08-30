@@ -1,4 +1,4 @@
-package minijava.compiler.lexical;
+package minijava.compiler.lexical.analyzer;
 
 import minijava.compiler.exception.*;
 import minijava.compiler.exception.specificexceptions.*;

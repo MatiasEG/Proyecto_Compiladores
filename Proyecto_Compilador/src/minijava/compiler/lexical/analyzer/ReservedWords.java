@@ -1,4 +1,4 @@
-package minijava.compiler.lexical;
+package minijava.compiler.lexical.analyzer;
 
 import java.util.HashMap;
 import java.util.Map;
