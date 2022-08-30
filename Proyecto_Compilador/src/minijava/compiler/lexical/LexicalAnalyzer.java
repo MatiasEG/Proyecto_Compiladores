@@ -11,10 +11,12 @@ public class LexicalAnalyzer {
 
     private int multilineCommentLine;
     private int multilineCommentColumn;
+    private int positionErrorOnInteger;
 
     public LexicalAnalyzer(FileManager fileManager){
         multilineCommentLine = -1;
         multilineCommentColumn = -1;
+        positionErrorOnInteger = -1;
         this.fileManager = fileManager;
         actualCharacter = fileManager.getNextChar();
     }
@@ -46,6 +48,7 @@ public class LexicalAnalyzer {
         }else if(Character.isDigit(actualCharacter)){
             updateLexeme();
             updateActualCharacter();
+            positionErrorOnInteger = -1;
             return e3();
         }else if (actualCharacter == '"'){
             updateLexeme();
@@ -254,8 +257,8 @@ public class LexicalAnalyzer {
     // Digit recognizer
     private Token e11() throws LexicalException {
         if(Character.isDigit(actualCharacter)){
-            updateLexeme();
             updateActualCharacter();
+            positionErrorOnInteger = fileManager.getColumn()-1;
             return e12();
         }else{
             return new Token("literalInteger", lexeme, fileManager.getRow());
@@ -264,11 +267,10 @@ public class LexicalAnalyzer {
 
     private Token e12() throws LexicalException {
         if(Character.isDigit(actualCharacter)){
-            updateLexeme();
             updateActualCharacter();
             return e12();
         }else{
-            throw new LexicalExceptionInteger(lexeme, fileManager.getRow(), fileManager.getColumn());
+            throw new LexicalExceptionInteger(lexeme, fileManager.getRow(), positionErrorOnInteger);
         }
     }
 
