@@ -1,20 +1,17 @@
 package minijava.compiler.lexical;
 
-import minijava.compiler.exception.LexicalException;
+import minijava.compiler.exception.lexical.LexicalException;
 import minijava.compiler.filemanager.FileManager;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
-import minijava.compiler.lexical.analyzer.ReservedWords;
 import minijava.compiler.lexical.analyzer.Token;
 
 import java.io.File;
 import java.io.IOException;
 
-public class MainModule {
+public class LexicalMainModule {
 
     public static void main(String[]args){
         boolean error = false;
-
-        ReservedWords.init();
 
         FileManager fileManager = new FileManager(new File(args[0]));
 

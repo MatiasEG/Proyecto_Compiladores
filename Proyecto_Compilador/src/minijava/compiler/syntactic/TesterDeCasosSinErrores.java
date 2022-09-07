@@ -1,4 +1,4 @@
-package minijava.compiler.lexical;
+package minijava.compiler.syntactic;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -20,10 +20,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TesterDeCasosSinErrores {
 
     private static final String msgExito = "[SinErrores]";
-    private static final String testFilesDirectoryPath = "resources/sinErroresLexicos/";
+    private static final String testFilesDirectoryPath = "resources/sinErrores/";
 
     //TODO: el tipo de esta variable init tiene que ser la clase que tiene el main
-    private static final LexicalMainModule init = null;
+    private static final SyntacticMainModule init = null;
    
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;

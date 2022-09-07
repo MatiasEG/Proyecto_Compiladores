@@ -1,6 +1,6 @@
-package minijava.compiler.exception.specificexceptions;
+package minijava.compiler.exception.lexical.specificexceptions;
 
-import minijava.compiler.exception.LexicalException;
+import minijava.compiler.exception.lexical.LexicalException;
 
 public class LexicalExceptionCharacterNotClosed extends LexicalException {
     public LexicalExceptionCharacterNotClosed(String lexemeError, int lineError, int columnError) {

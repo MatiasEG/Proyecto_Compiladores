@@ -1,7 +1,7 @@
 package minijava.compiler.lexical.analyzer;
 
-import minijava.compiler.exception.*;
-import minijava.compiler.exception.specificexceptions.*;
+import minijava.compiler.exception.lexical.LexicalException;
+import minijava.compiler.exception.lexical.specificexceptions.*;
 import minijava.compiler.filemanager.FileManager;
 
 public class LexicalAnalyzer {
@@ -17,6 +17,7 @@ public class LexicalAnalyzer {
         multilineCommentLine = -1;
         multilineCommentColumn = -1;
         positionErrorOnInteger = -1;
+        ReservedWords.init();
         this.fileManager = fileManager;
         actualCharacter = fileManager.getNextChar();
     }
@@ -663,7 +664,7 @@ public class LexicalAnalyzer {
 
     // EOF recognizer
     private Token ex(){
-        return new Token("EOF", lexeme, fileManager.getRow());
+        return new Token("", lexeme, fileManager.getRow());
     }
 
 }

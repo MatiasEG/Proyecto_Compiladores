@@ -1,6 +1,6 @@
-package minijava.compiler.exception.specificexceptions;
+package minijava.compiler.exception.lexical.specificexceptions;
 
-import minijava.compiler.exception.LexicalException;
+import minijava.compiler.exception.lexical.LexicalException;
 
 public class LexicalExceptionCharacterEmpty extends LexicalException {
 

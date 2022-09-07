@@ -1,4 +1,4 @@
-package minijava.compiler.exception;
+package minijava.compiler.exception.lexical;
 
 public class LexicalException extends Exception{
 
