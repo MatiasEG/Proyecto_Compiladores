@@ -20,7 +20,7 @@ public class SyntacticAnalyzer {
         if(tokenName.equals(actualToken.getToken())){
             actualToken = lexicalAnalyzer.nextToken();
         }else{
-            throw new SyntacticException(actualToken, Arrays.asList(tokenName));
+            throw new SyntacticException(actualToken, Arrays.asList(tokenName), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -86,7 +86,7 @@ public class SyntacticAnalyzer {
             // vacio
         }else{
             // Se esperaba un token "implement" o bien el "{" del inicio del bloque de clase.
-            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_extends , idClase"));
+            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_extends , idClase"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -100,7 +100,7 @@ public class SyntacticAnalyzer {
             // vacio
         }else{
             // Se esperaba un "{" del inicio del bloque de clase.
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningBracket"));
+            throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningBracket"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -114,7 +114,7 @@ public class SyntacticAnalyzer {
             // vacio
         }else{
             // Se esperaba un "{" del inicio del bloque de clase.
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningBracket"));
+            throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningBracket"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -135,7 +135,7 @@ public class SyntacticAnalyzer {
             // vacio
         }else{
             // Se esperaba un "{" del inicio del bloque de clase.
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningBracket"));
+            throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningBracket"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -151,7 +151,7 @@ public class SyntacticAnalyzer {
             // vacio
         }else{
             // Se esperaba un "}"
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationClosingBracket"));
+            throw new SyntacticException(actualToken, Arrays.asList("punctuationClosingBracket"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -176,7 +176,8 @@ public class SyntacticAnalyzer {
             metodo();
         }else{
             throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_private", "idKeyWord_public",
-                    "idKeyWord_static", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass", "idKeyWord_void"));
+                    "idKeyWord_static", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int",
+                    "idClass", "idKeyWord_void"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -214,7 +215,8 @@ public class SyntacticAnalyzer {
             match("idKeyWord_private");
         }else{
             // Se esperaba un token de visibilidad
-            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_public", "idKeyWord_private"));
+            throw new SyntacticException(actualToken,
+                    Arrays.asList("idKeyWord_public", "idKeyWord_private"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -227,7 +229,8 @@ public class SyntacticAnalyzer {
             match("idClass");
         }else{
             // Se esperaba un tipo para asignar a la variable.
-            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass"));
+            throw new SyntacticException(actualToken,
+                    Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -242,7 +245,8 @@ public class SyntacticAnalyzer {
             match("idKeyWord_int");
         }else{
             //Se esperaba un tipo primitivo
-            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int"));
+            throw new SyntacticException(actualToken,
+                    Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -263,7 +267,8 @@ public class SyntacticAnalyzer {
             // vacio
         }else{
             //Se esperaba otro atributo, o bien un ";" denotando que no se definirian mas atributos.
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationComma", "punctuationSemicolon"));
+            throw new SyntacticException(actualToken,
+                    Arrays.asList("punctuationComma", "punctuationSemicolon"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -276,7 +281,8 @@ public class SyntacticAnalyzer {
             // vacio
         }else{
             // Se esperaba una declaracion de static o bien el tipo del metodo
-            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass", "idKeyWord_void", "idKeyWord_static"));
+            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int",
+                    "idClass", "idKeyWord_void", "idKeyWord_static"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -289,7 +295,8 @@ public class SyntacticAnalyzer {
             match("idKeyWord_void");
         }else{
             // Se esperaba el tipo del metodo.
-            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass", "idKeyWord_void"));
+            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_boolean",
+                    "idKeyWord_char", "idKeyWord_int", "idClass", "idKeyWord_void"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -310,7 +317,8 @@ public class SyntacticAnalyzer {
             // vacio
         }else{
             // Se esperaba el tipo de otro argumento, o bien la finalizacion de la declaracion de los mismos con un ")"
-            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass", "punctuationClosingParenthesis"));
+            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_boolean",
+                    "idKeyWord_char", "idKeyWord_int", "idClass", "punctuationClosingParenthesis"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -331,7 +339,8 @@ public class SyntacticAnalyzer {
             // vacio
         }else{
             // Se esperaba la coma para otro argumento o bien la finalicacion de la declaracion de los mismos con un ")"
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationComma", "punctuationClosingParenthesis"));
+            throw new SyntacticException(actualToken,
+                    Arrays.asList("punctuationComma", "punctuationClosingParenthesis"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -364,7 +373,7 @@ public class SyntacticAnalyzer {
             // TODO definir error
             throw new SyntacticException(actualToken, Arrays.asList("punctuationSemicolon", "punctuationOpeningParenthesis", "punctuationOpeningBracket",
                     "idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass", "idKeyWord_var",
-                    "idKeyWord_return", "idKeyWord_if", "idKeyWord_while", "punctuationClosingBracket"));
+                    "idKeyWord_return", "idKeyWord_if", "idKeyWord_while", "punctuationClosingBracket"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -396,7 +405,7 @@ public class SyntacticAnalyzer {
                     "idKeyWord_return",
                     "idKeyWord_if",
                     "idKeyWord_while",
-                    "punctuationOpeningBracket"));
+                    "punctuationOpeningBracket"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -410,7 +419,8 @@ public class SyntacticAnalyzer {
             // vacio
         }else{
             // Se esperaba una asignacion, o bien una expresion sin asignacion
-            throw new SyntacticException(actualToken, Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction", "punctuationSemicolon"));
+            throw new SyntacticException(actualToken, Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction",
+                    "punctuationSemicolon"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -425,7 +435,8 @@ public class SyntacticAnalyzer {
             match("assignmentSubtraction");
         }else{
             // Se esperaba un operador de asignacion
-            throw new SyntacticException(actualToken, Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction"));
+            throw new SyntacticException(actualToken,
+                    Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -456,7 +467,7 @@ public class SyntacticAnalyzer {
     // <ExpresionOpt> ::= <Expresion> | e
     private void expresionOpt() throws SyntacticException, LexicalException {
         if(Arrays.asList("opAddition", "opSubtraction", "opNegation", "idKeyWord_null",
-                "idKeyWord_true", "idKeyWord_false", "LiteralInteger", "literalCharacter","literalString",
+                "idKeyWord_true", "idKeyWord_false", "literalInteger", "literalCharacter","literalString",
                 "idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass", "punctuationOpeningParenthesis").contains(actualToken.getToken())){
             expresion();
         }else{
@@ -465,8 +476,9 @@ public class SyntacticAnalyzer {
             }else{
                 // Se esperaba un operando o un operador
                 throw new SyntacticException(actualToken, Arrays.asList("opAddition", "opSubtraction", "opNegation", "idKeyWord_null",
-                        "idKeyWord_true", "idKeyWord_false", "LiteralInteger", "literalCharacter","literalString",
-                        "idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass", "punctuationOpeningParenthesis", "punctuationSemicolon"));
+                        "idKeyWord_true", "idKeyWord_false", "literalInteger", "literalCharacter","literalString",
+                        "idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass", "punctuationOpeningParenthesis",
+                        "punctuationSemicolon"), lexicalAnalyzer.getActualRow());
             }
         }
     }
@@ -496,7 +508,8 @@ public class SyntacticAnalyzer {
             // Se esperaba un else, o bien otra sentencia
             throw new SyntacticException(actualToken, Arrays.asList("punctuationSemicolon", "idKeyWord_this", "idMetVar", "idClass",
                     "idKeyWord_new", "punctuationOpeningParenthesis", "idKeyWord_var", "idKeyWord_return",
-                    "idKeyWord_if", "idKeyWord_while", "punctuationOpeningBracket", "punctuationClosingBracket", "idKeyWord_else"));
+                    "idKeyWord_if", "idKeyWord_while", "punctuationOpeningBracket", "punctuationClosingBracket",
+                    "idKeyWord_else"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -533,7 +546,7 @@ public class SyntacticAnalyzer {
             throw new SyntacticException(actualToken, Arrays.asList("opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
                     "opGreater", "opLess", "opGreaterOrEqual", "opLessOrEqual",
                     "opAddition", "opSubtraction", "opMultiplication", "opDivision", "opModule",
-                    "punctuationSemicolon", "punctuationComma", "punctuationClosingParenthesis"));
+                    "punctuationSemicolon", "punctuationComma", "punctuationClosingParenthesis"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -570,7 +583,7 @@ public class SyntacticAnalyzer {
             // Se esperaba un operador binario
             throw new SyntacticException(actualToken, Arrays.asList("opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
                     "opGreater", "opLess", "opGreaterOrEqual", "opLessOrEqual",
-                    "opAddition", "opSubtraction", "opMultiplication", "opDivision", "opModule"));
+                    "opAddition", "opSubtraction", "opMultiplication", "opDivision", "opModule"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -581,7 +594,7 @@ public class SyntacticAnalyzer {
             operadorUnario();
             operando();
         }else if(Arrays.asList("idKeyWord_null", "idKeyWord_true", "idKeyWord_false",
-                "LiteralInteger", "literalCharacter","literalString",
+                "literalInteger", "literalCharacter","literalString",
                 "idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass", "punctuationOpeningParenthesis").contains(actualToken.getToken())){
             operando();
         }
@@ -598,23 +611,224 @@ public class SyntacticAnalyzer {
             match("opNegation");
         }else{
             // Se esperaba un operador unario
-            throw new SyntacticException(actualToken, Arrays.asList("opAddition", "opSubtraction", "opNegation"));
+            throw new SyntacticException(actualToken, Arrays.asList("opAddition", "opSubtraction", "opNegation"), lexicalAnalyzer.getActualRow());
         }
     }
 
-    private void operando(){}
+    // 46 ------------------------------------------------------------------------------
+    // <Operando> ::= <Literal> | <Acceso>
+    private void operando() throws SyntacticException, LexicalException {
+        if(Arrays.asList("idKeyWord_null", "idKeyWord_true", "idKeyWord_false",
+                "literalInteger", "literalCharacter", "literalString").contains(actualToken.getToken())){
+            literal();
+        }else if(Arrays.asList("idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass", "punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            acceso();
+        }else{
+            // Se esperaba un literal o bien un operador de acceso
+            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_null", "idKeyWord_true",
+                    "idKeyWord_false", "literalInteger", "literalCharacter", "literalString",
+                    "idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass", "punctuationOpeningParenthesis"), lexicalAnalyzer.getActualRow());
+        }
+    }
 
-    private void acceso(){}
+    // 47 ------------------------------------------------------------------------------
+    // <Literal> ::= null | true | false | intLiteral | charLiteral | stringLiteral
+    private void literal() throws LexicalException, SyntacticException {
+        if(Arrays.asList("idKeyWord_null").contains(actualToken.getToken())){
+            match("idKeyWord_null");
+        }else if(Arrays.asList("idKeyWord_true").contains(actualToken.getToken())){
+            match("idKeyWord_true");
+        }else if(Arrays.asList("idKeyWord_false").contains(actualToken.getToken())){
+            match("idKeyWord_false");
+        }else if(Arrays.asList("literalInteger").contains(actualToken.getToken())){
+            match("literalInteger");
+        }else if(Arrays.asList("literalCharacter").contains(actualToken.getToken())){
+            match("literalCharacter");
+        }else if(Arrays.asList("literalString").contains(actualToken.getToken())){
+            match("literalString");
+        }else{
+            // Se esperaba un literal
+            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_null", "idKeyWord_true", "idKeyWord_false",
+                    "literalInteger", "literalCharacter", "literalString"), lexicalAnalyzer.getActualRow());
+        }
+    }
 
+    // 48 ------------------------------------------------------------------------------
+    // <Acceso> ::= <Primario> <EncadenadoOpt>
+    private void acceso() throws LexicalException, SyntacticException {
+        primario();
+        encadenadoOpt();
+    }
 
+    // 49 ------------------------------------------------------------------------------
+    // <Primario> ::= <AccesoThis> | <AccesoVar> | <AccesoConstructor>| <AccesoMetodoEstatico> | <ExpresionParentizada>
+    private void primario() throws SyntacticException, LexicalException {
+        if(Arrays.asList("idKeyWord_this").contains(actualToken.getToken())){
+            accesoThis();
+        }else if(Arrays.asList("idMetVar").contains(actualToken.getToken())){
+            accesoVar();
+        }else if(Arrays.asList("idKeyWord_new").contains(actualToken.getToken())){
+            accesoConstructor();
+        }else if(Arrays.asList("idClass").contains(actualToken.getToken())){
+            accesoMetodoEstatico();
+        }else if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            expresionParentizada();
+        }else{
+            // Se esperaba un token primario
+            throw new SyntacticException(actualToken,
+                    Arrays.asList("idKeyWord_this", "idMetVar", "idClass", "punctuationOpeningParenthesis"), lexicalAnalyzer.getActualRow());
+        }
+    }
 
+    // 50 ------------------------------------------------------------------------------
+    // <AccesoThis> ::= this
+    private void accesoThis() throws LexicalException, SyntacticException {
+        match("idKeyWord_this");
+    }
 
+    // 51 ------------------------------------------------------------------------------
+    // <AccesoVar> ::= idMetVar <AccesoMetodo>
+    private void accesoVar() throws LexicalException, SyntacticException {
+        match("idMetVar");
+        accesoMetodo();
+    }
 
+    // 52 ------------------------------------------------------------------------------
+    // <AccesoConstructor> ::= new idClase ( )
+    private void accesoConstructor() throws LexicalException, SyntacticException {
+        match("idKeyWord_new");
+        match("idClass");
+        match("punctuationOpeningParenthesis");
+        match("punctuationClosingParenthesis");
+    }
 
+    // 53 ------------------------------------------------------------------------------
+    // <ExpresionParentizada> ::= ( <Expresion> )
+    private void expresionParentizada() throws LexicalException, SyntacticException {
+        match("punctuationOpeningParenthesis");
+        expresion();
+        match("punctuationClosingParenthesis");
+    }
 
+    // 54 ------------------------------------------------------------------------------
+    // <AccesoMetodo> ::= <ArgsActuales> | e
+    private void accesoMetodo() throws SyntacticException, LexicalException {
+        if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            argsActuales();
+        }else if(Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction",
+                "punctuationSemicolon", "punctuationComma",
+                "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
+                "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual").contains(actualToken.getToken())){
+            // vacio
+        }else{
+            // Se esperaban los argumentos del metodo
+            throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningParenthesis",
+                    "assignment", "assignmentAddition", "assignmentSubtraction",
+                    "punctuationSemicolon", "punctuationComma",
+                    "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
+                    "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual"), lexicalAnalyzer.getActualRow());
+        }
+    }
 
+    // 55 ------------------------------------------------------------------------------
+    // <AccesoMetodoEstatico> ::= idClase . idMetVar <ArgsActuales>
+    private void accesoMetodoEstatico() throws LexicalException, SyntacticException {
+        match("idClass");
+        match("punctuationPoint");
+        match("idMetVar");
+        argsActuales();
+    }
 
+    // 56 ------------------------------------------------------------------------------
+    // <ArgsActuales> ::= ( <ListaExpsOpt> )
+    private void argsActuales() throws LexicalException, SyntacticException {
+        match("punctuationOpeningParenthesis");
+        listaExpsOpt();
+        match("punctuationClosingParenthesis");
+    }
 
+    // 57 ------------------------------------------------------------------------------
+    // <ListaExpsOpt> ::= <ListaExps> | e
+    private void listaExpsOpt() throws SyntacticException, LexicalException {
+        if(Arrays.asList("opAddition", "opSubtraction", "opNegation",
+                "idKeyWord_null", "idKeyWord_true", "idKeyWord_false",
+                "literalInteger", "literalCharacter", "literalString",
+                "idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass",
+                "punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            listaExps();
+        }else if(Arrays.asList("punctuationClosingParenthesis").contains(actualToken.getToken())){
+            // vacio
+        }else{
+            // Se esperaba el inicio de una expresion
+            throw new SyntacticException(actualToken, Arrays.asList("opAddition", "opSubtraction", "opNegation",
+                    "idKeyWord_null", "idKeyWord_true", "idKeyWord_false",
+                    "literalInteger", "literalCharacter", "literalString",
+                    "idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass",
+                    "punctuationOpeningParenthesis", "punctuationClosingParenthesis"), lexicalAnalyzer.getActualRow());
+        }
+    }
 
+    // 58 ------------------------------------------------------------------------------
+    // <ListaExps> ::= <Expresion> <ListaExpsResto>
+    private void listaExps() throws LexicalException, SyntacticException {
+        expresion();
+        listaExpsResto();
+    }
+
+    // 59 ------------------------------------------------------------------------------
+    // <ListaExpsResto> ::= , <ListaExps> | e
+    private void listaExpsResto() throws SyntacticException, LexicalException {
+        if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
+            match("punctuationComma");
+            listaExps();
+        }else if(Arrays.asList("punctuationClosingParenthesis").contains(actualToken.getToken())){
+            // vacio
+        }else{
+            // Se esperaba la coma entre argumentos o bien el parentesis para finalizar la declaracion de argumentos.
+            throw new SyntacticException(actualToken,
+                    Arrays.asList("punctuationComma", "punctuationClosingParenthesis"), lexicalAnalyzer.getActualRow());
+        }
+    }
+
+    // 60 ------------------------------------------------------------------------------
+    // <EncadenadoOpt> ::= . idMetVar <MetVarEncadenada> | e
+    private void encadenadoOpt() throws LexicalException, SyntacticException {
+        if(Arrays.asList("punctuationPoint").contains(actualToken.getToken())){
+            match("punctuationPoint");
+            match("idMetVar");
+            metVarEncadenada();
+        }else if(Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction",
+                "punctuationSemicolon", "punctuationComma",
+                "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
+                "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
+                "opAddition", "opSubtraction", "opMultiplication", "opDivision",
+                "opModule", "punctuationClosingParenthesis").contains(actualToken.getToken())){
+            // vacio
+        }else{
+            // Se esperaba un metodo, o bien un operador de expresion?
+            throw new SyntacticException(actualToken, Arrays.asList("punctuationPoint",
+                    "assignment", "assignmentAddition", "assignmentSubtraction",
+                    "punctuationSemicolon", "punctuationComma",
+                    "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
+                    "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
+                    "opAddition", "opSubtraction", "opMultiplication", "opDivision",
+                    "opModule", "punctuationClosingParenthesis"), lexicalAnalyzer.getActualRow());
+        }
+    }
+
+    // 61 ------------------------------------------------------------------------------
+    // <MetVarEncadenada> ::= <EncadenadoOpt> | <ArgsActuales> <EncadenadoOpt>
+    private void metVarEncadenada() throws LexicalException, SyntacticException {
+        if(Arrays.asList("punctuationPoint", "assignment", "assignmentAddition", "assignmentSubtraction",
+                "punctuationSemicolon", "punctuationComma", "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
+                "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
+                "opAddition", "opSubtraction", "opMultiplication", "opDivision",
+                "opModule", "punctuationClosingParenthesis").contains(actualToken.getToken())){
+            encadenadoOpt();
+        }else if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            argsActuales();
+            encadenadoOpt();
+        }
+    }
 
 }

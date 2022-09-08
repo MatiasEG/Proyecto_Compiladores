@@ -22,6 +22,8 @@ public class LexicalAnalyzer {
         actualCharacter = fileManager.getNextChar();
     }
 
+    public int getActualRow(){ return fileManager.getRow(); }
+
     public Token nextToken() throws LexicalException {
         lexeme = "";
         multilineCommentColumn = -1;
@@ -174,7 +176,7 @@ public class LexicalAnalyzer {
             updateActualCharacter();
             return e4();
         }else{
-            return new Token("LiteralInteger", lexeme, fileManager.getRow());
+            return new Token("literalInteger", lexeme, fileManager.getRow());
         }
     }
 
