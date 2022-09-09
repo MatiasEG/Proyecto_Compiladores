@@ -193,7 +193,17 @@ public class SyntacticAnalyzer {
     // 15 ------------------------------------------------------------------------------
     // <Metodo> ::= <EncabezadoMetodo> <Bloque>
     private void metodo() throws LexicalException, SyntacticException {
-        encabezadoMetodo();
+        try {
+            encabezadoMetodo();
+        }catch (SyntacticException e){
+
+            // TODO ver como resuelvo esto
+//            while (actualToken.getToken().equals("punctuationOpeningBracket")){
+//                actualToken = lexicalAnalyzer.nextToken();
+//            }
+
+            throw e;
+        }
         bloque();
     }
 
@@ -526,8 +536,19 @@ public class SyntacticAnalyzer {
     // 41 ------------------------------------------------------------------------------
     // <Expresion> ::= <ExpresionUnaria> <ExpresionRec>
     private void expresion() throws LexicalException, SyntacticException {
-        expresionUnaria();
-        expresionRec();
+        try {
+            expresionUnaria();
+            expresionRec();
+        }catch (SyntacticException e){
+
+            // TODO es lo unico con lo que puede chequear
+//            while (!actualToken.getToken().equals("punctuationSemicolon")){
+//                actualToken = lexicalAnalyzer.nextToken();
+//            }
+//            match("punctuationSemicolon");
+
+            throw e;
+        }
     }
 
     // 42 ------------------------------------------------------------------------------
