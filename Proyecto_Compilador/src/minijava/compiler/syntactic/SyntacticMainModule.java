@@ -3,6 +3,7 @@ package minijava.compiler.syntactic;
 import minijava.compiler.exception.SyntacticException;
 import minijava.compiler.exception.lexical.LexicalException;
 import minijava.compiler.filemanager.FileManager;
+import minijava.compiler.lexical.LexicalErrorManager;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.syntactic.analyzer.SyntacticAnalyzer;
 
@@ -13,7 +14,7 @@ public class SyntacticMainModule {
     public static void main(String[]args){
 
 
-//        FileManager fileManager = new FileManager(new File("resources/sinErrores/sintCorrecto04.java"));
+//        FileManager fileManager = new FileManager(new File("resources/conErrores/sintError03.java"));
         FileManager fileManager = new FileManager(new File(args[0]));
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
@@ -27,13 +28,12 @@ public class SyntacticMainModule {
             syntacticAnalyzer.inicial();
 
         } catch (LexicalException e) {
-            e.printStackTrace();
+            LexicalErrorManager.showErrorMsg(e, fileManager);
         } catch (SyntacticException e) {
             error = true;
             System.out.println("[Error:"+e.getErrorToken().getLexeme()+"|"+e.getRow()+"]");
             e.printStackTrace();
         }
-
 
         if(!error) System.out.println("[SinErrores]");
 

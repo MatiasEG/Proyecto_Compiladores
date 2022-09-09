@@ -17,7 +17,7 @@ public class LexicalMainModule {
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
 
-        Token nullToken = new Token("", "", -1);
+        Token nullToken = new Token("invalid", "invalid", -1);
 
         Token token;
 
@@ -30,10 +30,9 @@ public class LexicalMainModule {
                 error = true;
             }
 
-            if(!token.getLexeme().equals("")){
-                System.out.println("("+ token.getToken()+", "+token.getLexeme()+", "+token.getLineNumber()+")\n");
-            }
-        }while(!token.getToken().equals("EOF"));
+            System.out.println("("+ token.getToken()+", "+token.getLexeme()+", "+token.getLineNumber()+")\n");
+
+        }while(!token.getToken().equals(""));
 
         if(!error) System.out.println("[SinErrores]");
     }

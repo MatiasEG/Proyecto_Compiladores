@@ -716,17 +716,22 @@ public class SyntacticAnalyzer {
         if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
             argsActuales();
         }else if(Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction",
-                "punctuationSemicolon", "punctuationComma",
+                "punctuationSemicolon", "punctuationComma", "punctuationPoint",
                 "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
-                "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual").contains(actualToken.getToken())){
+                "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
+                "opAddition", "opSubtraction", "opMultiplication", "opDivision", "opModule",
+                "punctuationClosingParenthesis").contains(actualToken.getToken())){
             // vacio
         }else{
+            // TODO el caso de error 3 entra por aca no entiendo por que...
             // Se esperaban los argumentos del metodo
             throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningParenthesis",
                     "assignment", "assignmentAddition", "assignmentSubtraction",
-                    "punctuationSemicolon", "punctuationComma",
+                    "punctuationSemicolon", "punctuationComma", "punctuationPoint",
                     "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
-                    "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual"), lexicalAnalyzer.getActualRow());
+                    "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
+                    "opAddition", "opSubtraction", "opMultiplication", "opDivision", "opModule",
+                    "punctuationClosingParenthesis"), lexicalAnalyzer.getActualRow());
         }
     }
 
