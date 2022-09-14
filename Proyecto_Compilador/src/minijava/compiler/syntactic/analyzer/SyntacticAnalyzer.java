@@ -28,14 +28,20 @@ public class SyntacticAnalyzer {
     // <Inicial> ::= <ListaClases>
     public void inicial() throws LexicalException, SyntacticException {
         actualToken = this.lexicalAnalyzer.nextToken();
-        listaClases();
-        match("");
+        if(Arrays.asList("idKeyWord_class", "idKeyWord_interface").contains(actualToken.getToken())){
+            listaClases();
+        }else if(Arrays.asList("").contains(actualToken.getToken())){
+            //vacio
+            match("");
+        }else{
+            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_class", "idKeyWord_interface", ""), lexicalAnalyzer.getActualRow());
+        }
     }
 
     // 2 ------------------------------------------------------------------------------
     // <ListaClases> ::= <Clase> <ListaClases> | e
     private void listaClases() throws LexicalException, SyntacticException {
-        if(Arrays.asList("idKeyWord_class").contains(actualToken.getToken())) {
+        if(Arrays.asList("idKeyWord_class", "idKeyWord_interface").contains(actualToken.getToken())) {
             clase();
             listaClases();
         }else{ // TODO siguientes de listaClases?
@@ -72,7 +78,7 @@ public class SyntacticAnalyzer {
         match("idClass");
         extiendeA();
         match("punctuationOpeningBracket");
-        listaMiembros();
+        listaEncabezados();
         match("punctuationClosingBracket");
     }
 
@@ -82,11 +88,9 @@ public class SyntacticAnalyzer {
         if(Arrays.asList("idKeyWord_extends").contains(actualToken.getToken())){
             match("idKeyWord_extends");
             match("idClass");
-        }else if(Arrays.asList("idKeyWord_implements" , "punctuationOpeningBracket").contains(actualToken.getToken())){
-            // vacio
         }else{
-            // Se esperaba un token "implement" o bien el "{" del inicio del bloque de clase.
-            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_extends , idClase"), lexicalAnalyzer.getActualRow());
+            // TODO siguientes
+            // vacio
         }
     }
 
@@ -96,11 +100,9 @@ public class SyntacticAnalyzer {
         if(Arrays.asList("idKeyWord_implements").contains(actualToken.getToken())){
             match("idKeyWord_implements");
             listaTipoReferencia();
-        }else if(Arrays.asList("punctuationOpeningBracket").contains(actualToken.getToken())){
-            // vacio
         }else{
-            // Se esperaba un "{" del inicio del bloque de clase.
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningBracket"), lexicalAnalyzer.getActualRow());
+            // TODO siguientes
+            // vacio
         }
     }
 
@@ -110,11 +112,9 @@ public class SyntacticAnalyzer {
         if(Arrays.asList("idKeyWord_extends").contains(actualToken.getToken())){
             match("idKeyWord_extends");
             listaTipoReferencia();
-        }else if(Arrays.asList("punctuationOpeningBracket").contains(actualToken.getToken())){
-            // vacio
         }else{
-            // Se esperaba un "{" del inicio del bloque de clase.
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningBracket"), lexicalAnalyzer.getActualRow());
+            // TODO siguientes
+            // vacio
         }
     }
 
@@ -131,11 +131,9 @@ public class SyntacticAnalyzer {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
             match("punctuationComma");
             listaTipoReferencia();
-        }else if(Arrays.asList("punctuationOpeningBracket").contains(actualToken.getToken())){
-            // vacio
         }else{
-            // Se esperaba un "{" del inicio del bloque de clase.
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationOpeningBracket"), lexicalAnalyzer.getActualRow());
+            // TODO siguientes
+            // vacio
         }
     }
 
@@ -147,19 +145,17 @@ public class SyntacticAnalyzer {
                 "idClass", "idKeyWord_void").contains(actualToken.getToken())){
             miembro();
             listaMiembros();
-        }else if(Arrays.asList("punctuationClosingBracket").contains(actualToken.getToken())){
-            // vacio
         }else{
-            // Se esperaba un "}"
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationClosingBracket"), lexicalAnalyzer.getActualRow());
+            // TODO siguientes
+            // vacio
         }
     }
 
     // 12 ------------------------------------------------------------------------------
     // <ListaEncabezados> ::= <EncabezadoMetodo> ; <ListaEncabezados> | e
     private void listaEncabezados() throws LexicalException, SyntacticException {
-        if (Arrays.asList("idKeyWord_static", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int",
-                "idClass", "idKeyWord_void").contains(actualToken.getToken())) {
+        if (Arrays.asList("idKeyWord_static", "idKeyWord_void", "idKeyWord_boolean",
+                "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())) {
             encabezadoMetodo();
             match("punctuationSemicolon");
             listaEncabezados();
@@ -167,47 +163,6 @@ public class SyntacticAnalyzer {
     }
 
     // 13 ------------------------------------------------------------------------------
-    // <Miembro> ::= <Atributo> | <Metodo>
-    private void miembro() throws SyntacticException, LexicalException {
-        if(Arrays.asList("idKeyWord_private", "idKeyWord_public").contains(actualToken.getToken())){
-            atributo();
-        }else if(Arrays.asList("idKeyWord_static", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int",
-                "idClass", "idKeyWord_void").contains(actualToken.getToken())){
-            metodo();
-        }else{
-            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_private", "idKeyWord_public",
-                    "idKeyWord_static", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int",
-                    "idClass", "idKeyWord_void"), lexicalAnalyzer.getActualRow());
-        }
-    }
-
-    // 14 ------------------------------------------------------------------------------
-    // <Atributo> ::= <Visibilidad> <Tipo> <ListaDecAtrs> ;
-    private void atributo() throws LexicalException, SyntacticException {
-        visibilidad();
-        tipo();
-        listaDecAtrs();
-        match("punctuationSemicolon");
-    }
-
-    // 15 ------------------------------------------------------------------------------
-    // <Metodo> ::= <EncabezadoMetodo> <Bloque>
-    private void metodo() throws LexicalException, SyntacticException {
-        try {
-            encabezadoMetodo();
-        }catch (SyntacticException e){
-
-            // TODO ver como resuelvo esto
-//            while (actualToken.getToken().equals("punctuationOpeningBracket")){
-//                actualToken = lexicalAnalyzer.nextToken();
-//            }
-
-            throw e;
-        }
-        bloque();
-    }
-
-    // 16 ------------------------------------------------------------------------------
     // <EncabezadoMetodo> ::= <EstaticoOpt> <TipoMetodo> idMetVar <ArgsFormales>
     private void encabezadoMetodo() throws LexicalException, SyntacticException {
         estaticoOpt();
@@ -216,7 +171,92 @@ public class SyntacticAnalyzer {
         argsFormales();
     }
 
+    // 14 ------------------------------------------------------------------------------
+    // <Miembro> ::= <Visibilidad> <Atributo> | <ConstructorOAtrMet> | <MetodoNoEstaticoVoid> | <MetodoEstatico>
+    private void miembro() throws SyntacticException, LexicalException {
+        if(Arrays.asList("idKeyWord_private", "idKeyWord_public").contains(actualToken.getToken())) {
+            visibilidad();
+            atributo();
+        }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
+            constructorOAtrMet();
+        }else if(Arrays.asList("idKeyWord_void").contains(actualToken.getToken())) {
+            metodoNoEstaticoVoid();
+        }else if(Arrays.asList("idKeyWord_static").contains(actualToken.getToken())){
+            metodoEstatico();
+        }else{
+            throw new SyntacticException(actualToken, Arrays.asList("idKeyWord_private", "idKeyWord_public",
+                    "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass",
+                    "idKeyWord_void",
+                    "idKeyWord_static"), lexicalAnalyzer.getActualRow());
+        }
+    }
+
+    // 15 ------------------------------------------------------------------------------
+    // <ConstructorOAtrMet> ::= idClase <ConstructorOAtrMetResto> | <TipoPrimitivo> <ConstructorOAtrMetResto>
+    private void constructorOAtrMet() throws LexicalException, SyntacticException {
+        if(Arrays.asList("idClass").contains(actualToken.getToken())){
+            match("idClass");
+            constructorOAtrMetResto();
+        }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())){
+            tipoPrimitivo();
+            constructorOAtrMetResto();
+        }
+    }
+
+    // 16 ------------------------------------------------------------------------------
+    // <AtributoOMetodoResto> ::= <ArgsFormales> <Bloque> | <ListaDecAtrs>
+    private void atributoOMetodoResto() throws LexicalException, SyntacticException {
+        if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            argsFormales();
+            bloque();
+        }else if(Arrays.asList("punctuationComma", "punctuationSemicolon").contains(actualToken.getToken())){
+            listaDecAtrs();
+        }
+    }
+
     // 17 ------------------------------------------------------------------------------
+    // <Atributo> ::= <Tipo> idMetVar <ListaDecAtrs>
+    private void atributo() throws LexicalException, SyntacticException {
+        tipo();
+        match("idMetVar");
+        listaDecAtrs();
+    }
+
+    // 18 ------------------------------------------------------------------------------
+    // <MetodoEstatico> ::= static <TipoMetodo> idMetVar <ArgsFormales> <Bloque>
+    private void metodoEstatico() throws LexicalException, SyntacticException {
+        match("idKeyWord_static");
+        tipoMetodo();
+        match("idMetVar");
+        argsFormales();
+        bloque();
+    }
+
+    // 19 ------------------------------------------------------------------------------
+    // <MetodoNoEstaticoVoid> ::= void idMetVar <ArgsFormales> <Bloque>
+    private void metodoNoEstaticoVoid() throws LexicalException, SyntacticException {
+        match("idKeyWord_void");
+        match("idMetVar");
+        argsFormales();
+        bloque();
+    }
+
+    // 20 ------------------------------------------------------------------------------
+    // <ListaDecAtrs> ::= , idMetVar <ListaDecAtrs> | ; | e
+    private void listaDecAtrs() throws LexicalException, SyntacticException {
+        if(Arrays.asList("punctuationComma").contains(actualToken.getToken())) {
+            match("punctuationComma");
+            match("idMetVar");
+            listaDecAtrs();
+        }else if(Arrays.asList("punctuationSemicolon").contains(actualToken.getToken())){
+            match("punctuationSemicolon");
+        }else{
+            // TODO siguientes
+            // vacio
+        }
+    }
+
+    // 21 ------------------------------------------------------------------------------
     // <Visibilidad> ::= public | private
     private void visibilidad() throws LexicalException, SyntacticException {
         if(Arrays.asList("idKeyWord_public").contains(actualToken.getToken())){
@@ -230,7 +270,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 18 ------------------------------------------------------------------------------
+    // 22 ------------------------------------------------------------------------------
     // <Tipo> ::= <TipoPrimitivo> | idClase
     private void tipo() throws LexicalException, SyntacticException {
         if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())){
@@ -244,7 +284,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 19 ------------------------------------------------------------------------------
+    // 23 ------------------------------------------------------------------------------
     // <TipoPrimitivo> ::= boolean | char | int
     private void tipoPrimitivo() throws SyntacticException, LexicalException {
         if(Arrays.asList("idKeyWord_boolean").contains(actualToken.getToken())){
@@ -257,28 +297,6 @@ public class SyntacticAnalyzer {
             //Se esperaba un tipo primitivo
             throw new SyntacticException(actualToken,
                     Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int"), lexicalAnalyzer.getActualRow());
-        }
-    }
-
-    // 20 ------------------------------------------------------------------------------
-    // <ListaDecAtrs> ::= idMetVar <ListaDecAtrsResto>
-    private void listaDecAtrs() throws LexicalException, SyntacticException {
-        match("idMetVar");
-        listaDecAtrsResto();
-    }
-
-    // 21 ------------------------------------------------------------------------------
-    // <ListaDecAtrsResto> ::= , <ListaDecAtrs> | e
-    private void listaDecAtrsResto() throws LexicalException, SyntacticException {
-        if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
-            match("punctuationComma");
-            listaDecAtrs();
-        }else if(Arrays.asList("punctuationSemicolon").contains(actualToken.getToken())){
-            // vacio
-        }else{
-            //Se esperaba otro atributo, o bien un ";" denotando que no se definirian mas atributos.
-            throw new SyntacticException(actualToken,
-                    Arrays.asList("punctuationComma", "punctuationSemicolon"), lexicalAnalyzer.getActualRow());
         }
     }
 
@@ -536,19 +554,8 @@ public class SyntacticAnalyzer {
     // 41 ------------------------------------------------------------------------------
     // <Expresion> ::= <ExpresionUnaria> <ExpresionRec>
     private void expresion() throws LexicalException, SyntacticException {
-        try {
-            expresionUnaria();
-            expresionRec();
-        }catch (SyntacticException e){
-
-            // TODO es lo unico con lo que puede chequear
-//            while (!actualToken.getToken().equals("punctuationSemicolon")){
-//                actualToken = lexicalAnalyzer.nextToken();
-//            }
-//            match("punctuationSemicolon");
-
-            throw e;
-        }
+        expresionUnaria();
+        expresionRec();
     }
 
     // 42 ------------------------------------------------------------------------------

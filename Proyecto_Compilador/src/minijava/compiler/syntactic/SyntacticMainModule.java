@@ -16,8 +16,8 @@ public class SyntacticMainModule {
     public static void main(String[]args){
 
 //        FileManager fileManager = new FileManager(new File("resources/conErrores/sintError01.java"));
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/sintCorrecto05.java"));
-//        FileManager fileManager = new FileManager(new File(args[0]));
+//        FileManager fileManager = new FileManager(new File("resources/sinErrores/Atributos.java"));
+        FileManager fileManager = new FileManager(new File(args[0]));
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
 
