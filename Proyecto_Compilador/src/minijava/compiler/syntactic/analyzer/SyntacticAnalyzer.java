@@ -60,10 +60,11 @@ public class SyntacticAnalyzer {
     }
 
     // 4 ------------------------------------------------------------------------------
-    // <ClaseConcreta> ::= class idClase <HeredaDe> <ImplementaA> { <ListaMiembros> }
+    // <ClaseConcreta> ::= class idClase <GenericoOpt> <HeredaDe> <ImplementaA> { <ListaMiembros> }
     private void claseConcreta() throws LexicalException, SyntacticException {
         match("idKeyWord_class");
         match("idClass");
+        genericoOpt();
         heredaDe();
         implementaA();
         match("punctuationOpeningBracket");
@@ -204,25 +205,39 @@ public class SyntacticAnalyzer {
     }
 
     // 16 ------------------------------------------------------------------------------
-    // <AtributoOMetodoResto> ::= <ArgsFormales> <Bloque> | <ListaDecAtrs>
-    private void atributoOMetodoResto() throws LexicalException, SyntacticException {
+    // <ConstructorOAtrMetResto> ::= <ArgsFormales> <Bloque> | idMetVar <AtributoOMetodo>
+    private void constructorOAtrMetResto() throws LexicalException, SyntacticException {
+        if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            argsFormales();
+            bloque();
+        }else if(Arrays.asList("idMetVar").contains(actualToken.getToken())){
+            match("idMetVar");
+            atributoOMetodo();
+        }
+    }
+
+    // 17 ------------------------------------------------------------------------------
+    // <AtributoOMetodo> ::= <ArgsFormales> <Bloque> | <ListaDecAtrs> ;
+    public void atributoOMetodo() throws LexicalException, SyntacticException {
         if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
             argsFormales();
             bloque();
         }else if(Arrays.asList("punctuationComma", "punctuationSemicolon").contains(actualToken.getToken())){
             listaDecAtrs();
+            match("punctuationSemicolon");
         }
     }
 
-    // 17 ------------------------------------------------------------------------------
-    // <Atributo> ::= <Tipo> idMetVar <ListaDecAtrs>
+    // 18 ------------------------------------------------------------------------------
+    // <Atributo> ::= <Tipo> idMetVar <ListaDecAtrs> ;
     private void atributo() throws LexicalException, SyntacticException {
         tipo();
         match("idMetVar");
         listaDecAtrs();
+        match("punctuationSemicolon");
     }
 
-    // 18 ------------------------------------------------------------------------------
+    // 19 ------------------------------------------------------------------------------
     // <MetodoEstatico> ::= static <TipoMetodo> idMetVar <ArgsFormales> <Bloque>
     private void metodoEstatico() throws LexicalException, SyntacticException {
         match("idKeyWord_static");
@@ -232,7 +247,7 @@ public class SyntacticAnalyzer {
         bloque();
     }
 
-    // 19 ------------------------------------------------------------------------------
+    // 20 ------------------------------------------------------------------------------
     // <MetodoNoEstaticoVoid> ::= void idMetVar <ArgsFormales> <Bloque>
     private void metodoNoEstaticoVoid() throws LexicalException, SyntacticException {
         match("idKeyWord_void");
@@ -241,22 +256,20 @@ public class SyntacticAnalyzer {
         bloque();
     }
 
-    // 20 ------------------------------------------------------------------------------
-    // <ListaDecAtrs> ::= , idMetVar <ListaDecAtrs> | ; | e
+    // 21 ------------------------------------------------------------------------------
+    // <ListaDecAtrs> ::= , idMetVar <ListaDecAtrs> | e
     private void listaDecAtrs() throws LexicalException, SyntacticException {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())) {
             match("punctuationComma");
             match("idMetVar");
             listaDecAtrs();
-        }else if(Arrays.asList("punctuationSemicolon").contains(actualToken.getToken())){
-            match("punctuationSemicolon");
         }else{
             // TODO siguientes
             // vacio
         }
     }
 
-    // 21 ------------------------------------------------------------------------------
+    // 22 ------------------------------------------------------------------------------
     // <Visibilidad> ::= public | private
     private void visibilidad() throws LexicalException, SyntacticException {
         if(Arrays.asList("idKeyWord_public").contains(actualToken.getToken())){
@@ -270,13 +283,14 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 22 ------------------------------------------------------------------------------
-    // <Tipo> ::= <TipoPrimitivo> | idClase
+    // 23 ------------------------------------------------------------------------------
+    // <Tipo> ::= <TipoPrimitivo> | idClase <GenericoOpt>
     private void tipo() throws LexicalException, SyntacticException {
         if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())){
             tipoPrimitivo();
         }else if(Arrays.asList("idClass").contains(actualToken.getToken())){
             match("idClass");
+            genericoOpt();
         }else{
             // Se esperaba un tipo para asignar a la variable.
             throw new SyntacticException(actualToken,
@@ -284,7 +298,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 23 ------------------------------------------------------------------------------
+    // 24 ------------------------------------------------------------------------------
     // <TipoPrimitivo> ::= boolean | char | int
     private void tipoPrimitivo() throws SyntacticException, LexicalException {
         if(Arrays.asList("idKeyWord_boolean").contains(actualToken.getToken())){
@@ -300,7 +314,32 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 22 ------------------------------------------------------------------------------
+    // 25 ------------------------------------------------------------------------------
+    // <GenericoOpt> ::= < <Tipo> <ListaTipos> > | e
+    private void genericoOpt() throws LexicalException, SyntacticException {
+        if(Arrays.asList("opLess").contains(actualToken.getToken())){
+            match("opLess");
+            tipo();
+            listaTipos();
+            match("opGreater");
+        }else{
+            // vacio
+        }
+    }
+
+    // 26 ------------------------------------------------------------------------------
+    // <ListaTipos> ::= , <Tipo> <ListaTipos> | e
+    private void listaTipos() throws LexicalException, SyntacticException {
+        if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
+            match("punctuationComma");
+            tipo();
+            listaTipos();
+        }else{
+            // vacio
+        }
+    }
+
+    // 27 ------------------------------------------------------------------------------
     // <EstaticoOpt> ::= static | e
     private void estaticoOpt() throws LexicalException, SyntacticException {
         if(Arrays.asList("idKeyWord_static").contains(actualToken.getToken())){
@@ -314,7 +353,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 23 ------------------------------------------------------------------------------
+    // 28 ------------------------------------------------------------------------------
     // <TipoMetodo> ::= <Tipo> | void
     private void tipoMetodo() throws SyntacticException, LexicalException {
         if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
@@ -328,7 +367,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 24 ------------------------------------------------------------------------------
+    // 29 ------------------------------------------------------------------------------
     // <ArgsFormales> ::= ( <ListaArgsFormalesOpt> )
     private void argsFormales() throws LexicalException, SyntacticException {
         match("punctuationOpeningParenthesis");
@@ -336,7 +375,7 @@ public class SyntacticAnalyzer {
         match("punctuationClosingParenthesis");
     }
 
-    // 25 ------------------------------------------------------------------------------
+    // 30 ------------------------------------------------------------------------------
     // <ListaArgsFormalesOpt> ::= <ListaArgsFormales> | e
     private void listaArgsFormalesOpt() throws SyntacticException, LexicalException {
         if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
@@ -350,14 +389,14 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 26 ------------------------------------------------------------------------------
+    // 31 ------------------------------------------------------------------------------
     // <ListaArgsFormales> ::= <ArgFormal> <ListaArgsFormalesResto>
     private void listaArgsFormales() throws SyntacticException, LexicalException {
         argFormal();
         listaArgsFormalesResto();
     }
 
-    // 27 ------------------------------------------------------------------------------
+    // 32 ------------------------------------------------------------------------------
     // <ListaArgsFormalesResto> ::= , <ListaArgsFormales> | e
     private void listaArgsFormalesResto() throws SyntacticException, LexicalException {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
@@ -372,14 +411,14 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 28 ------------------------------------------------------------------------------
+    // 33 ------------------------------------------------------------------------------
     // <ArgFormal> ::= <Tipo> idMetVar
     private void argFormal() throws LexicalException, SyntacticException {
         tipo();
         match("idMetVar");
     }
 
-    // 29 ------------------------------------------------------------------------------
+    // 34 ------------------------------------------------------------------------------
     // <Bloque> ::= { <ListaSentencias> }
     private void bloque() throws LexicalException, SyntacticException {
         match("punctuationOpeningBracket");
@@ -387,34 +426,27 @@ public class SyntacticAnalyzer {
         match("punctuationClosingBracket");
     }
 
-    // 30 ------------------------------------------------------------------------------
+    // 35 ------------------------------------------------------------------------------
     // <ListaSentencias> ::= <Sentencia> <ListaSentencias> | e
     private void listaSentencias() throws SyntacticException, LexicalException {
-        if(Arrays.asList("punctuationSemicolon", "punctuationOpeningParenthesis", "punctuationOpeningBracket",
-                "idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass", "idKeyWord_var",
-                "idKeyWord_return", "idKeyWord_if", "idKeyWord_while").contains(actualToken.getToken())){
+        if(Arrays.asList("punctuationSemicolon", "idClass", "idKeyWord_this", "idMetVar", "idKeyWord_new",
+                "punctuationOpeningParenthesis", "idKeyWord_var", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int",
+                "idKeyWord_return", "idKeyWord_if", "idKeyWord_while", "punctuationOpeningBracket").contains(actualToken.getToken())){
             sentencia();
             listaSentencias();
-        }else if(Arrays.asList("punctuationClosingBracket").contains(actualToken.getToken())){
-            // vacio
         }else{
-            // TODO definir error
-            throw new SyntacticException(actualToken, Arrays.asList("punctuationSemicolon", "punctuationOpeningParenthesis", "punctuationOpeningBracket",
-                    "idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass", "idKeyWord_var",
-                    "idKeyWord_return", "idKeyWord_if", "idKeyWord_while", "punctuationClosingBracket"), lexicalAnalyzer.getActualRow());
+            // vacio
         }
     }
 
-    // 31 ------------------------------------------------------------------------------
-    // <Sentencia> ::= ; | <Llamada> ; | <VarLocal> ; | <Return> ; | <If> | <While> | <Bloque>
+    // 36 ------------------------------------------------------------------------------
+    // <Sentencia> ::= ; | <LlamadaOVarLocal> ; | <Return> ; | <If> | <While> | <Bloque>
     private void sentencia() throws LexicalException, SyntacticException {
         if(Arrays.asList("punctuationSemicolon").contains(actualToken.getToken())){
             match("punctuationSemicolon");
-        }else if(Arrays.asList("idKeyWord_this", "idMetVar", "idKeyWord_new", "idClass", "punctuationOpeningParenthesis").contains(actualToken.getToken())){
-            llamada();
-            match("punctuationSemicolon");
-        }else if(Arrays.asList("idKeyWord_var").contains(actualToken.getToken())){
-            varLocal();
+        }else if(Arrays.asList("idClass", "idKeyWord_this", "idMetVar", "idKeyWord_new", "punctuationOpeningParenthesis",
+                "idKeyWord_var", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())){
+            llamadaOVarLocal();
             match("punctuationSemicolon");
         }else if(Arrays.asList("idKeyWord_return").contains(actualToken.getToken())){
             return_();
@@ -437,7 +469,30 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 32 ------------------------------------------------------------------------------
+    // 37 ------------------------------------------------------------------------------
+    // <LlamadaOVarLocal> ::= idClase <LlamadaOVarLocalResto> | <Llamada> | <VarLocal>
+    private void llamadaOVarLocal() throws LexicalException, SyntacticException {
+        if(Arrays.asList("idClass").contains(actualToken.getToken())){
+            match("idClass");
+            llamadaOVarLocalResto();
+        }else if(Arrays.asList("idKeyWord_this", "idMetVar", "idKeyWord_new", "punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            llamada();
+        }else if(Arrays.asList("idKeyWord_var", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())){
+            varLocal();
+        }
+    }
+
+    // 38 ------------------------------------------------------------------------------
+    // <LlamadaOVarLocalResto> ::= <AccesoMetodoEstatico> |  <VarLocalResto>
+    private void llamadaOVarLocalResto() throws LexicalException, SyntacticException {
+        if(Arrays.asList("punctuationPoint").contains(actualToken.getToken())){
+            accesoMetodoEstatico();
+        }else if(Arrays.asList("opLess", "idMetVar").contains(actualToken.getToken())){
+            varLocalTipoClase();
+        }
+    }
+
+    // 39 ------------------------------------------------------------------------------
     // <Asignacion> ::= <TipoDeAsignacion> <Expresion> | e
     private void asignacion() throws SyntacticException, LexicalException {
         if(Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction").contains(actualToken.getToken())){
@@ -452,7 +507,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 33 ------------------------------------------------------------------------------
+    // 40 ------------------------------------------------------------------------------
     // <TipoDeAsignacion> ::= = | += | -=
     private void tipoDeAsignacion() throws SyntacticException, LexicalException {
         if(Arrays.asList("assignment").contains(actualToken.getToken())){
@@ -468,30 +523,57 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 34 ------------------------------------------------------------------------------
+    // 41 ------------------------------------------------------------------------------
     // <Llamada> ::= <Acceso> <Asignacion>
     private void llamada() throws SyntacticException, LexicalException {
         acceso();
         asignacion();
     }
 
-    // 35 ------------------------------------------------------------------------------
-    // <VarLocal> ::= var idMetVar = <Expresion>
+    // 42 ------------------------------------------------------------------------------
+    // <VarLocal> ::= <VarLocal> ::= var idMetVar <VarLocalResto> | <TipoPrimitivo> idMetVar <VarLocalResto>
     private void varLocal() throws LexicalException, SyntacticException {
-        match("idKeyWord_var");
-        match("idMetVar");
-        match("assignment");
-        expresion();
+        if(Arrays.asList("idKeyWord_var").contains(actualToken.getToken())){
+            match("idKeyWord_var");
+            match("idMetVar");
+            varLocalResto();
+        }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())){
+            tipoPrimitivo();
+            match("idMetVar");
+            varLocalResto();
+        }
     }
 
-    // 36 ------------------------------------------------------------------------------
+    // 43 ------------------------------------------------------------------------------
+    // <VarLocalResto> ::= = <Expresion> | <ListaDecAtrs> ;
+    private void varLocalResto() throws LexicalException, SyntacticException {
+        if(Arrays.asList("assignment").contains(actualToken.getToken())){
+            match("assignment");
+            expresion();
+        }else if(Arrays.asList("punctuationComma", "punctuationSemicolon").contains(actualToken.getToken())){
+            listaDecAtrs();
+        }
+    }
+
+    // 44 ------------------------------------------------------------------------------
+    // <VarLocalTipoClase> ::= <GenericoOpt> idMetVar = <Expresion>
+    private void varLocalTipoClase() throws LexicalException, SyntacticException {
+        if(Arrays.asList("opLess", "idMetVar").contains(actualToken.getToken())){
+            genericoOpt();
+            match("idMetVar");
+            match("assignment");
+            expresion();
+        }
+    }
+
+    // 45 ------------------------------------------------------------------------------
     // <Return> ::= return <ExpresionOpt>
     private void return_() throws LexicalException, SyntacticException {
         match("idKeyWord_return");
         expresionOpt();
     }
 
-    // 37 ------------------------------------------------------------------------------
+    // 46 ------------------------------------------------------------------------------
     // <ExpresionOpt> ::= <Expresion> | e
     private void expresionOpt() throws SyntacticException, LexicalException {
         if(Arrays.asList("opAddition", "opSubtraction", "opNegation", "idKeyWord_null",
@@ -511,7 +593,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 38 ------------------------------------------------------------------------------
+    // 47 ------------------------------------------------------------------------------
     // <If> ::= if ( <Expresion> ) <Sentencia> <IfResto>
     private void if_() throws LexicalException, SyntacticException {
         match("idKeyWord_if");
@@ -522,7 +604,7 @@ public class SyntacticAnalyzer {
         ifResto();
     }
 
-    // 39 ------------------------------------------------------------------------------
+    // 48 ------------------------------------------------------------------------------
     // <IfResto> ::= else <Sentencia> | e
     private void ifResto() throws LexicalException, SyntacticException {
         if(Arrays.asList("idKeyWord_else").contains(actualToken.getToken())){
@@ -541,7 +623,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 40 ------------------------------------------------------------------------------
+    // 49 ------------------------------------------------------------------------------
     // <While> ::= while ( <Expresion> ) <Sentencia>
     private void while_() throws LexicalException, SyntacticException {
         match("idKeyWord_while");
@@ -551,14 +633,14 @@ public class SyntacticAnalyzer {
         sentencia();
     }
 
-    // 41 ------------------------------------------------------------------------------
+    // 50 ------------------------------------------------------------------------------
     // <Expresion> ::= <ExpresionUnaria> <ExpresionRec>
     private void expresion() throws LexicalException, SyntacticException {
         expresionUnaria();
         expresionRec();
     }
 
-    // 42 ------------------------------------------------------------------------------
+    // 51 ------------------------------------------------------------------------------
     // <ExpresionRec> ::= <OperadorBinario> <ExpresionUnaria> <ExpresionRec> | e
     private void expresionRec() throws SyntacticException, LexicalException {
         if(Arrays.asList("opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
@@ -578,7 +660,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 43 ------------------------------------------------------------------------------
+    // 52 ------------------------------------------------------------------------------
     // <OperadorBinario> ::= || | && | == | != | < | > | <= | >= | + | - | * | / | %
     private void operadorBinario() throws LexicalException, SyntacticException {
         if(Arrays.asList("opLogicOr").contains(actualToken.getToken())){
@@ -615,7 +697,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 44 ------------------------------------------------------------------------------
+    // 53 ------------------------------------------------------------------------------
     // <ExpresionUnaria> ::= <OperadorUnario> <Operando> | <Operando>
     private void expresionUnaria() throws LexicalException, SyntacticException {
         if(Arrays.asList("opAddition", "opSubtraction", "opNegation").contains(actualToken.getToken())){
@@ -628,7 +710,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 45 ------------------------------------------------------------------------------
+    // 54 ------------------------------------------------------------------------------
     // <OperadorUnario> ::= + | - | !
     private void operadorUnario() throws LexicalException, SyntacticException {
         if(Arrays.asList("opAddition").contains(actualToken.getToken())){
@@ -643,7 +725,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 46 ------------------------------------------------------------------------------
+    // 55 ------------------------------------------------------------------------------
     // <Operando> ::= <Literal> | <Acceso>
     private void operando() throws SyntacticException, LexicalException {
         if(Arrays.asList("idKeyWord_null", "idKeyWord_true", "idKeyWord_false",
@@ -659,7 +741,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 47 ------------------------------------------------------------------------------
+    // 56 ------------------------------------------------------------------------------
     // <Literal> ::= null | true | false | intLiteral | charLiteral | stringLiteral
     private void literal() throws LexicalException, SyntacticException {
         if(Arrays.asList("idKeyWord_null").contains(actualToken.getToken())){
@@ -681,15 +763,15 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 48 ------------------------------------------------------------------------------
+    // 57 ------------------------------------------------------------------------------
     // <Acceso> ::= <Primario> <EncadenadoOpt>
     private void acceso() throws LexicalException, SyntacticException {
         primario();
         encadenadoOpt();
     }
 
-    // 49 ------------------------------------------------------------------------------
-    // <Primario> ::= <AccesoThis> | <AccesoVar> | <AccesoConstructor>| <AccesoMetodoEstatico> | <ExpresionParentizada>
+    // 58 ------------------------------------------------------------------------------
+    // <Primario> ::= <AccesoThis> | <AccesoVar> | <AccesoConstructor> | <ExpresionParentizada> | idClase <AccesoMetodoEstatico>
     private void primario() throws SyntacticException, LexicalException {
         if(Arrays.asList("idKeyWord_this").contains(actualToken.getToken())){
             accesoThis();
@@ -697,10 +779,11 @@ public class SyntacticAnalyzer {
             accesoVar();
         }else if(Arrays.asList("idKeyWord_new").contains(actualToken.getToken())){
             accesoConstructor();
-        }else if(Arrays.asList("idClass").contains(actualToken.getToken())){
-            accesoMetodoEstatico();
-        }else if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
+        }else if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())) {
             expresionParentizada();
+        }else if(Arrays.asList("idClass").contains(actualToken.getToken())){
+            match("idClass");
+            accesoMetodoEstatico();
         }else{
             // Se esperaba un token primario
             throw new SyntacticException(actualToken,
@@ -708,29 +791,28 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 50 ------------------------------------------------------------------------------
+    // 59 ------------------------------------------------------------------------------
     // <AccesoThis> ::= this
     private void accesoThis() throws LexicalException, SyntacticException {
         match("idKeyWord_this");
     }
 
-    // 51 ------------------------------------------------------------------------------
+    // 60 ------------------------------------------------------------------------------
     // <AccesoVar> ::= idMetVar <AccesoMetodo>
     private void accesoVar() throws LexicalException, SyntacticException {
         match("idMetVar");
         accesoMetodo();
     }
 
-    // 52 ------------------------------------------------------------------------------
-    // <AccesoConstructor> ::= new idClase ( )
+    // 61 ------------------------------------------------------------------------------
+    // <AccesoConstructor> ::= new idClase <ArgsFormales>
     private void accesoConstructor() throws LexicalException, SyntacticException {
         match("idKeyWord_new");
         match("idClass");
-        match("punctuationOpeningParenthesis");
-        match("punctuationClosingParenthesis");
+        argsFormales();
     }
 
-    // 53 ------------------------------------------------------------------------------
+    // 62 ------------------------------------------------------------------------------
     // <ExpresionParentizada> ::= ( <Expresion> )
     private void expresionParentizada() throws LexicalException, SyntacticException {
         match("punctuationOpeningParenthesis");
@@ -738,7 +820,7 @@ public class SyntacticAnalyzer {
         match("punctuationClosingParenthesis");
     }
 
-    // 54 ------------------------------------------------------------------------------
+    // 63 ------------------------------------------------------------------------------
     // <AccesoMetodo> ::= <ArgsActuales> | e
     private void accesoMetodo() throws SyntacticException, LexicalException {
         if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
@@ -763,16 +845,15 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 55 ------------------------------------------------------------------------------
-    // <AccesoMetodoEstatico> ::= idClase . idMetVar <ArgsActuales>
+    // 64 ------------------------------------------------------------------------------
+    // <AccesoMetodoEstatico> ::= . idMetVar <ArgsActuales>
     private void accesoMetodoEstatico() throws LexicalException, SyntacticException {
-        match("idClass");
         match("punctuationPoint");
         match("idMetVar");
         argsActuales();
     }
 
-    // 56 ------------------------------------------------------------------------------
+    // 65 ------------------------------------------------------------------------------
     // <ArgsActuales> ::= ( <ListaExpsOpt> )
     private void argsActuales() throws LexicalException, SyntacticException {
         match("punctuationOpeningParenthesis");
@@ -780,7 +861,7 @@ public class SyntacticAnalyzer {
         match("punctuationClosingParenthesis");
     }
 
-    // 57 ------------------------------------------------------------------------------
+    // 66 ------------------------------------------------------------------------------
     // <ListaExpsOpt> ::= <ListaExps> | e
     private void listaExpsOpt() throws SyntacticException, LexicalException {
         if(Arrays.asList("opAddition", "opSubtraction", "opNegation",
@@ -801,14 +882,14 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 58 ------------------------------------------------------------------------------
+    // 67 ------------------------------------------------------------------------------
     // <ListaExps> ::= <Expresion> <ListaExpsResto>
     private void listaExps() throws LexicalException, SyntacticException {
         expresion();
         listaExpsResto();
     }
 
-    // 59 ------------------------------------------------------------------------------
+    // 68 ------------------------------------------------------------------------------
     // <ListaExpsResto> ::= , <ListaExps> | e
     private void listaExpsResto() throws SyntacticException, LexicalException {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
@@ -823,7 +904,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 60 ------------------------------------------------------------------------------
+    // 69 ------------------------------------------------------------------------------
     // <EncadenadoOpt> ::= . idMetVar <MetVarEncadenada> | e
     private void encadenadoOpt() throws LexicalException, SyntacticException {
         if(Arrays.asList("punctuationPoint").contains(actualToken.getToken())){
@@ -849,7 +930,7 @@ public class SyntacticAnalyzer {
         }
     }
 
-    // 61 ------------------------------------------------------------------------------
+    // 70 ------------------------------------------------------------------------------
     // <MetVarEncadenada> ::= <EncadenadoOpt> | <ArgsActuales> <EncadenadoOpt>
     private void metVarEncadenada() throws LexicalException, SyntacticException {
         if(Arrays.asList("punctuationPoint", "assignment", "assignmentAddition", "assignmentSubtraction",

@@ -8,15 +8,13 @@ import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.syntactic.analyzer.SyntacticAnalyzer;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SyntacticMainModule {
 
     public static void main(String[]args){
 
 //        FileManager fileManager = new FileManager(new File("resources/conErrores/sintError01.java"));
-//        FileManager fileManager = new FileManager(new File("resources/sinErrores/Atributos.java"));
+//        FileManager fileManager = new FileManager(new File("resources/sinErrores/VariablesLocalesClasicas.java"));
         FileManager fileManager = new FileManager(new File(args[0]));
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
