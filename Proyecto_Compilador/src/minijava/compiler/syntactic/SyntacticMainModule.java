@@ -5,6 +5,7 @@ import minijava.compiler.exception.lexical.LexicalException;
 import minijava.compiler.filemanager.FileManager;
 import minijava.compiler.lexical.LexicalErrorManager;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
+import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.syntactic.analyzer.SyntacticAnalyzer;
 
 import java.io.File;
@@ -16,9 +17,12 @@ public class SyntacticMainModule {
         FileManager fileManager = new FileManager(new File("resources/sinErrores/Genericidad.java"));
 //        FileManager fileManager = new FileManager(new File(args[0]));
 
+
+        SymbolTable st = new SymbolTable();
+
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
 
-        SyntacticAnalyzer syntacticAnalyzer = new SyntacticAnalyzer(lexicalAnalyzer);
+        SyntacticAnalyzer syntacticAnalyzer = new SyntacticAnalyzer(lexicalAnalyzer, st);
 
         boolean error = false;
 

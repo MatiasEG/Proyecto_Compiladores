@@ -4,6 +4,7 @@ import minijava.compiler.exception.SyntacticException;
 import minijava.compiler.exception.lexical.LexicalException;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.lexical.analyzer.Token;
+import minijava.compiler.semantic.SymbolTable;
 
 import java.util.Arrays;
 
@@ -11,9 +12,11 @@ public class SyntacticAnalyzer {
 
     private LexicalAnalyzer lexicalAnalyzer;
     private Token actualToken;
+    private SymbolTable st;
 
-    public SyntacticAnalyzer(LexicalAnalyzer lexicalAnalyzer) {
+    public SyntacticAnalyzer(LexicalAnalyzer lexicalAnalyzer, SymbolTable st) {
         this.lexicalAnalyzer = lexicalAnalyzer;
+        this.st = st;
     }
 
     private void match(String tokenName) throws LexicalException, SyntacticException {
