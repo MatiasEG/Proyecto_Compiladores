@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class LexicalMainModule {
-
+/*
     public static void main(String[]args){
         boolean error = false;
 
@@ -49,4 +49,6 @@ public class LexicalMainModule {
         System.out.println(e.getMessage()+"\n");
     }
 
+
+ */
 }

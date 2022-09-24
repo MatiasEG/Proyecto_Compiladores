@@ -13,9 +13,8 @@ public class SyntacticMainModule {
 
     public static void main(String[]args){
 
-//        FileManager fileManager = new FileManager(new File("resources/conErrores/sintError01.java"));
-//        FileManager fileManager = new FileManager(new File("resources/sinErrores/VariablesLocalesClasicas.java"));
-        FileManager fileManager = new FileManager(new File(args[0]));
+        FileManager fileManager = new FileManager(new File("resources/sinErrores/Genericidad.java"));
+//        FileManager fileManager = new FileManager(new File(args[0]));
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
 
@@ -32,7 +31,7 @@ public class SyntacticMainModule {
         } catch (SyntacticException e) {
             error = true;
             System.out.println("[Error:"+e.getErrorToken().getLexeme()+"|"+e.getRow()+"]");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         if(!error) System.out.println("[SinErrores]");

@@ -1,3 +1,4 @@
+/*
 package minijava.compiler.lexical;
 
 import java.io.ByteArrayOutputStream;
@@ -80,3 +81,4 @@ public class TesterDeCasosSinErrores {
     
     
 }
+*/

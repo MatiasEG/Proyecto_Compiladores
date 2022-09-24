@@ -4,7 +4,7 @@
 class ClaseConstructores{
 
     void metodo(){
-        atributo1 = new Clase(int p1, char p2, String p3);
+        atributo1 = new Clase(p1, p2, p1 + p3);
 
         atributo2 = new Clase();
     }

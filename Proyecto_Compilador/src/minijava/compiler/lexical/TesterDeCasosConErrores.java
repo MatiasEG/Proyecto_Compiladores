@@ -1,3 +1,4 @@
+/*
 package minijava.compiler.lexical;
 
 import java.io.*;
@@ -14,7 +15,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class TesterDeCasosConErrores {
-    
+
     //TODO: el tipo de esta variable init tiene que ser la clase que tiene el main
     private static final LexicalMainModule init = null;
     
@@ -77,3 +78,4 @@ public class TesterDeCasosConErrores {
     }
 
 }
+*/

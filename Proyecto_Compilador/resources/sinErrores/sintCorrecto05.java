@@ -1,6 +1,12 @@
 // Probando metodos
 
 class Correcto05{
+
+    void test(){
+        if(Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction") || ( a == 4))
+            b = a;
+    }
+
     // 53 ------------------------------------------------------------------------------
     // <ExpresionParentizada> ::= ( <Expresion> )
     void expresionParentizada() {   //throws LexicalException, SyntacticException {

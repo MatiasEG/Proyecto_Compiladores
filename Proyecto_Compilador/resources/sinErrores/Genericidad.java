@@ -11,9 +11,10 @@ class ClaseAux{
     }
 }
 
-class PrimeraClase<String, int, ClaseAux<char, int>>{
+class PrimeraClase{
 
     PrimeraClase(int parametroEntero){
+        A a = new A<int,String,B<char>>();
         // Hago cosas del constructor
         a = parametroEntero;
         ClaseAux.getChar();
