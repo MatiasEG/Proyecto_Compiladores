@@ -14,7 +14,7 @@ public class SyntacticMainModule {
 
     public static void main(String[]args){
 
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/Genericidad.java"));
+        FileManager fileManager = new FileManager(new File("resources/Clases.java"));
 //        FileManager fileManager = new FileManager(new File(args[0]));
 
 
@@ -39,6 +39,8 @@ public class SyntacticMainModule {
         }
 
         if(!error) System.out.println("[SinErrores]");
+
+        st.imprimirTablas();
 
     }
 }

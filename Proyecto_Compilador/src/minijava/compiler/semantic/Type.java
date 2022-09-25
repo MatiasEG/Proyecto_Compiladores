@@ -12,7 +12,7 @@ public class Type {
     private int actualType;
     private String classType;
 
-    Type(String type, Token token){
+    public Type(String type, Token token){
         actualType = -1;
         classType = "";
 

@@ -4,8 +4,11 @@ import minijava.compiler.exception.SyntacticException;
 import minijava.compiler.exception.lexical.LexicalException;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.lexical.analyzer.Token;
+import minijava.compiler.semantic.Class_;
+import minijava.compiler.semantic.Interface_;
 import minijava.compiler.semantic.SymbolTable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SyntacticAnalyzer {
@@ -78,13 +81,29 @@ public class SyntacticAnalyzer {
     // Siguientes: -
     private void claseConcreta() throws LexicalException, SyntacticException {
         match("idKeyWord_class");
+
+        String className = actualToken.getLexeme();
+
         match("idClass");
-        genericoOpt();
-        heredaDe();
-        implementaA();
+
+        Class_ clase = new Class_(className);
+        st.setClaseActual(clase);
+
+        genericoOpt(); // No lo contemplo semanticamente
+
+        ArrayList<String> extendsFrom = heredaDe();
+        st.actualClassInterfaceExtendsFrom(extendsFrom);
+
+        ArrayList<String> implement = implementaA();
+
+        st.actualClassImplements(implement);
+
         match("punctuationOpeningBracket");
         listaMiembros();
         match("punctuationClosingBracket");
+
+        //TODO guardar clase
+        st.insertarClase();
     }
 
     // 5 ------------------------------------------------------------------------------
@@ -93,80 +112,102 @@ public class SyntacticAnalyzer {
     // Siguientes: -
     private void interface_() throws LexicalException, SyntacticException {
         match("idKeyWord_interface");
+            String interfaceName = actualToken.getLexeme();
         match("idClass");
+            Interface_ interface_ = new Interface_(interfaceName);
+            st.setActualInterface(interface_);
         genericoOpt();
-        extiendeA();
+        ArrayList<String> extendsFrom = extiendeA();
+            st.actualClassInterfaceExtendsFrom(extendsFrom);
         match("punctuationOpeningBracket");
         listaEncabezados();
         match("punctuationClosingBracket");
+
+        // TODO guardar interface
+        st.insertarInterface();
     }
 
     // 6 ------------------------------------------------------------------------------
     // <HeredaDe> ::= extends idClase <GenericoOpt> | e
     // Primeros: {extends, e}
     // Siguientes: {implments, { }
-    private void heredaDe() throws LexicalException, SyntacticException {
+    private ArrayList<String> heredaDe() throws LexicalException, SyntacticException {
+        ArrayList<String> extendsFrom = new ArrayList<>();
         if(Arrays.asList("idKeyWord_extends").contains(actualToken.getToken())){
             match("idKeyWord_extends");
+                String extendsFromName = actualToken.getLexeme();
             match("idClass");
             genericoOpt();
+                extendsFrom.add(extendsFromName);
         }else if(Arrays.asList("idKeyWord_implements", "punctuationOpeningBracket").contains(actualToken.getToken())){
             //vacio
+                extendsFrom.add("Object");
         }else{
             throw new SyntacticException(actualToken, "{extends, implements, { }");
         }
+        return extendsFrom;
     }
 
     // 7 ------------------------------------------------------------------------------
     // <ImplementaA> ::= implements <ListaTipoReferencia> | e
     // Primeros: {implements, e}
     // Siguientes: { { }
-    private void implementaA() throws LexicalException, SyntacticException {
+    private ArrayList<String> implementaA() throws LexicalException, SyntacticException {
+        ArrayList<String> implements_ = new ArrayList<>();
         if(Arrays.asList("idKeyWord_implements").contains(actualToken.getToken())){
             match("idKeyWord_implements");
-            listaTipoReferencia();
+            implements_ = listaTipoReferencia();
         }else if(Arrays.asList("punctuationOpeningBracket").contains(actualToken.getToken())){
             // vacio
         }else{
             throw new SyntacticException(actualToken, "{implements, {");
         }
+        return implements_;
     }
 
     // 8 ------------------------------------------------------------------------------
     // <ExtiendeA> ::= extends <ListaTipoReferencia> | e
     // Primeros: {extends, e}
     // Siguientes: { { }
-    private void extiendeA() throws LexicalException, SyntacticException {
+    private ArrayList<String> extiendeA() throws LexicalException, SyntacticException {
+        ArrayList<String> extiendeA = new ArrayList<>();
         if(Arrays.asList("idKeyWord_extends").contains(actualToken.getToken())){
             match("idKeyWord_extends");
-            listaTipoReferencia();
+                extiendeA = listaTipoReferencia();
         }else if(Arrays.asList("punctuationOpeningBracket").contains(actualToken.getToken())){
             // vacio
+                extiendeA.add("Object");
         }else{
             throw new SyntacticException(actualToken, "{extends, { }");
         }
+        return extiendeA;
     }
 
     // 9 ------------------------------------------------------------------------------
     // <ListaTipoReferencia> ::= idClase <GenericoOpt> <ListaTipoReferenciaResto>
     // Primeros: {idClase}
     // Siguientes: -
-    private void listaTipoReferencia() throws LexicalException, SyntacticException {
+    private ArrayList<String> listaTipoReferencia() throws LexicalException, SyntacticException {
+            ArrayList<String> implementa_ = new ArrayList<>();
+            String nombre = actualToken.getLexeme();
+            implementa_.add(nombre);
         match("idClass");
-        genericoOpt();
-        listaTipoReferenciaResto();
+        genericoOpt(); // No lo contemplo semanticamente
+        implementa_.addAll(listaTipoReferenciaResto());
+        return implementa_;
     }
 
     // 10 ------------------------------------------------------------------------------
     // <ListaTipoReferenciaResto> ::= , <ListaTipoReferencia> | e
     // Primeros: { , , e }
     // Siguientes: { { }
-    private void listaTipoReferenciaResto() throws LexicalException, SyntacticException {
+    private ArrayList<String> listaTipoReferenciaResto() throws LexicalException, SyntacticException {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
             match("punctuationComma");
-            listaTipoReferencia();
+            return listaTipoReferencia();
         }else if(Arrays.asList("punctuationOpeningBracket").contains(actualToken.getToken())){
             //vacio
+            return new ArrayList<>(); //Caso base de recursion
         }else{
             throw new SyntacticException(actualToken, "{ , , { }");
         }
