@@ -1,4 +1,4 @@
-package minijava.compiler.exception;
+package minijava.compiler.exception.semantic;
 
 import minijava.compiler.semantic.Parametro;
 

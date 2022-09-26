@@ -2,6 +2,7 @@ package minijava.compiler.syntactic;
 
 import minijava.compiler.exception.*;
 import minijava.compiler.exception.lexical.LexicalException;
+import minijava.compiler.exception.semantic.SemanticException;
 import minijava.compiler.filemanager.FileManager;
 import minijava.compiler.lexical.LexicalErrorManager;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
@@ -20,8 +21,8 @@ public class SyntacticMainModule {
     // OK (Sint) > chequeo de declaracion de atributos con el mismo nombre
     // ? > agregar atributos heredados
     // ? > agregar metodos heredados
-    // ? > chequear clases heredadas
-    // ? > chequear clases implementadas
+    // OK (Check) > chequear si existen las clases heredadas
+    // OK (Check) > chequear si existen las clases implementadas
 
 
     public static void main(String[]args){
@@ -41,6 +42,8 @@ public class SyntacticMainModule {
         try {
 
             syntacticAnalyzer.inicial();
+
+            st.check();
 
         } catch (LexicalException e) {
             LexicalErrorManager.showErrorMsg(e, fileManager);

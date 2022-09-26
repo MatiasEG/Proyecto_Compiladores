@@ -1,12 +1,10 @@
 package minijava.compiler.semantic;
 
-import minijava.compiler.exception.SemanticException;
-import minijava.compiler.exception.SemanticExceptionClassInterfaceNameDuplicated;
-import minijava.compiler.exception.SemanticExceptionDuplicatedAtribute;
-import minijava.compiler.exception.SemanticExceptionDuplicatedMethod;
+import minijava.compiler.exception.semantic.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SymbolTable {
 
@@ -75,20 +73,42 @@ public class SymbolTable {
     public boolean alreadyExist(String classORinterface){
         if(clases.containsKey(classORinterface)) return true;
         if(interfaces.containsKey(classORinterface)) return true;
+        if(classORinterface.equals("Object")) return true;
 
         return false;
     }
 
-    public boolean check(){
-        boolean valido = true;
-        HashMap<String, Clase> clasesAchequear = clases;
+    public boolean check() throws SemanticExceptionExtendedClassDoesNotExist, SemanticExceptionImplementedClassDoesNotExist {
+        for(Map.Entry<String, Clase> entry: clases.entrySet()){
+            for(String s: entry.getValue().getClasesHerencia()){
+                if(!alreadyExist(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), s);
+            }
+            for(String s: entry.getValue().getClasesImplementadas()){
+                if(!alreadyExist(s)) throw new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), s);
+            }
+        }
 
-        clases.forEach((nombre,tablaClase) -> {
-            //todo implementar esto
-        });
+        for(Map.Entry<String, Interface_> entry: interfaces.entrySet()){
+            for(String s: entry.getValue().getClasesHerencia()){
+                if(!alreadyExist(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), s);
+            }
+        }
 
-        return valido;
+        return true;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

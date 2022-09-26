@@ -1,4 +1,4 @@
-package minijava.compiler.exception;
+package minijava.compiler.exception.semantic;
 
 public abstract class SemanticException extends Exception{
 

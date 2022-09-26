@@ -1,6 +1,6 @@
 package minijava.compiler.semantic;
 
-import minijava.compiler.exception.SemanticExceptionDuplicatedParameter;
+import minijava.compiler.exception.semantic.SemanticExceptionDuplicatedParameter;
 
 import java.util.ArrayList;
 import java.util.Iterator;

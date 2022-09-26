@@ -10,6 +10,10 @@ interface Interface1 extends InterfaceAux1, InterfaceAux2{
     int m3();
 }
 
+interface InterfaceAux1{}
+
+interface InterfaceAux2{}
+
 class Clase1 extends Clase2 implements Interface1{
 
     public boolean booleano1, booleano2;
@@ -25,6 +29,10 @@ class Clase1 extends Clase2 implements Interface1{
     private A a1, a2, a3;
 
     int entero1;
+
+    void reverso(int x, A a1){}
+
+    void reverso(A a1, int x){}
 
 }
 

@@ -2,6 +2,10 @@ package minijava.compiler.syntactic.analyzer;
 
 import minijava.compiler.exception.*;
 import minijava.compiler.exception.lexical.LexicalException;
+import minijava.compiler.exception.semantic.SemanticException;
+import minijava.compiler.exception.semantic.SemanticExceptionClassInterfaceNameDuplicated;
+import minijava.compiler.exception.semantic.SemanticExceptionDuplicatedMethod;
+import minijava.compiler.exception.semantic.SemanticExceptionDuplicatedParameter;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.*;
