@@ -2,8 +2,6 @@ package minijava.compiler.exception;
 
 import minijava.compiler.lexical.analyzer.Token;
 
-import java.util.List;
-
 public class SyntacticException extends Exception{
 
     private String posibleTokens;

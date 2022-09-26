@@ -1,6 +1,6 @@
 package minijava.compiler.syntactic;
 
-import minijava.compiler.exception.SyntacticException;
+import minijava.compiler.exception.*;
 import minijava.compiler.exception.lexical.LexicalException;
 import minijava.compiler.filemanager.FileManager;
 import minijava.compiler.lexical.LexicalErrorManager;
@@ -11,6 +11,18 @@ import minijava.compiler.syntactic.analyzer.SyntacticAnalyzer;
 import java.io.File;
 
 public class SyntacticMainModule {
+
+    // TODO
+    // OK (Sint) > chequeo de nombre de clases/interfaces repetidos
+    // OK (Sint) > chequeo de redefinicion de metodos en la misma clase/interface
+    // ? > chequeo de redefinicion de metodos por herencia
+    // OK (Sint) > chequeo de declaracion de parametros con el mismo nombre
+    // OK (Sint) > chequeo de declaracion de atributos con el mismo nombre
+    // ? > agregar atributos heredados
+    // ? > agregar metodos heredados
+    // ? > chequear clases heredadas
+    // ? > chequear clases implementadas
+
 
     public static void main(String[]args){
 
@@ -36,11 +48,16 @@ public class SyntacticMainModule {
             error = true;
             System.out.println("[Error:"+e.getErrorToken().getLexeme()+"|"+e.getRow()+"]");
             System.out.println(e.getMessage());
+        } catch (SemanticException e) {
+            error = true;
+            System.out.println("[Error:"+e.getLexeme()+"|"+e.getRow()+"]");
+            System.out.println(e.getMessage());
         }
 
-        if(!error) System.out.println("[SinErrores]");
-
-        st.imprimirTablas();
+        if(!error) {
+            System.out.println("[SinErrores]");
+            st.imprimirTablas();
+        }
 
     }
 }
