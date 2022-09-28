@@ -1,4 +1,4 @@
-package minijava.compiler.semantic;
+package minijava.compiler.semantic.tables;
 
 public class Atributo extends Variable{
 
@@ -11,9 +11,8 @@ public class Atributo extends Variable{
     public static Atributo clone(Atributo atributo){
         Atributo clone = new Atributo();
         clone.setTipo(atributo.getTipo());
-        clone.setNombre(atributo.getNombre());
+        clone.setVarToken(atributo.getVarToken());
         clone.setVisibilidad(atributo.isVisible());
-        clone.setLineaDeclaracion(atributo.getLineaDeclaracion());
         return clone;
     }
 

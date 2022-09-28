@@ -1,19 +1,22 @@
-package minijava.compiler.semantic;
+package minijava.compiler.semantic.tables;
+
+import minijava.compiler.lexical.analyzer.Token;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Clase extends ClaseInterface {
 
     private ArrayList<String> implement;
     private ArrayList<Atributo> atributos;
 
-    public Clase(String nombre, int lineaDeclaracion){
+    public Clase(Token claseToken){
         extendsFrom = new ArrayList<>();
         implement = new ArrayList<>();
         atributos = new ArrayList<>();
         metodos = new ArrayList<>();
-        this.nombre = nombre;
-        this.lineaDeclaracion = lineaDeclaracion;
+        metodoHashMap = new HashMap<>();
+        this.claseOrinterfaceToken= claseToken;
     }
 
     public void setImplement(ArrayList<String> implement){

@@ -1,6 +1,6 @@
 package minijava.compiler.exception.semantic;
 
-import minijava.compiler.semantic.Parametro;
+import minijava.compiler.semantic.tables.Parametro;
 
 public class SemanticExceptionDuplicatedParameter extends SemanticException{
 

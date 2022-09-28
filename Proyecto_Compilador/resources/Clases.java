@@ -1,4 +1,8 @@
 
+interface InterfaceAux1{}
+
+interface InterfaceAux2{}
+
 interface Interface1 extends InterfaceAux1, InterfaceAux2{
 
     A m2(char c);
@@ -10,11 +14,12 @@ interface Interface1 extends InterfaceAux1, InterfaceAux2{
     int m3();
 }
 
-interface InterfaceAux1{}
+class Clase1{
 
-interface InterfaceAux2{}
+    static void main(){}
+}
 
-class Clase1 extends Clase2 implements Interface1{
+class Clase2 extends Clase1 implements Interface1{
 
     public boolean booleano1, booleano2;
 
@@ -35,5 +40,3 @@ class Clase1 extends Clase2 implements Interface1{
     void reverso(A a1, int x){}
 
 }
-
-class Clase2{}

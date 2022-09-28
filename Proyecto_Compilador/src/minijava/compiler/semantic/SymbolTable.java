@@ -1,6 +1,8 @@
 package minijava.compiler.semantic;
 
 import minijava.compiler.exception.semantic.*;
+import minijava.compiler.lexical.analyzer.Token;
+import minijava.compiler.semantic.tables.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +38,7 @@ public class SymbolTable {
     }
 
     public void insertarClase() throws SemanticExceptionClassInterfaceNameDuplicated {
-        if(!alreadyExist(claseActual.getNombre())){
+        if(alreadyExist(claseActual.getNombre()) == null){
             clases.put(claseActual.getNombre(), (Clase) claseActual);
         }else{
             throw new SemanticExceptionClassInterfaceNameDuplicated("Nombre de clase repetido.", claseActual);
@@ -44,7 +46,7 @@ public class SymbolTable {
     }
 
     public void insertarInterface() throws SemanticExceptionClassInterfaceNameDuplicated {
-        if(!alreadyExist(claseActual.getNombre())){
+        if(alreadyExist(claseActual.getNombre()) == null){
             interfaces.put(claseActual.getNombre(), (Interface_) claseActual);
         }else{
             throw new SemanticExceptionClassInterfaceNameDuplicated("Nombre de interfaz repetido.", claseActual);
@@ -70,33 +72,93 @@ public class SymbolTable {
         }
     }
 
-    public boolean alreadyExist(String classORinterface){
-        if(clases.containsKey(classORinterface)) return true;
-        if(interfaces.containsKey(classORinterface)) return true;
-        if(classORinterface.equals("Object")) return true;
+    public ClaseInterface alreadyExist(String classORinterface){
+        if(clases.containsKey(classORinterface)) return clases.get(classORinterface);
+        if(interfaces.containsKey(classORinterface)) return interfaces.get(classORinterface);
+        if(classORinterface.equals("Object")) return new Clase(null);
 
-        return false;
+        return null;
     }
 
-    public boolean check() throws SemanticExceptionExtendedClassDoesNotExist, SemanticExceptionImplementedClassDoesNotExist {
+    public boolean check() throws SemanticException {
+        Clase object = new Clase(new Token("Object", "Object", 0));
+        object.setMetodos(new ArrayList<>());
+        object.setAtributos(new ArrayList<>());
+        object.setImplement(new ArrayList<>());
+        clases.put(object.getNombre(), object);
+
+        int main = 0;
         for(Map.Entry<String, Clase> entry: clases.entrySet()){
             for(String s: entry.getValue().getClasesHerencia()){
-                if(!alreadyExist(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), s);
+                //todo revisar la herencia me da problemas con el main
+                checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
+                if(!clases.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), s);
+                if(herenciaCircular(entry.getValue(), s)) throw new SemanticExceptionCircleExtend(entry.getValue(), clases.get(s));
+                main += checkMainYConstructor(main, entry.getValue(), entry.getValue().getMetodos());
             }
+
             for(String s: entry.getValue().getClasesImplementadas()){
-                if(!alreadyExist(s)) throw new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), s);
+                if(!interfaces.containsKey(s)) throw new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), s);
+
             }
         }
 
+        if(main == 0) throw new SemanticExceptionMainDoesNotExist();
+
         for(Map.Entry<String, Interface_> entry: interfaces.entrySet()){
             for(String s: entry.getValue().getClasesHerencia()){
-                if(!alreadyExist(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), s);
+                if(!interfaces.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), s);
             }
         }
 
         return true;
     }
 
+    private int checkMainYConstructor(int main, Clase clase, ArrayList<Metodo> metodos) throws SemanticException {
+        boolean constructorBasico = false;
+
+        for(Metodo m: metodos){
+            if(m.getNombre().equals("main") && main == 0 && m.getTipo().getLexemeType().equals("void") && m.isStatic()){
+                main++;
+            }else if(m.getNombre().equals("main") && main == 1 && m.getTipo().getLexemeType().equals("void") && m.isStatic()){
+                throw new SemanticExceptionDuplicatedMain(m, clase);
+            }else if(m.getNombre().equals("main")){
+                throw new SemanticExceptionWrongDefinedMain(m);
+            }else if(m.getNombre().equals(m.getTipo().getLexemeType()) && m.getParametros().size() == 0){
+                constructorBasico = true;
+            }
+        }
+
+        if(!constructorBasico){
+            Metodo constructorBase = new Metodo();
+            constructorBase.setMetodoToken(new Token("idClass", clase.getNombre(), 0));
+            constructorBase.setClaseDefinido(clase.getNombre());
+            Tipo tipoConstructor = new Tipo(new Token("idClass", clase.getNombre(), 0));
+            constructorBase.setTipo(tipoConstructor);
+            clase.addMetodo(constructorBase);
+        }
+
+        return main;
+    }
+
+    public void checkSignaturaMetodosRedefinidosPorHerencia(ClaseInterface descendiente, ClaseInterface padre) throws SemanticException {
+        for(Metodo m: padre.getMetodos()){
+            if(!descendiente.getMetodoHashMap().containsKey(m.getMapKey())) {
+//                Metodo metDec = new Metodo();
+//                metDec.setMetodoToken(new Token(m.getMetodoToken().getToken(), m.getMetodoToken().getLexeme(), 0));
+//                metDec.setStatic(m.isStatic());
+//                metDec.setTipo(m.getTipo());
+//                metDec.setClaseDefinido(descendiente.getNombre());
+                descendiente.addMetodo(padre.getMetodoHashMap().get(m.getMapKey()));
+            }else if(descendiente.getMetodoHashMap().containsKey(m.getMapKey())){
+                if(!m.equals(descendiente.getMetodoHashMap().get(m.getMapKey()))) throw new SemanticExceptionMethodNotRedefined(m, descendiente);
+            }
+        }
+    }
+
+    private boolean herenciaCircular(Clase clase, String nombreHerencia){
+        return clases.get(nombreHerencia).getClasesHerencia().contains(clase.getNombre());
+    }
 
 
 

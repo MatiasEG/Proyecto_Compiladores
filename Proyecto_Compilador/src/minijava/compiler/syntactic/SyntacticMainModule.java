@@ -21,9 +21,15 @@ public class SyntacticMainModule {
     // OK (Sint) > chequeo de declaracion de atributos con el mismo nombre
     // ? > agregar atributos heredados
     // ? > agregar metodos heredados
-    // OK (Check) > chequear si existen las clases heredadas
-    // OK (Check) > chequear si existen las clases implementadas
-
+    // OK (Check) > chequear si existen las clases heredadas (solo ver mapeo de clases)
+    // OK (Check) > chequear si existen las clases implementadas (solo ver mapeo de interfaces)
+    // OK > chequear si no tiene herencia circular
+    // OK > agregar constructor por defecto a las clases         TODO -> en donde seteo la linea del constructor base si lo agrego?
+    //                                                           TODO -> los constructores son static?
+    // OK > chequear que al menos una clase tiene metodo main       TODO -> si no existe el main que muetro en el error?
+    // OK > las clases heredan de Object las interfaces no
+    //                                                              TODO -> como hay herencia las clases pueden heredar el main, que hago?
+    //                                                              TODO -> que pasa si heredo de dos clases, pero
 
     public static void main(String[]args){
 

@@ -1,6 +1,6 @@
 package minijava.compiler.exception.semantic;
 
-import minijava.compiler.semantic.ClaseInterface;
+import minijava.compiler.semantic.tables.ClaseInterface;
 
 public class SemanticExceptionImplementedClassDoesNotExist extends SemanticException{
 

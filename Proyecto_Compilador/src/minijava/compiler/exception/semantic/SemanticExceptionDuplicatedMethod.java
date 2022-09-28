@@ -1,6 +1,6 @@
 package minijava.compiler.exception.semantic;
 
-import minijava.compiler.semantic.Metodo;
+import minijava.compiler.semantic.tables.Metodo;
 
 public class SemanticExceptionDuplicatedMethod extends SemanticException{
 

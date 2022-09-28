@@ -1,4 +1,4 @@
-package minijava.compiler.semantic;
+package minijava.compiler.semantic.tables;
 
 public class Parametro extends Variable{
 

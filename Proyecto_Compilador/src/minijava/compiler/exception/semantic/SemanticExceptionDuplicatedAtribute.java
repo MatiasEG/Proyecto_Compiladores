@@ -1,6 +1,6 @@
 package minijava.compiler.exception.semantic;
 
-import minijava.compiler.semantic.Atributo;
+import minijava.compiler.semantic.tables.Atributo;
 
 public class SemanticExceptionDuplicatedAtribute extends SemanticException{
 
