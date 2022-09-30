@@ -24,13 +24,10 @@ public class SymbolTable {
     private ClaseInterface claseActual;
     private HashMap<String, Clase> clases;
     private HashMap<String, Interface_> interfaces;
-    private ArrayList<SemanticException> exceptions;
 
     public SymbolTable(){
         clases = new HashMap<>();
         interfaces = new HashMap<>();
-        exceptions = new ArrayList<>();
-        createConcreteClasses();
     }
 
     public void setClaseActual(Clase clase_){
@@ -50,8 +47,6 @@ public class SymbolTable {
     public void actualClassImplements(ArrayList<Token> implement){
         ((Clase) claseActual).setImplement(implement);
     }
-
-    public ArrayList<SemanticException> getExceptions(){ return exceptions; }
 
     public void insertarClase() throws SemanticException{
         if(alreadyExist(claseActual.getNombre()) == null){
@@ -91,18 +86,17 @@ public class SymbolTable {
     public ClaseInterface alreadyExist(String classORinterface){
         if(clases.containsKey(classORinterface)) return clases.get(classORinterface);
         if(interfaces.containsKey(classORinterface)) return interfaces.get(classORinterface);
-        if(classORinterface.equals("Object")) return new Clase(null);
 
         return null;
     }
 
-    private void createConcreteClasses() {
+    public void createConcreteClasses() throws SemanticException {
         createObjectClass();
         createStringClass();
         createSystemClass();
     }
 
-    private void createObjectClass() {
+    private void createObjectClass() throws SemanticException{
         Parametro parametroIf;
         Clase object = new Clase(new Token("idClass", "Object", 0));
 
@@ -252,17 +246,17 @@ public class SymbolTable {
         system.addMetodo(printSln);
     }
 
-    public boolean check() throws SemanticException{
+    public void check() throws SemanticException{
         int main = 0;
         String s;
         for(Map.Entry<String, Clase> entry: clases.entrySet()){
+
             for(Token t: entry.getValue().getClasesHerencia()){
                 s = t.getLexeme();
-                //todo arreglar el then, porque entro si no existe s y despues se lo pido igual
                 if(!clases.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
                 main += checkMainYConstructor(main, entry.getValue(), entry.getValue().getMetodos());
-                if(herenciaCircular(entry.getValue(), s)) throw new SemanticExceptionCircleExtend(entry.getValue(), clases.get(s));
-
+                if(herenciaCircular(entry.getValue(), clases.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
+                checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
             }
 
             for(Token t: entry.getValue().getClasesImplementadas()){
@@ -270,6 +264,7 @@ public class SymbolTable {
                 if(!interfaces.containsKey(s)) throw new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), s);
                 checkMetodosImplementados(entry.getValue(), interfaces.get(s));
             }
+
         }
 
         if(main == 0) throw new SemanticExceptionMethodMainDoesNotExist();
@@ -279,17 +274,17 @@ public class SymbolTable {
             for(Token t: entry.getValue().getClasesHerencia()){
                 s = t.getLexeme();
                 if(!interfaces.containsKey(s) && !s.equals("Object")) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
+                checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
             }
         }
 
-        return true;
     }
 
     private int checkMainYConstructor(int main, Clase clase, ArrayList<Metodo> metodos) throws SemanticException{
         boolean constructorBasico = false;
 
         for(Metodo m: metodos){
-            if(m.getLexeme().equals("main") && main == 0 && m.getTipo().getLexemeType().equals("void") && m.isStatic()){
+            if(m.getLexeme().equals("main") && main == 0 && m.getTipo().getLexemeType().equals("void") && m.isStatic() && m.getParametros().size()==0){
                 main++;
             }else if(m.getLexeme().equals("main") && main == 1 && m.getTipo().getLexemeType().equals("void") && m.isStatic()){
                 throw new SemanticExceptionDuplicatedMain(m, clase);
@@ -312,8 +307,13 @@ public class SymbolTable {
         return main;
     }
 
-    private boolean herenciaCircular(Clase clase, String nombreHerencia) {
-        return clases.get(nombreHerencia).getClasesHerencia().contains(clase.getNombre());
+    private boolean herenciaCircular(ClaseInterface claseInterfaceDesc, ClaseInterface claseInterfacePadre) {
+        boolean resultado = false;
+        for(Token herenciaDelPadre: claseInterfacePadre.getClasesHerencia()){
+            if(herenciaDelPadre.getLexeme().equals(claseInterfaceDesc.getNombre())) resultado = true;
+            if(!resultado) resultado = herenciaCircular(claseInterfaceDesc, clases.get(alreadyExist(herenciaDelPadre.getLexeme()).getNombre()));
+        }
+        return resultado;
     }
 
     private void checkMetodosImplementados(Clase claseImplementa, Interface_ interface_) throws SemanticException{
@@ -340,7 +340,6 @@ public class SymbolTable {
         for(Map.Entry<String, Clase> entry: clases.entrySet()){
             for(Token t: entry.getValue().getClasesHerencia()){
                 s = t.getLexeme();
-                checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
                 checkAtributosHeredados(entry.getValue(), clases.get(s));
             }
 
@@ -354,7 +353,6 @@ public class SymbolTable {
         for(Map.Entry<String, Interface_> entry: interfaces.entrySet()){
             for(Token t: entry.getValue().getClasesHerencia()){
                 s = t.getLexeme();
-                checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
                 if(clases.containsKey(s) && !s.equals("Object")) throw new SemanticExceptionInterfaceExtendsClase(interfaces.get(entry.getValue()));
             }
         }
@@ -362,7 +360,7 @@ public class SymbolTable {
 
     private void checkSignaturaMetodosRedefinidosPorHerencia(ClaseInterface descendiente, ClaseInterface padre) throws SemanticException{
         for(Metodo m: padre.getMetodos()){
-            if(!descendiente.getMetodoHashMap().containsKey(m.getMapKey())) {
+            if(!descendiente.getMetodoHashMap().containsKey(m.getMapKey()) && !m.getTipo().getLexemeType().equals(m.getLexeme())) {
                 descendiente.addMetodo(padre.getMetodoHashMap().get(m.getMapKey()));
             }else if(descendiente.getMetodoHashMap().containsKey(m.getMapKey())){
                 if(!m.equals(descendiente.getMetodoHashMap().get(m.getMapKey()))) throw new SemanticExceptionMethodNotRedefined(descendiente.getMetodoHashMap().get(m.getMapKey()), descendiente);

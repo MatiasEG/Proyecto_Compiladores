@@ -9,7 +9,7 @@ public class SemanticExceptionExtendedClassDoesNotExist extends SemanticExceptio
     private ClaseInterface claseInterface;
 
     public SemanticExceptionExtendedClassDoesNotExist(ClaseInterface claseInterface, Token errorClass){
-        super("La clase \'"+errorClass+"\' de la que busca heredar la clase \'"+claseInterface.getNombre()+"\' no esta definida en el codigo.", errorClass);
+        super("La clase \'"+errorClass.getLexeme()+"\' de la que busca heredar la clase \'"+claseInterface.getNombre()+"\' no esta definida en el codigo.", errorClass);
         this.claseInterface = claseInterface;
     }
 }

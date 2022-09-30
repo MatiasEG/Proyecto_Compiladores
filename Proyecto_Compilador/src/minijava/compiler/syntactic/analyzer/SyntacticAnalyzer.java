@@ -2,6 +2,7 @@ package minijava.compiler.syntactic.analyzer;
 
 import minijava.compiler.exception.*;
 import minijava.compiler.exception.lexical.LexicalException;
+import minijava.compiler.exception.semantic.SemanticException;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.*;
@@ -33,7 +34,7 @@ public class SyntacticAnalyzer {
     // <Inicial> ::= <ListaClases>
     // Primeros: {class, interface, e}
     // Siguientes: -
-    public void inicial() throws LexicalException, SyntacticException {
+    public void inicial() throws LexicalException, SyntacticException, SemanticException {
         actualToken = this.lexicalAnalyzer.nextToken();
         if(Arrays.asList("idKeyWord_class", "idKeyWord_interface").contains(actualToken.getToken())){
             listaClases();
@@ -49,7 +50,7 @@ public class SyntacticAnalyzer {
     // <ListaClases> ::= <Clase> <ListaClases> | e
     // Primeros: {class, interface, e}
     // Siguientes: { e }
-    private void listaClases() throws LexicalException, SyntacticException {
+    private void listaClases() throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("idKeyWord_class", "idKeyWord_interface").contains(actualToken.getToken())) {
             clase();
             listaClases();
@@ -64,7 +65,7 @@ public class SyntacticAnalyzer {
     // <Clase> ::= <ClaseConcreta> | <Interface>
     // Primeros: {class, interface}
     // Siguientes: -
-    private void clase() throws LexicalException, SyntacticException {
+    private void clase() throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("idKeyWord_class").contains(actualToken.getToken())){
             claseConcreta();
         }else if(Arrays.asList("idKeyWord_interface").contains(actualToken.getToken())){
@@ -78,7 +79,7 @@ public class SyntacticAnalyzer {
     // <ClaseConcreta> ::= class idClase <GenericoOpt> <HeredaDe> <ImplementaA> { <ListaMiembros> }
     // Primeros: {class}
     // Siguientes: -
-    private void claseConcreta() throws LexicalException, SyntacticException {
+    private void claseConcreta() throws LexicalException, SyntacticException, SemanticException {
         match("idKeyWord_class");
             Token nombreClase = actualToken;
         match("idClass");
@@ -99,7 +100,7 @@ public class SyntacticAnalyzer {
     // <Interface> ::= interface idClase <GenericoOpt> <ExtiendeA> { <ListaEncabezados> }
     // Primeros: {interface}
     // Siguientes: -
-    private void interface_() throws LexicalException, SyntacticException{
+    private void interface_() throws LexicalException, SyntacticException, SemanticException {
         match("idKeyWord_interface");
             Token nombreInterface = actualToken;
         match("idClass");
@@ -208,7 +209,7 @@ public class SyntacticAnalyzer {
     // <ListaMiembros> ::= <Miembro> <ListaMiembros> | e
     // Primeros: {public, private, idClase, boolean, char, int, void, static, e}
     // Siguientes: { } }
-    private void listaMiembros() throws SyntacticException, LexicalException{
+    private void listaMiembros() throws SyntacticException, LexicalException, SemanticException {
         if(Arrays.asList("idKeyWord_public", "idKeyWord_private", "idClass",
                 "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int",
                 "idKeyWord_void", "idKeyWord_static").contains(actualToken.getToken())){
@@ -225,7 +226,7 @@ public class SyntacticAnalyzer {
     // <ListaEncabezados> ::= <EncabezadoMetodo> ; <ListaEncabezados> | e
     // Primeros: {static, void, boolean, char, int, idClase, e}
     // Siguientes: { } }
-    private void listaEncabezados() throws LexicalException, SyntacticException{
+    private void listaEncabezados() throws LexicalException, SyntacticException, SemanticException {
         if (Arrays.asList("idKeyWord_static", "idKeyWord_void", "idKeyWord_boolean",
                 "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())) {
             encabezadoMetodo();
@@ -242,7 +243,7 @@ public class SyntacticAnalyzer {
     // <EncabezadoMetodo> ::= <EstaticoOpt> <TipoMetodo> idMetVar <ArgsFormales>
     // Primeros: {static, void, boolean, char, int, idClase}
     // Siguientes: -
-    private void encabezadoMetodo() throws LexicalException, SyntacticException{
+    private void encabezadoMetodo() throws LexicalException, SyntacticException, SemanticException {
         Metodo metodo = new Metodo();
         metodo.setClaseDefinido(st.getActualClassInterfaceName());
         estaticoOpt(metodo);
@@ -257,7 +258,7 @@ public class SyntacticAnalyzer {
     // <Miembro> ::= <Visibilidad> <Atributo> | <ConstructorOAtrMet> | <MetodoNoEstaticoVoid> | <MetodoEstatico>
     // Primeros: {public, private, idClase, boolean, char, int, void, static}
     // Siguientes: -
-    private void miembro() throws SyntacticException, LexicalException {
+    private void miembro() throws SyntacticException, LexicalException, SemanticException {
         if(Arrays.asList("idKeyWord_private", "idKeyWord_public").contains(actualToken.getToken())) {
             Atributo atributo = new Atributo();
             atributo.setVisibilidadHerencia(true);
@@ -278,7 +279,7 @@ public class SyntacticAnalyzer {
     // <ConstructorOAtrMet> ::= idClase <ConstructorOAtrMetResto> | <TipoPrimitivo> <ConstructorOAtrMetResto> | <AccesoMetodoEstatico>
     // Primeros: {idClase, boolean, char, int, . }
     // Siguientes: -
-    private void constructorOAtrMet() throws LexicalException, SyntacticException {
+    private void constructorOAtrMet() throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("idClass").contains(actualToken.getToken())){
                 Tipo tipo = new Tipo(actualToken);
             match("idClass");
@@ -295,7 +296,7 @@ public class SyntacticAnalyzer {
     // <ConstructorOAtrMetResto> ::= <ArgsFormales> <Bloque> | idMetVar <AtributoOMetodo> | idMetVar <AtributoOMetodo>
     // Primeros: { ( , idMetVar, < }
     // Siguientes: -
-    private void constructorOAtrMetResto(Tipo tipo) throws LexicalException, SyntacticException{
+    private void constructorOAtrMetResto(Tipo tipo) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
                 Metodo metodo = new Metodo();
                 metodo.setClaseDefinido(st.getActualClassInterfaceName());
@@ -317,7 +318,7 @@ public class SyntacticAnalyzer {
     // <AtributoOMetodo> ::= <ArgsFormales> <Bloque> | <ListaDecAtrs> ;
     // Primeros: { ( , , , ; , e }
     // Siguientes: {public, private, idClase, boolean, char, int, void, static, } }
-    public void atributoOMetodo(Tipo tipo, Token nombreMetVar) throws LexicalException, SyntacticException {
+    public void atributoOMetodo(Tipo tipo, Token nombreMetVar) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
             Metodo metodo = new Metodo();
             metodo.setClaseDefinido(st.getActualClassInterfaceName());
@@ -343,7 +344,7 @@ public class SyntacticAnalyzer {
     // <Atributo> ::= <Tipo> idMetVar <ListaDecAtrs> ;
     // Primeros: {boolean, char, int, idClase}
     // Siguientes: -
-    private void atributo(Atributo atributo) throws LexicalException, SyntacticException {
+    private void atributo(Atributo atributo) throws LexicalException, SyntacticException, SemanticException {
         Tipo tipo = tipo();
             atributo.setTipo(tipo);
             String name = actualToken.getLexeme();
@@ -358,7 +359,7 @@ public class SyntacticAnalyzer {
     // <MetodoEstatico> ::= static <TipoMetodo> idMetVar <ArgsFormales> <Bloque>
     // Primeros: {static}
     // Siguientes: -
-    private void metodoEstatico() throws LexicalException, SyntacticException {
+    private void metodoEstatico() throws LexicalException, SyntacticException, SemanticException {
             Metodo metodo = new Metodo();
             metodo.setClaseDefinido(st.getActualClassInterfaceName());
             metodo.setStatic(true);
@@ -375,7 +376,7 @@ public class SyntacticAnalyzer {
     // <MetodoNoEstaticoVoid> ::= void idMetVar <ArgsFormales> <Bloque>
     // Primeros: {void}
     // Siguientes: -
-    private void metodoNoEstaticoVoid() throws LexicalException, SyntacticException {
+    private void metodoNoEstaticoVoid() throws LexicalException, SyntacticException, SemanticException {
             Metodo metodo = new Metodo();
             metodo.setClaseDefinido(st.getActualClassInterfaceName());
             metodo.setStatic(false);
@@ -393,7 +394,7 @@ public class SyntacticAnalyzer {
     // <ListaDecAtrs> ::= , idMetVar <ListaDecAtrs> | e
     // Primeros: { , , e }
     // Siguientes: { ; , = }
-    private void listaDecAtrs(Atributo atributo) throws LexicalException, SyntacticException {
+    private void listaDecAtrs(Atributo atributo) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())) {
             match("punctuationComma");
                 atributo.setVarToken(actualToken);

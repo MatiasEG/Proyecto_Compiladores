@@ -28,21 +28,23 @@ public class SyntacticMainModule {
     // OK > chequear que al menos una clase tiene metodo main
     // OK > las clases heredan de Object las interfaces no
 
+    // TODO que hago con los constructores(los descarto) y el main que heredo en otras clases(los heredo)?
 
-    // TODO puedo definir a los constructores como metodos, que pongo en el static?
-    // TODO que hago con los constructores y el main que heredo en otras clases?
     // TODO tengo que chequear herencia circular entre varias clases (mas de dos)?
     // TODO TESTEAR que pasa si heredo el metodo de una clase A que tengo que implementar de una interface B?
     // TODO las clases e interfaces extienden de Object por default?
+    // TODO consideraciones: solo permito definir un metodo main si se declara de la siguiente manera: static void main(){}
+
+    // TODO los atributos heredados que fueron declarados nuevamente, aparecen ocultos en la clase? o no los agrego a la tabla?
 
     public static void main(String[]args){
 
 //        FileManager fileManager = new FileManager(new File("resources/Clases.java"));
-        FileManager fileManager = new FileManager(new File("resources/conErrores/semError02.java"));
-//        FileManager fileManager = new FileManager(new File(args[0]));
+//        FileManager fileManager = new FileManager(new File("resources/conErrores/errExtiendoImplemento.java"));
+        FileManager fileManager = new FileManager(new File(args[0]));
 
 
-        SymbolTable st = new SymbolTable(); //TODO poner todos los errores en una lista -> multideteccion y ademas resuelvo este error
+        SymbolTable st = new SymbolTable();
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
 
@@ -51,6 +53,7 @@ public class SyntacticMainModule {
         boolean error = false;
 
         try {
+            st.createConcreteClasses();
 
             syntacticAnalyzer.inicial();
 
@@ -65,15 +68,10 @@ public class SyntacticMainModule {
             error = true;
             System.out.println("[Error:"+e.getErrorToken().getLexeme()+"|"+e.getRow()+"]");
             System.out.println(e.getMessage());
-        }
-
-        ArrayList<SemanticException> exceptions = st.getExceptions();
-        if(exceptions.size()!=0){
+        } catch (SemanticException e) {
             error = true;
-            for(SemanticException e: exceptions){
-                System.out.println("[Error:"+e.getLexeme()+"|"+e.getRow()+"]");
-                System.out.println(e.getMessage());
-            }
+            System.out.println("[Error:"+e.getLexeme()+"|"+e.getRow()+"]");
+            System.out.println(e.getMessage());
         }
 
         if(!error) {
