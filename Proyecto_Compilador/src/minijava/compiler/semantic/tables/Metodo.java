@@ -1,6 +1,5 @@
 package minijava.compiler.semantic.tables;
 
-import minijava.compiler.exception.semantic.duplicated.SemanticExceptionDuplicatedParameter;
 import minijava.compiler.lexical.analyzer.Token;
 
 import java.util.ArrayList;

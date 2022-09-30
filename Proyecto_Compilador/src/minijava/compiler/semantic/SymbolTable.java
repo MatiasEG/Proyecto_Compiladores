@@ -244,6 +244,8 @@ public class SymbolTable {
             sln.setTipo(new Tipo(new Token("idClass", "String", 0)));
         if((parametroIf = printSln.addParametro(sln)) != null) throw new SemanticExceptionDuplicatedParameter(parametroIf);
         system.addMetodo(printSln);
+
+        clases.put(system.getNombre(), system);
     }
 
     public void check() throws SemanticException{
@@ -255,13 +257,12 @@ public class SymbolTable {
                 s = t.getLexeme();
                 if(!clases.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
                 main += checkMainYConstructor(main, entry.getValue(), entry.getValue().getMetodos());
-                if(herenciaCircular(entry.getValue(), clases.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
                 checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
             }
 
             for(Token t: entry.getValue().getClasesImplementadas()){
                 s = t.getLexeme();
-                if(!interfaces.containsKey(s)) throw new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), s);
+                if(!interfaces.containsKey(s)) throw new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), t);
                 checkMetodosImplementados(entry.getValue(), interfaces.get(s));
             }
 
@@ -341,6 +342,7 @@ public class SymbolTable {
             for(Token t: entry.getValue().getClasesHerencia()){
                 s = t.getLexeme();
                 checkAtributosHeredados(entry.getValue(), clases.get(s));
+                if(herenciaCircular(entry.getValue(), clases.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
             }
 
             for(Token t: entry.getValue().getClasesImplementadas()){
@@ -354,6 +356,7 @@ public class SymbolTable {
             for(Token t: entry.getValue().getClasesHerencia()){
                 s = t.getLexeme();
                 if(clases.containsKey(s) && !s.equals("Object")) throw new SemanticExceptionInterfaceExtendsClase(interfaces.get(entry.getValue()));
+                if(herenciaCircular(entry.getValue(), clases.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
             }
         }
     }

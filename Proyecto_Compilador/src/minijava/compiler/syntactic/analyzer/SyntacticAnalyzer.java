@@ -3,6 +3,7 @@ package minijava.compiler.syntactic.analyzer;
 import minijava.compiler.exception.*;
 import minijava.compiler.exception.lexical.LexicalException;
 import minijava.compiler.exception.semantic.SemanticException;
+import minijava.compiler.exception.semantic.duplicated.SemanticExceptionDuplicatedParameter;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.*;
@@ -552,7 +553,7 @@ public class SyntacticAnalyzer {
     // <ArgsFormales> ::= ( <ListaArgsFormalesOpt> )
     // Primeros: { ( }
     // Siguientes: -
-    private void argsFormales(Metodo metodo) throws LexicalException, SyntacticException {
+    private void argsFormales(Metodo metodo) throws LexicalException, SyntacticException, SemanticException {
         match("punctuationOpeningParenthesis");
         listaArgsFormalesOpt(metodo);
         match("punctuationClosingParenthesis");
@@ -562,7 +563,7 @@ public class SyntacticAnalyzer {
     // <ListaArgsFormalesOpt> ::= <ListaArgsFormales> | e
     // Primeros: {boolean, char, int, idClase, e}
     // Siguientes: { ) }
-    private void listaArgsFormalesOpt(Metodo metodo) throws SyntacticException, LexicalException {
+    private void listaArgsFormalesOpt(Metodo metodo) throws SyntacticException, LexicalException, SemanticException {
         if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
             listaArgsFormales(metodo);
         }else if(Arrays.asList("punctuationClosingParenthesis").contains(actualToken.getToken())){
@@ -576,7 +577,7 @@ public class SyntacticAnalyzer {
     // <ListaArgsFormales> ::= <ArgFormal> <ListaArgsFormalesResto>
     // Primeros: {boolean, char, int, idClase}
     // Siguientes: -
-    private void listaArgsFormales(Metodo metodo) throws SyntacticException, LexicalException {
+    private void listaArgsFormales(Metodo metodo) throws SyntacticException, LexicalException, SemanticException {
         argFormal(metodo);
         listaArgsFormalesResto(metodo);
     }
@@ -585,7 +586,7 @@ public class SyntacticAnalyzer {
     // <ListaArgsFormalesResto> ::= , <ListaArgsFormales> | e
     // Primeros: { , , e }
     // Siguientes: { ) }
-    private void listaArgsFormalesResto(Metodo metodo) throws SyntacticException, LexicalException {
+    private void listaArgsFormalesResto(Metodo metodo) throws SyntacticException, LexicalException, SemanticException {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
             match("punctuationComma");
             listaArgsFormales(metodo);
@@ -600,12 +601,12 @@ public class SyntacticAnalyzer {
     // <ArgFormal> ::= <Tipo> idMetVar
     // Primeros: {boolean, char, int, idClase}
     // Siguientes: -
-    private void argFormal(Metodo metodo) throws LexicalException, SyntacticException {
+    private void argFormal(Metodo metodo) throws LexicalException, SyntacticException, SemanticException {
             Parametro parametro = new Parametro();
             parametro.setTipo(tipo());
             parametro.setVarToken(actualToken);
             parametro.setMetodo(metodo);
-            metodo.addParametro(parametro);
+            if(metodo.addParametro(parametro) != null) throw new SemanticExceptionDuplicatedParameter(parametro);
         match("idMetVar");
     }
 
