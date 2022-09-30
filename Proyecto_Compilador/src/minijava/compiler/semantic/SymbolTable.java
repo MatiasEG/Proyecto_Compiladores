@@ -260,15 +260,18 @@ public class SymbolTable {
                 s = t.getLexeme();
                 //todo arreglar el then, porque entro si no existe s y despues se lo pido igual
                 if(!clases.containsKey(s)) exceptions.add(new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t));
-                main += checkMainYConstructor(main, entry.getValue(), entry.getValue().getMetodos());
-                if(herenciaCircular(entry.getValue(), s)) exceptions.add(new SemanticExceptionCircleExtend(entry.getValue(), clases.get(s)));
-                //todo chequear si las clases que heredan/implementan estan definidas en clases
+                else{
+                    main += checkMainYConstructor(main, entry.getValue(), entry.getValue().getMetodos());
+                    if(herenciaCircular(entry.getValue(), s)) exceptions.add(new SemanticExceptionCircleExtend(entry.getValue(), clases.get(s)));
+                }
             }
 
             for(Token t: entry.getValue().getClasesImplementadas()){
                 s = t.getLexeme();
                 if(!interfaces.containsKey(s)) exceptions.add(new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), s));
-                checkMetodosImplementados(entry.getValue(), interfaces.get(s));
+                else{
+                    checkMetodosImplementados(entry.getValue(), interfaces.get(s));
+                }
             }
         }
 
@@ -313,7 +316,6 @@ public class SymbolTable {
     }
 
     private boolean herenciaCircular(Clase clase, String nombreHerencia){
-        System.out.println("ROMPIDO//////////"+clase.getNombre());
         return clases.get(nombreHerencia).getClasesHerencia().contains(clase.getNombre());
     }
 

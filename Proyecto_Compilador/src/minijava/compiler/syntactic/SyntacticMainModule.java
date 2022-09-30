@@ -32,9 +32,8 @@ public class SyntacticMainModule {
     // TODO puedo definir a los constructores como metodos, que pongo en el static?
     // TODO que hago con los constructores y el main que heredo en otras clases?
     // TODO tengo que chequear herencia circular entre varias clases (mas de dos)?
-    // TODO que pasa si heredo el metodo de una clase A que tengo que implementar de una interface B?
-    // TODO las interfaces extienden de Object por default?
-    // TODO revisar que pasa si heredo de una clase el mismo metodo que tengo que implementar de una interfaz
+    // TODO TESTEAR que pasa si heredo el metodo de una clase A que tengo que implementar de una interface B?
+    // TODO las clases e interfaces extienden de Object por default?
 
     public static void main(String[]args){
 
