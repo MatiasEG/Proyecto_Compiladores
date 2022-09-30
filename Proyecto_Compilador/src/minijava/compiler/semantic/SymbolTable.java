@@ -262,6 +262,7 @@ public class SymbolTable {
                 if(!clases.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
                 main += checkMainYConstructor(main, entry.getValue(), entry.getValue().getMetodos());
                 if(herenciaCircular(entry.getValue(), s)) throw new SemanticExceptionCircleExtend(entry.getValue(), clases.get(s));
+
             }
 
             for(Token t: entry.getValue().getClasesImplementadas()){
