@@ -1,12 +1,17 @@
 package minijava.compiler.exception.semantic;
 
+import minijava.compiler.lexical.analyzer.Token;
+
 public abstract class SemanticException extends Exception{
 
-    public SemanticException(String msg){
+    protected Token errorToken;
+
+    public SemanticException(String msg, Token errorToken){
         super(msg);
+        this.errorToken = errorToken;
     }
 
-    public abstract int getRow();
+    public int getRow(){ return errorToken.getLineNumber(); };
 
-    public abstract String getLexeme();
+    public String getLexeme(){ return errorToken.getLexeme(); };
 }

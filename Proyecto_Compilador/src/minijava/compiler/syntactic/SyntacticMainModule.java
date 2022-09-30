@@ -13,31 +13,36 @@ import java.io.File;
 
 public class SyntacticMainModule {
 
-    // TODO
     // OK (Sint) > chequeo de nombre de clases/interfaces repetidos
     // OK (Sint) > chequeo de redefinicion de metodos en la misma clase/interface
-    // ? > chequeo de redefinicion de metodos por herencia
+    // OK > chequeo de redefinicion de metodos por herencia
     // OK (Sint) > chequeo de declaracion de parametros con el mismo nombre
     // OK (Sint) > chequeo de declaracion de atributos con el mismo nombre
-    // ? > agregar atributos heredados
-    // ? > agregar metodos heredados
+    // OK > agregar atributos heredados
+    // OK > agregar metodos heredados
     // OK (Check) > chequear si existen las clases heredadas (solo ver mapeo de clases)
     // OK (Check) > chequear si existen las clases implementadas (solo ver mapeo de interfaces)
     // OK > chequear si no tiene herencia circular
-    // OK > agregar constructor por defecto a las clases         TODO -> en donde seteo la linea del constructor base si lo agrego?
-    //                                                           TODO -> los constructores son static?
-    // OK > chequear que al menos una clase tiene metodo main       TODO -> si no existe el main que muetro en el error?
+    // OK > agregar constructor por defecto a las clases
+    // OK > chequear que al menos una clase tiene metodo main
     // OK > las clases heredan de Object las interfaces no
-    //                                                              TODO -> como hay herencia las clases pueden heredar el main, que hago?
-    //                                                              TODO -> que pasa si heredo de dos clases, pero
+
+
+    // TODO puedo definir a los constructores como metodos, que pongo en el static?
+    // TODO que hago con los constructores y el main que heredo en otras clases?
+    // TODO tengo que chequear herencia circular entre varias clases (mas de dos)?
+    // TODO que pasa si heredo el metodo de una clase A que tengo que implementar de una interface B?
+    // TODO las interfaces extienden de Object por default?
+    // TODO revisar que pasa si heredo de una clase el mismo metodo que tengo que implementar de una interfaz
 
     public static void main(String[]args){
 
-        FileManager fileManager = new FileManager(new File("resources/Clases.java"));
-//        FileManager fileManager = new FileManager(new File(args[0]));
+//        FileManager fileManager = new FileManager(new File("resources/Clases.java"));
+//        FileManager fileManager = new FileManager(new File("resources/sinErrores/semlCorrecto03.java"));
+        FileManager fileManager = new FileManager(new File(args[0]));
 
 
-        SymbolTable st = new SymbolTable();
+        SymbolTable st = new SymbolTable(); //TODO poner todos los errores en una lista -> multideteccion y ademas resuelvo este error
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);
 
@@ -50,6 +55,8 @@ public class SyntacticMainModule {
             syntacticAnalyzer.inicial();
 
             st.check();
+
+            st.consolidacion();
 
         } catch (LexicalException e) {
             LexicalErrorManager.showErrorMsg(e, fileManager);

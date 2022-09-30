@@ -3,9 +3,9 @@ package minijava.compiler.syntactic.analyzer;
 import minijava.compiler.exception.*;
 import minijava.compiler.exception.lexical.LexicalException;
 import minijava.compiler.exception.semantic.SemanticException;
-import minijava.compiler.exception.semantic.SemanticExceptionClassInterfaceNameDuplicated;
-import minijava.compiler.exception.semantic.SemanticExceptionDuplicatedMethod;
-import minijava.compiler.exception.semantic.SemanticExceptionDuplicatedParameter;
+import minijava.compiler.exception.semantic.classinterface.SemanticExceptionClassInterfaceNameDuplicated;
+import minijava.compiler.exception.semantic.duplicated.SemanticExceptionDuplicatedMethod;
+import minijava.compiler.exception.semantic.duplicated.SemanticExceptionDuplicatedParameter;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.*;
@@ -89,9 +89,9 @@ public class SyntacticAnalyzer {
         Clase clase = new Clase(nombreClase);
             st.setClaseActual(clase);
         genericoOpt(); // No lo contemplo semanticamente
-        ArrayList<String> extendsFrom = heredaDe();
+        ArrayList<Token> extendsFrom = heredaDe();
             st.actualClassInterfaceExtendsFrom(extendsFrom);
-        ArrayList<String> implement = implementaA();
+        ArrayList<Token> implement = implementaA();
             st.actualClassImplements(implement);
         match("punctuationOpeningBracket");
         listaMiembros();
@@ -110,7 +110,7 @@ public class SyntacticAnalyzer {
             Interface_ interface_ = new Interface_(nombreInterface);
             st.setActualInterface(interface_);
         genericoOpt();
-        ArrayList<String> extendsFrom = extiendeA();
+        ArrayList<Token> extendsFrom = extiendeA();
         if((extendsFrom.size() == 1) && extendsFrom.get(0).equals("Object")){
             st.actualClassInterfaceExtendsFrom(new ArrayList<>());
         }else{
@@ -128,17 +128,16 @@ public class SyntacticAnalyzer {
     // <HeredaDe> ::= extends idClase <GenericoOpt> | e
     // Primeros: {extends, e}
     // Siguientes: {implments, { }
-    private ArrayList<String> heredaDe() throws LexicalException, SyntacticException {
-        ArrayList<String> extendsFrom = new ArrayList<>();
+    private ArrayList<Token> heredaDe() throws LexicalException, SyntacticException {
+        ArrayList<Token> extendsFrom = new ArrayList<>();
         if(Arrays.asList("idKeyWord_extends").contains(actualToken.getToken())){
             match("idKeyWord_extends");
-                String extendsFromName = actualToken.getLexeme();
+                extendsFrom.add(actualToken);
             match("idClass");
             genericoOpt();
-                extendsFrom.add(extendsFromName);
         }else if(Arrays.asList("idKeyWord_implements", "punctuationOpeningBracket").contains(actualToken.getToken())){
             //vacio
-                extendsFrom.add("Object");
+                extendsFrom.add(st.getObjectClassToken());
         }else{
             throw new SyntacticException(actualToken, "{extends, implements, { }");
         }
@@ -149,8 +148,8 @@ public class SyntacticAnalyzer {
     // <ImplementaA> ::= implements <ListaTipoReferencia> | e
     // Primeros: {implements, e}
     // Siguientes: { { }
-    private ArrayList<String> implementaA() throws LexicalException, SyntacticException {
-        ArrayList<String> implements_ = new ArrayList<>();
+    private ArrayList<Token> implementaA() throws LexicalException, SyntacticException {
+        ArrayList<Token> implements_ = new ArrayList<>();
         if(Arrays.asList("idKeyWord_implements").contains(actualToken.getToken())){
             match("idKeyWord_implements");
             implements_ = listaTipoReferencia();
@@ -166,14 +165,14 @@ public class SyntacticAnalyzer {
     // <ExtiendeA> ::= extends <ListaTipoReferencia> | e
     // Primeros: {extends, e}
     // Siguientes: { { }
-    private ArrayList<String> extiendeA() throws LexicalException, SyntacticException {
-        ArrayList<String> extiendeA = new ArrayList<>();
+    private ArrayList<Token> extiendeA() throws LexicalException, SyntacticException {
+        ArrayList<Token> extiendeA = new ArrayList<>();
         if(Arrays.asList("idKeyWord_extends").contains(actualToken.getToken())){
             match("idKeyWord_extends");
                 extiendeA = listaTipoReferencia();
         }else if(Arrays.asList("punctuationOpeningBracket").contains(actualToken.getToken())){
             // vacio
-                extiendeA.add("Object");
+                extiendeA.add(st.getObjectClassToken());
         }else{
             throw new SyntacticException(actualToken, "{extends, { }");
         }
@@ -184,10 +183,9 @@ public class SyntacticAnalyzer {
     // <ListaTipoReferencia> ::= idClase <GenericoOpt> <ListaTipoReferenciaResto>
     // Primeros: {idClase}
     // Siguientes: -
-    private ArrayList<String> listaTipoReferencia() throws LexicalException, SyntacticException {
-            ArrayList<String> implementa_ = new ArrayList<>();
-            String nombre = actualToken.getLexeme();
-            implementa_.add(nombre);
+    private ArrayList<Token> listaTipoReferencia() throws LexicalException, SyntacticException {
+            ArrayList<Token> implementa_ = new ArrayList<>();
+            implementa_.add(actualToken);
         match("idClass");
         genericoOpt(); // No lo contemplo semanticamente
         implementa_.addAll(listaTipoReferenciaResto());
@@ -198,7 +196,7 @@ public class SyntacticAnalyzer {
     // <ListaTipoReferenciaResto> ::= , <ListaTipoReferencia> | e
     // Primeros: { , , e }
     // Siguientes: { { }
-    private ArrayList<String> listaTipoReferenciaResto() throws LexicalException, SyntacticException {
+    private ArrayList<Token> listaTipoReferenciaResto() throws LexicalException, SyntacticException {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
             match("punctuationComma");
             return listaTipoReferencia();
@@ -253,7 +251,7 @@ public class SyntacticAnalyzer {
         metodo.setClaseDefinido(st.getActualClassInterfaceName());
         estaticoOpt(metodo);
         metodo.setTipo(tipoMetodo());
-        metodo.setMetodoToken(actualToken);
+        metodo.setToken(actualToken);
         match("idMetVar");
         argsFormales(metodo);
         st.actualClassInterfaceAddMethod(metodo);
@@ -266,6 +264,7 @@ public class SyntacticAnalyzer {
     private void miembro() throws SyntacticException, LexicalException, SemanticException {
         if(Arrays.asList("idKeyWord_private", "idKeyWord_public").contains(actualToken.getToken())) {
             Atributo atributo = new Atributo();
+            atributo.setVisibilidadHerencia(true);
             atributo.setVisibilidad(visibilidad());
             atributo(atributo);
         }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
@@ -304,7 +303,7 @@ public class SyntacticAnalyzer {
         if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
                 Metodo metodo = new Metodo();
                 metodo.setClaseDefinido(st.getActualClassInterfaceName());
-                metodo.setMetodoToken(tipo.getTipoToken());
+                metodo.setToken(tipo.getTipoToken());
                 metodo.setTipo(tipo);
             argsFormales(metodo);
             bloque();
@@ -327,7 +326,7 @@ public class SyntacticAnalyzer {
             Metodo metodo = new Metodo();
             metodo.setClaseDefinido(st.getActualClassInterfaceName());
             metodo.setTipo(tipo);
-            metodo.setMetodoToken(nombreMetVar);
+            metodo.setToken(nombreMetVar);
             argsFormales(metodo);
             bloque();
             st.actualClassInterfaceAddMethod(metodo);
@@ -369,7 +368,7 @@ public class SyntacticAnalyzer {
             metodo.setStatic(true);
         match("idKeyWord_static");
         metodo.setTipo(tipoMetodo());
-            metodo.setMetodoToken(actualToken);
+            metodo.setToken(actualToken);
         match("idMetVar");
         argsFormales(metodo);
         bloque();
@@ -386,7 +385,7 @@ public class SyntacticAnalyzer {
             metodo.setStatic(false);
             Tipo tipo = new Tipo(actualToken);
         match("idKeyWord_void");
-            metodo.setMetodoToken(actualToken);
+            metodo.setToken(actualToken);
         match("idMetVar");
             metodo.setTipo(tipo);
         argsFormales(metodo);

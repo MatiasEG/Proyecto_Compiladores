@@ -5,33 +5,38 @@ import minijava.compiler.lexical.analyzer.Token;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Clase extends ClaseInterface {
+public class Clase extends ClaseInterface{
 
-    private ArrayList<String> implement;
+    private ArrayList<Token> implement;
     private ArrayList<Atributo> atributos;
+    private HashMap<String, Atributo> atributosHashMap;
 
     public Clase(Token claseToken){
         extendsFrom = new ArrayList<>();
         implement = new ArrayList<>();
         atributos = new ArrayList<>();
+        atributosHashMap = new HashMap<>();
         metodos = new ArrayList<>();
         metodoHashMap = new HashMap<>();
         this.claseOrinterfaceToken= claseToken;
     }
 
-    public void setImplement(ArrayList<String> implement){
+    public void setImplement(ArrayList<Token> implement){
         if(!implement.equals("")){
             this.implement = implement;
         }
     }
 
-    public ArrayList<String> getClasesImplementadas(){ return implement; }
-
-    public void setAtributos(ArrayList<Atributo> atributos){ this.atributos = atributos; }
+    public ArrayList<Token> getClasesImplementadas(){ return implement; }
 
     public ArrayList<Atributo> getAtributos(){ return atributos; }
 
-    public void addAtribute(Atributo atributo){ atributos.add(atributo); }
+    public HashMap<String, Atributo> getAtributosHashMap(){ return atributosHashMap; }
+
+    public void addAtribute(Atributo atributo){
+        atributos.add(atributo);
+        atributosHashMap.put(atributo.getNombre(), atributo);
+    }
 
     public boolean alreadyHaveAtribute(Atributo atributo){
         for(Atributo a: atributos){

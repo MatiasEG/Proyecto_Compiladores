@@ -7,12 +7,12 @@ import java.util.HashMap;
 
 public abstract class ClaseInterface {
 
-    protected ArrayList<String> extendsFrom;
+    protected ArrayList<Token> extendsFrom;
     protected HashMap<String, Metodo> metodoHashMap;
     protected ArrayList<Metodo> metodos;
     protected Token claseOrinterfaceToken;
 
-    public void setExtendsFrom(ArrayList<String> extendsFrom){
+    public void setExtendsFrom(ArrayList<Token> extendsFrom){
         this.extendsFrom =  extendsFrom;
     }
 
@@ -32,7 +32,7 @@ public abstract class ClaseInterface {
         metodoHashMap.put(metodo.getMapKey(), metodo);
     }
 
-    public ArrayList<String> getClasesHerencia(){ return extendsFrom; }
+    public ArrayList<Token> getClasesHerencia(){ return extendsFrom; }
 
     public ArrayList<Metodo> getMetodos(){ return metodos; }
 
