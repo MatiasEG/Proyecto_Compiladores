@@ -1,6 +1,7 @@
 package minijava.compiler.semantic;
 
 import minijava.compiler.exception.semantic.*;
+import minijava.compiler.exception.semantic.duplicated.SemanticExceptionDuplicatedParameter;
 import minijava.compiler.exception.semantic.extend.SemanticExceptionCircleExtend;
 import minijava.compiler.exception.semantic.classinterface.SemanticExceptionExtendedClassDoesNotExist;
 import minijava.compiler.exception.semantic.classinterface.SemanticExceptionClassImplementClass;
@@ -23,10 +24,12 @@ public class SymbolTable {
     private ClaseInterface claseActual;
     private HashMap<String, Clase> clases;
     private HashMap<String, Interface_> interfaces;
+    private ArrayList<SemanticException> exceptions;
 
-    public SymbolTable() throws SemanticException {
+    public SymbolTable(){
         clases = new HashMap<>();
         interfaces = new HashMap<>();
+        exceptions = new ArrayList<>();
         createConcreteClasses();
     }
 
@@ -48,38 +51,40 @@ public class SymbolTable {
         ((Clase) claseActual).setImplement(implement);
     }
 
-    public void insertarClase() throws SemanticExceptionClassInterfaceNameDuplicated {
+    public ArrayList<SemanticException> getExceptions(){ return exceptions; }
+
+    public void insertarClase() {
         if(alreadyExist(claseActual.getNombre()) == null){
             clases.put(claseActual.getNombre(), (Clase) claseActual);
         }else{
-            throw new SemanticExceptionClassInterfaceNameDuplicated("Nombre de clase repetido.", claseActual);
+            exceptions.add(new SemanticExceptionClassInterfaceNameDuplicated("Nombre de clase repetido.", claseActual));
         }
     }
 
-    public void insertarInterface() throws SemanticExceptionClassInterfaceNameDuplicated {
+    public void insertarInterface() {
         if(alreadyExist(claseActual.getNombre()) == null){
             interfaces.put(claseActual.getNombre(), (Interface_) claseActual);
         }else{
-            throw new SemanticExceptionClassInterfaceNameDuplicated("Nombre de interfaz repetido.", claseActual);
+            exceptions.add(new SemanticExceptionClassInterfaceNameDuplicated("Nombre de interfaz repetido.", claseActual));
         }
 
     }
 
-    public void actualClassAddAtribute(Atributo atributo) throws SemanticException {
+    public void actualClassAddAtribute(Atributo atributo) {
         Clase clase = (Clase) claseActual;
 
         if(!clase.alreadyHaveAtribute(atributo)){
             clase.addAtribute(atributo);
         }else{
-            throw new SemanticExceptionDuplicatedAtribute(atributo);
+            exceptions.add(new SemanticExceptionDuplicatedAtribute(atributo));
         }
     }
 
-    public void actualClassInterfaceAddMethod(Metodo metodo) throws SemanticExceptionDuplicatedMethod {
+    public void actualClassInterfaceAddMethod(Metodo metodo){
         if(claseActual.methodRedefinition(metodo)){
             claseActual.addMetodo(metodo);
         }else{
-            throw new SemanticExceptionDuplicatedMethod(metodo);
+            exceptions.add(new SemanticExceptionDuplicatedMethod(metodo));
         }
     }
 
@@ -91,13 +96,14 @@ public class SymbolTable {
         return null;
     }
 
-    private void createConcreteClasses() throws SemanticException {
+    private void createConcreteClasses() {
         createObjectClass();
         createStringClass();
         createSystemClass();
     }
 
-    private void createObjectClass() throws SemanticException {
+    private void createObjectClass() {
+        Parametro parametroIf;
         Clase object = new Clase(new Token("idClass", "Object", 0));
 
         Metodo debugPrint = new Metodo();
@@ -110,7 +116,7 @@ public class SymbolTable {
             i.setPosicion(0);
             i.setVarToken(new Token("idMetVar", "i", 0));
             i.setTipo(new Tipo(new Token("idKeyWord_int", "int", 0)));
-        debugPrint.addParametro(i);
+        if((parametroIf = debugPrint.addParametro(i)) != null) exceptions.add(new SemanticExceptionDuplicatedParameter(parametroIf));
         object.addMetodo(debugPrint);
 
         clases.put(object.getNombre(), object);
@@ -123,7 +129,8 @@ public class SymbolTable {
         clases.put(string.getNombre(), string);
     }
 
-    private void createSystemClass() throws SemanticException {
+    private void createSystemClass() {
+        Parametro parametroIf;
         Clase system = new Clase(new Token("idClass", "System", 0));
 
         Metodo read = new Metodo();
@@ -143,7 +150,7 @@ public class SymbolTable {
             b.setPosicion(0);
             b.setVarToken(new Token("idMetVar", "b", 0));
             b.setTipo(new Tipo(new Token("idKeyWord_boolean", "boolean", 0)));
-        printB.addParametro(b);
+        if((parametroIf = printB.addParametro(b)) != null) exceptions.add(new SemanticExceptionDuplicatedParameter(parametroIf));
         system.addMetodo(printB);
 
         Metodo printC = new Metodo();
@@ -156,7 +163,7 @@ public class SymbolTable {
             c.setPosicion(0);
             c.setVarToken(new Token("idMetVar", "c", 0));
             c.setTipo(new Tipo(new Token("literalCharacter", "char", 0)));
-        printC.addParametro(c);
+        if((parametroIf = printC.addParametro(c)) != null) exceptions.add(new SemanticExceptionDuplicatedParameter(parametroIf));
         system.addMetodo(printC);
 
         Metodo printI = new Metodo();
@@ -169,7 +176,7 @@ public class SymbolTable {
             i.setPosicion(0);
             i.setVarToken(new Token("idMetVar", "i", 0));
             i.setTipo(new Tipo(new Token("idKeyWord_int", "int", 0)));
-        printI.addParametro(i);
+        if((parametroIf = printI.addParametro(i)) != null) exceptions.add(new SemanticExceptionDuplicatedParameter(parametroIf));
         system.addMetodo(printI);
 
         Metodo printS = new Metodo();
@@ -182,7 +189,7 @@ public class SymbolTable {
             s.setPosicion(0);
             s.setVarToken(new Token("idMetVar", "s", 0));
             s.setTipo(new Tipo(new Token("idClass", "String", 0)));
-        printS.addParametro(s);
+        if((parametroIf = printS.addParametro(s)) != null) exceptions.add(new SemanticExceptionDuplicatedParameter(parametroIf));
         system.addMetodo(printS);
 
         Metodo println = new Metodo();
@@ -202,7 +209,7 @@ public class SymbolTable {
             bln.setPosicion(0);
             bln.setVarToken(new Token("idMetVar", "b", 0));
             bln.setTipo(new Tipo(new Token("idKeyWord_boolean", "boolean", 0)));
-        printBln.addParametro(bln);
+        if((parametroIf = printBln.addParametro(bln)) != null) exceptions.add(new SemanticExceptionDuplicatedParameter(parametroIf));
         system.addMetodo(printBln);
 
         Metodo printCln = new Metodo();
@@ -215,7 +222,7 @@ public class SymbolTable {
             cln.setPosicion(0);
             cln.setVarToken(new Token("idMetVar", "c", 0));
             cln.setTipo(new Tipo(new Token("literalCharacter", "char", 0)));
-        printCln.addParametro(cln);
+        if((parametroIf = printCln.addParametro(cln)) != null) exceptions.add(new SemanticExceptionDuplicatedParameter(parametroIf));
         system.addMetodo(printCln);
 
         Metodo printIln = new Metodo();
@@ -228,7 +235,7 @@ public class SymbolTable {
             iln.setPosicion(0);
             iln.setVarToken(new Token("idMetVar", "i", 0));
             iln.setTipo(new Tipo(new Token("idKeyWord_int", "int", 0)));
-        printIln.addParametro(iln);
+        if((parametroIf = printIln.addParametro(iln)) != null) exceptions.add(new SemanticExceptionDuplicatedParameter(parametroIf));
         system.addMetodo(printIln);
 
         Metodo printSln = new Metodo();
@@ -241,52 +248,53 @@ public class SymbolTable {
             sln.setPosicion(0);
             sln.setVarToken(new Token("idMetVar", "s", 0));
             sln.setTipo(new Tipo(new Token("idClass", "String", 0)));
-        printSln.addParametro(sln);
+        if((parametroIf = printSln.addParametro(sln)) != null) exceptions.add(new SemanticExceptionDuplicatedParameter(parametroIf));
         system.addMetodo(printSln);
     }
 
-    public boolean check() throws SemanticException {
+    public boolean check(){
         int main = 0;
         String s;
         for(Map.Entry<String, Clase> entry: clases.entrySet()){
             for(Token t: entry.getValue().getClasesHerencia()){
                 s = t.getLexeme();
                 //todo arreglar el then, porque entro si no existe s y despues se lo pido igual
-                if(!clases.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
-                if(herenciaCircular(entry.getValue(), s)) throw new SemanticExceptionCircleExtend(entry.getValue(), clases.get(s));
+                if(!clases.containsKey(s)) exceptions.add(new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t));
                 main += checkMainYConstructor(main, entry.getValue(), entry.getValue().getMetodos());
+                if(herenciaCircular(entry.getValue(), s)) exceptions.add(new SemanticExceptionCircleExtend(entry.getValue(), clases.get(s)));
+                //todo chequear si las clases que heredan/implementan estan definidas en clases
             }
 
             for(Token t: entry.getValue().getClasesImplementadas()){
                 s = t.getLexeme();
-                if(!interfaces.containsKey(s)) throw new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), s);
+                if(!interfaces.containsKey(s)) exceptions.add(new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), s));
                 checkMetodosImplementados(entry.getValue(), interfaces.get(s));
             }
         }
 
-        if(main == 0) throw new SemanticExceptionMethodMainDoesNotExist();
+        if(main == 0) exceptions.add(new SemanticExceptionMethodMainDoesNotExist());
 
 
         for(Map.Entry<String, Interface_> entry: interfaces.entrySet()){
             for(Token t: entry.getValue().getClasesHerencia()){
                 s = t.getLexeme();
-                if(!interfaces.containsKey(s) && !s.equals("Object")) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
+                if(!interfaces.containsKey(s) && !s.equals("Object")) exceptions.add(new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t));
             }
         }
 
         return true;
     }
 
-    private int checkMainYConstructor(int main, Clase clase, ArrayList<Metodo> metodos) throws SemanticException {
+    private int checkMainYConstructor(int main, Clase clase, ArrayList<Metodo> metodos) {
         boolean constructorBasico = false;
 
         for(Metodo m: metodos){
             if(m.getLexeme().equals("main") && main == 0 && m.getTipo().getLexemeType().equals("void") && m.isStatic()){
                 main++;
             }else if(m.getLexeme().equals("main") && main == 1 && m.getTipo().getLexemeType().equals("void") && m.isStatic()){
-                throw new SemanticExceptionDuplicatedMain(m, clase);
+                exceptions.add(new SemanticExceptionDuplicatedMain(m, clase));
             }else if(m.getLexeme().equals("main")){
-                throw new SemanticExceptionMethodMainWrongDefined(m);
+                exceptions.add(new SemanticExceptionMethodMainWrongDefined(m));
             }else if(m.getLexeme().equals(m.getTipo().getLexemeType()) && m.getParametros().size() == 0){
                 constructorBasico = true;
             }
@@ -305,15 +313,16 @@ public class SymbolTable {
     }
 
     private boolean herenciaCircular(Clase clase, String nombreHerencia){
+        System.out.println("ROMPIDO//////////"+clase.getNombre());
         return clases.get(nombreHerencia).getClasesHerencia().contains(clase.getNombre());
     }
 
-    private void checkMetodosImplementados(Clase claseImplementa, Interface_ interface_) throws SemanticException{
+    private void checkMetodosImplementados(Clase claseImplementa, Interface_ interface_) {
         for(Metodo m: interface_.getMetodos()){
             if(claseImplementa.getMetodoHashMap().containsKey(m.getMapKey())){
-                if(!m.equals(claseImplementa.getMetodoHashMap().get(m.getMapKey()))) throw new SemanticExceptionMethodWrongImplemented(claseImplementa, m);
+                if(!m.equals(claseImplementa.getMetodoHashMap().get(m.getMapKey()))) exceptions.add(new SemanticExceptionMethodWrongImplemented(claseImplementa, m));
             }else{
-                throw new SemanticExceptionMethodNotImplemented(claseImplementa, m);
+                exceptions.add(new SemanticExceptionMethodNotImplemented(claseImplementa, m));
             }
         }
     }
@@ -327,7 +336,7 @@ public class SymbolTable {
 
 
 
-    public void consolidacion() throws SemanticException {
+    public void consolidacion() {
         String s;
         for(Map.Entry<String, Clase> entry: clases.entrySet()){
             for(Token t: entry.getValue().getClasesHerencia()){
@@ -338,7 +347,7 @@ public class SymbolTable {
 
             for(Token t: entry.getValue().getClasesImplementadas()){
                 s = t.getLexeme();
-                if(clases.containsKey(s)) throw new SemanticExceptionClassImplementClass(entry.getValue());
+                if(clases.containsKey(s)) exceptions.add(new SemanticExceptionClassImplementClass(entry.getValue()));
             }
         }
 
@@ -347,17 +356,17 @@ public class SymbolTable {
             for(Token t: entry.getValue().getClasesHerencia()){
                 s = t.getLexeme();
                 checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
-                if(clases.containsKey(s) && !s.equals("Object")) throw new SemanticExceptionInterfaceExtendsClase(interfaces.get(entry.getValue()));
+                if(clases.containsKey(s) && !s.equals("Object")) exceptions.add(new SemanticExceptionInterfaceExtendsClase(interfaces.get(entry.getValue())));
             }
         }
     }
 
-    private void checkSignaturaMetodosRedefinidosPorHerencia(ClaseInterface descendiente, ClaseInterface padre) throws SemanticException {
+    private void checkSignaturaMetodosRedefinidosPorHerencia(ClaseInterface descendiente, ClaseInterface padre) {
         for(Metodo m: padre.getMetodos()){
             if(!descendiente.getMetodoHashMap().containsKey(m.getMapKey())) {
                 descendiente.addMetodo(padre.getMetodoHashMap().get(m.getMapKey()));
             }else if(descendiente.getMetodoHashMap().containsKey(m.getMapKey())){
-                if(!m.equals(descendiente.getMetodoHashMap().get(m.getMapKey()))) throw new SemanticExceptionMethodNotRedefined(descendiente.getMetodoHashMap().get(m.getMapKey()), descendiente);
+                if(!m.equals(descendiente.getMetodoHashMap().get(m.getMapKey()))) exceptions.add(new SemanticExceptionMethodNotRedefined(descendiente.getMetodoHashMap().get(m.getMapKey()), descendiente));
             }
         }
     }

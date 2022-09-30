@@ -32,14 +32,15 @@ public class Metodo {
 
     public String getClaseDefinido() { return claseDefinido; }
 
-    public void addParametro(Parametro parametro) throws SemanticExceptionDuplicatedParameter {
+    public Parametro addParametro(Parametro parametro){
         parametro.setPosicion(parametros.size()+1);
         for(Parametro p2compare: parametros){
             if(p2compare.getNombre().equals(parametro.getNombre())){
-                throw new SemanticExceptionDuplicatedParameter(parametro);
+                return parametro;
             }
         }
         parametros.add(parametro);
+        return null;
     }
 
     public ArrayList<Parametro> getParametros() {

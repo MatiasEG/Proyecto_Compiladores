@@ -1,4 +1,4 @@
-///[Error:]
+///[Error:InterfaceAux2|20]
 
 interface InterfaceAux1{
     A m2(int b);
@@ -15,4 +15,8 @@ interface Interface1 extends InterfaceAux1, InterfaceAux2{
     void m1(A a1);
 
     int m3();
+}
+
+interface InterfaceAux2{
+    int mx();
 }

@@ -10,6 +10,7 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.syntactic.analyzer.SyntacticAnalyzer;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class SyntacticMainModule {
 
@@ -38,8 +39,8 @@ public class SyntacticMainModule {
     public static void main(String[]args){
 
 //        FileManager fileManager = new FileManager(new File("resources/Clases.java"));
-//        FileManager fileManager = new FileManager(new File("resources/sinErrores/semlCorrecto03.java"));
-        FileManager fileManager = new FileManager(new File(args[0]));
+        FileManager fileManager = new FileManager(new File("resources/conErrores/semError02.java"));
+//        FileManager fileManager = new FileManager(new File(args[0]));
 
 
         SymbolTable st = new SymbolTable(); //TODO poner todos los errores en una lista -> multideteccion y ademas resuelvo este error
@@ -59,15 +60,21 @@ public class SyntacticMainModule {
             st.consolidacion();
 
         } catch (LexicalException e) {
+            error = true;
             LexicalErrorManager.showErrorMsg(e, fileManager);
         } catch (SyntacticException e) {
             error = true;
             System.out.println("[Error:"+e.getErrorToken().getLexeme()+"|"+e.getRow()+"]");
             System.out.println(e.getMessage());
-        } catch (SemanticException e) {
+        }
+
+        ArrayList<SemanticException> exceptions = st.getExceptions();
+        if(exceptions.size()!=0){
             error = true;
-            System.out.println("[Error:"+e.getLexeme()+"|"+e.getRow()+"]");
-            System.out.println(e.getMessage());
+            for(SemanticException e: exceptions){
+                System.out.println("[Error:"+e.getLexeme()+"|"+e.getRow()+"]");
+                System.out.println(e.getMessage());
+            }
         }
 
         if(!error) {
