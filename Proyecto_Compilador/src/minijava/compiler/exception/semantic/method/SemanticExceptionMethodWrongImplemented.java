@@ -1,18 +1,18 @@
 package minijava.compiler.exception.semantic.method;
 
 import minijava.compiler.exception.semantic.SemanticException;
-import minijava.compiler.semantic.tables.Clase;
-import minijava.compiler.semantic.tables.Metodo;
+import minijava.compiler.semantic.tables.Class;
+import minijava.compiler.semantic.tables.Method;
 
 public class SemanticExceptionMethodWrongImplemented extends SemanticException {
 
-    private Clase claseQueImplementaMal;
-    private Metodo metodoMalImplementado;
+    private Class claseQueImplementaMal;
+    private Method methodMalImplementado;
 
-    public SemanticExceptionMethodWrongImplemented(Clase claseQueImplementaMal, Metodo metodoMalImplementado){
-        super("La clase \'"+claseQueImplementaMal.getNombre()+"\' implementa, pero no correctamente el metodo \'" +metodoMalImplementado.getLexeme()+
-                "\' de la interface \'"+metodoMalImplementado.getClaseDefinido()+"\'", metodoMalImplementado.getToken());
+    public SemanticExceptionMethodWrongImplemented(Class claseQueImplementaMal, Method methodMalImplementado){
+        super("La clase \'"+claseQueImplementaMal.getNombre()+"\' implementa, pero no correctamente el metodo \'" + methodMalImplementado.getMethodName()+
+                "\' de la interface \'"+ methodMalImplementado.getClassDeclaredMethod()+"\'", methodMalImplementado.getMethodToken());
         this.claseQueImplementaMal = claseQueImplementaMal;
-        this.metodoMalImplementado = metodoMalImplementado;
+        this.methodMalImplementado = methodMalImplementado;
     }
 }

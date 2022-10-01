@@ -1,15 +1,15 @@
 package minijava.compiler.exception.semantic.duplicated;
 
 import minijava.compiler.exception.semantic.SemanticException;
-import minijava.compiler.semantic.tables.Metodo;
+import minijava.compiler.semantic.tables.Method;
 
 public class SemanticExceptionDuplicatedMethod extends SemanticException {
 
-    private Metodo metodo;
+    private Method method;
 
-    public SemanticExceptionDuplicatedMethod(Metodo metodo){
-        super("El metodo \'"+metodo.getLexeme()+"\' de la clase \'"+metodo.getClaseDefinido()+"\' esta mal redefinido.", metodo.getToken());
-        this.metodo = metodo;
+    public SemanticExceptionDuplicatedMethod(Method method){
+        super("El metodo \'"+ method.getMethodName()+"\' de la clase \'"+ method.getClassDeclaredMethod()+"\' esta mal redefinido.", method.getMethodToken());
+        this.method = method;
     }
 
 }

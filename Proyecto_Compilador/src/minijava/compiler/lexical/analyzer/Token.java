@@ -17,11 +17,8 @@ public class Token {
 
     public String getLexeme() { return lexeme; }
 
-    public int getLineNumber() { return lineNumber; }
+    public int getRow() { return lineNumber; }
 
     public void setToken(String token) { this.token = token; }
 
-    public void setLexeme(String lexeme) { this.lexeme = lexeme; }
-
-    public void setLineNumber(int lineNumber) { this.lineNumber = lineNumber; }
 }

@@ -1,17 +1,17 @@
 package minijava.compiler.exception.semantic.method;
 
 import minijava.compiler.exception.semantic.SemanticException;
-import minijava.compiler.semantic.tables.ClaseInterface;
-import minijava.compiler.semantic.tables.Metodo;
+import minijava.compiler.semantic.tables.ClassOrInterface;
+import minijava.compiler.semantic.tables.Method;
 
 public class SemanticExceptionMethodNotRedefined extends SemanticException {
 
-    private Metodo metodoNoRedefinido;
-    private ClaseInterface errorClass;
+    private Method methodNoRedefinido;
+    private ClassOrInterface errorClass;
 
-    public SemanticExceptionMethodNotRedefined(Metodo metodoMalRedefinido, ClaseInterface errorClass){
-        super("El metodo \'"+metodoMalRedefinido.getLexeme()+"\' no fue redefinido correctamente por \'"+errorClass.getNombre()+"\'.", metodoMalRedefinido.getToken());
-        this.metodoNoRedefinido = metodoMalRedefinido;
+    public SemanticExceptionMethodNotRedefined(Method methodMalRedefinido, ClassOrInterface errorClass){
+        super("El metodo \'"+ methodMalRedefinido.getMethodName()+"\' no fue redefinido correctamente por \'"+errorClass.getNombre()+"\'.", methodMalRedefinido.getMethodToken());
+        this.methodNoRedefinido = methodMalRedefinido;
         this.errorClass = errorClass;
     }
 }

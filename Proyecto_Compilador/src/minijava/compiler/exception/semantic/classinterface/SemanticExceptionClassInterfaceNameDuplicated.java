@@ -1,14 +1,14 @@
 package minijava.compiler.exception.semantic.classinterface;
 
 import minijava.compiler.exception.semantic.SemanticException;
-import minijava.compiler.semantic.tables.ClaseInterface;
+import minijava.compiler.semantic.tables.ClassOrInterface;
 
 public class SemanticExceptionClassInterfaceNameDuplicated extends SemanticException {
 
-    private ClaseInterface claseInterface;
+    private ClassOrInterface classOrInterface;
 
-    public SemanticExceptionClassInterfaceNameDuplicated(String msg, ClaseInterface claseInterface){
-        super(msg, claseInterface.getClaseOrinterfaceToken());
-        this.claseInterface = claseInterface;
+    public SemanticExceptionClassInterfaceNameDuplicated(String msg, ClassOrInterface classOrInterface){
+        super(msg, classOrInterface.getClassOrinterfaceToken());
+        this.classOrInterface = classOrInterface;
     }
 }

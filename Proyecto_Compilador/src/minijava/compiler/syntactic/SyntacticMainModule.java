@@ -39,7 +39,7 @@ public class SyntacticMainModule {
     public static void main(String[]args){
 
 //        FileManager fileManager = new FileManager(new File("resources/Clases.java"));
-//        FileManager fileManager = new FileManager(new File("resources/conErrores/errParametroConMismoNombre.java"));
+//        FileManager fileManager = new FileManager(new File("resources/conErrores/errRedefinicionMetodosHeredadosClase.java"));
         FileManager fileManager = new FileManager(new File(args[0]));
 
 

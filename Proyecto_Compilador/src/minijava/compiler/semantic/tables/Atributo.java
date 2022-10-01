@@ -10,7 +10,7 @@ public class Atributo extends Variable{
 
     public static Atributo clone(Atributo atributo){
         Atributo clone = new Atributo();
-        clone.setTipo(atributo.getTipo());
+        clone.setVarType(atributo.getVarType());
         clone.setVarToken(atributo.getVarToken());
         clone.setVisibilidad(atributo.isVisible());
         return clone;
@@ -18,7 +18,7 @@ public class Atributo extends Variable{
 
     public boolean equals(Variable var2compare){
         Atributo atr2compare = (Atributo) var2compare;
-        if(this.getTipo().equals(atr2compare.getTipo()) && this.getNombre().equals(atr2compare.getNombre())){
+        if(this.getVarType().equals(atr2compare.getVarType()) && this.getVarName().equals(atr2compare.getVarName())){
             return true;
         }else{
             return false;

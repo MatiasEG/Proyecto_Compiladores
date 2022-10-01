@@ -8,6 +8,7 @@ import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.*;
 import minijava.compiler.semantic.tables.*;
+import minijava.compiler.semantic.tables.Class;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,13 +85,13 @@ public class SyntacticAnalyzer {
         match("idKeyWord_class");
             Token nombreClase = actualToken;
         match("idClass");
-        Clase clase = new Clase(nombreClase);
-            st.setClaseActual(clase);
+        Class clase = new Class(nombreClase);
+            st.setActualClassOrInterface(clase);
         genericoOpt(); // No lo contemplo semanticamente
         ArrayList<Token> extendsFrom = heredaDe();
-            st.actualClassInterfaceExtendsFrom(extendsFrom);
+            st.setActualClassInterfaceListOfExtends(extendsFrom);
         ArrayList<Token> implement = implementaA();
-            st.actualClassImplements(implement);
+            st.setActualClassListOfImplements(implement);
         match("punctuationOpeningBracket");
         listaMiembros();
         match("punctuationClosingBracket");
@@ -106,13 +107,13 @@ public class SyntacticAnalyzer {
             Token nombreInterface = actualToken;
         match("idClass");
             Interface_ interface_ = new Interface_(nombreInterface);
-            st.setActualInterface(interface_);
+            st.setActualClassOrInterface(interface_);
         genericoOpt();
         ArrayList<Token> extendsFrom = extiendeA();
         if((extendsFrom.size() == 1) && extendsFrom.get(0).equals("Object")){
-            st.actualClassInterfaceExtendsFrom(new ArrayList<>());
+            st.setActualClassInterfaceListOfExtends(new ArrayList<>());
         }else{
-            st.actualClassInterfaceExtendsFrom(extendsFrom);
+            st.setActualClassInterfaceListOfExtends(extendsFrom);
         }
 
         match("punctuationOpeningBracket");
@@ -135,7 +136,7 @@ public class SyntacticAnalyzer {
             genericoOpt();
         }else if(Arrays.asList("idKeyWord_implements", "punctuationOpeningBracket").contains(actualToken.getToken())){
             //vacio
-                extendsFrom.add(st.getObjectClassToken());
+            extendsFrom.add(st.getObjectClassToken());
         }else{
             throw new SyntacticException(actualToken, "{extends, implements, { }");
         }
@@ -170,7 +171,6 @@ public class SyntacticAnalyzer {
                 extiendeA = listaTipoReferencia();
         }else if(Arrays.asList("punctuationOpeningBracket").contains(actualToken.getToken())){
             // vacio
-                extiendeA.add(st.getObjectClassToken());
         }else{
             throw new SyntacticException(actualToken, "{extends, { }");
         }
@@ -245,14 +245,14 @@ public class SyntacticAnalyzer {
     // Primeros: {static, void, boolean, char, int, idClase}
     // Siguientes: -
     private void encabezadoMetodo() throws LexicalException, SyntacticException, SemanticException {
-        Metodo metodo = new Metodo();
-        metodo.setClaseDefinido(st.getActualClassInterfaceName());
-        estaticoOpt(metodo);
-        metodo.setTipo(tipoMetodo());
-        metodo.setToken(actualToken);
+        Method method = new Method();
+        method.setClassDeclaredMethod(st.getActualClassInterfaceName());
+        estaticoOpt(method);
+        method.setMethodType(tipoMetodo());
+        method.setMethodToken(actualToken);
         match("idMetVar");
-        argsFormales(metodo);
-        st.actualClassInterfaceAddMethod(metodo);
+        argsFormales(method);
+        st.actualClassInterfaceAddMethod(method);
     }
 
     // 14 ------------------------------------------------------------------------------
@@ -262,7 +262,7 @@ public class SyntacticAnalyzer {
     private void miembro() throws SyntacticException, LexicalException, SemanticException {
         if(Arrays.asList("idKeyWord_private", "idKeyWord_public").contains(actualToken.getToken())) {
             Atributo atributo = new Atributo();
-            atributo.setVisibilidadHerencia(true);
+            atributo.setHeredityVisibility(true);
             atributo.setVisibilidad(visibilidad());
             atributo(atributo);
         }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
@@ -282,12 +282,12 @@ public class SyntacticAnalyzer {
     // Siguientes: -
     private void constructorOAtrMet() throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("idClass").contains(actualToken.getToken())){
-                Tipo tipo = new Tipo(actualToken);
+                Type type = new Type(actualToken);
             match("idClass");
-            constructorOAtrMetResto(tipo);
+            constructorOAtrMetResto(type);
         }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())) {
-            Tipo tipo = tipoPrimitivo();
-            constructorOAtrMetResto(tipo);
+            Type type = tipoPrimitivo();
+            constructorOAtrMetResto(type);
         }else{
             throw new SyntacticException(actualToken, "{idClase, boolean, char, int}");
         }
@@ -297,19 +297,19 @@ public class SyntacticAnalyzer {
     // <ConstructorOAtrMetResto> ::= <ArgsFormales> <Bloque> | idMetVar <AtributoOMetodo> | idMetVar <AtributoOMetodo>
     // Primeros: { ( , idMetVar, < }
     // Siguientes: -
-    private void constructorOAtrMetResto(Tipo tipo) throws LexicalException, SyntacticException, SemanticException {
+    private void constructorOAtrMetResto(Type type) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
-                Metodo metodo = new Metodo();
-                metodo.setClaseDefinido(st.getActualClassInterfaceName());
-                metodo.setToken(tipo.getTipoToken());
-                metodo.setTipo(tipo);
-            argsFormales(metodo);
+                Method method = new Method();
+                method.setClassDeclaredMethod(st.getActualClassInterfaceName());
+                method.setMethodToken(type.getTokenType());
+                method.setMethodType(type);
+            argsFormales(method);
             bloque();
-                st.actualClassInterfaceAddMethod(metodo);
+                st.actualClassInterfaceAddConstructor(method);
         }else if(Arrays.asList("idMetVar").contains(actualToken.getToken())) {
                 Token nombreMetVar = actualToken;
             match("idMetVar");
-            atributoOMetodo(tipo, nombreMetVar);
+            atributoOMetodo(type, nombreMetVar);
         }else{
             throw new SyntacticException(actualToken, "{ ( , idMetVar, < }");
         }
@@ -319,18 +319,18 @@ public class SyntacticAnalyzer {
     // <AtributoOMetodo> ::= <ArgsFormales> <Bloque> | <ListaDecAtrs> ;
     // Primeros: { ( , , , ; , e }
     // Siguientes: {public, private, idClase, boolean, char, int, void, static, } }
-    public void atributoOMetodo(Tipo tipo, Token nombreMetVar) throws LexicalException, SyntacticException, SemanticException {
+    public void atributoOMetodo(Type type, Token nombreMetVar) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
-            Metodo metodo = new Metodo();
-            metodo.setClaseDefinido(st.getActualClassInterfaceName());
-            metodo.setTipo(tipo);
-            metodo.setToken(nombreMetVar);
-            argsFormales(metodo);
+            Method method = new Method();
+            method.setClassDeclaredMethod(st.getActualClassInterfaceName());
+            method.setMethodType(type);
+            method.setMethodToken(nombreMetVar);
+            argsFormales(method);
             bloque();
-            st.actualClassInterfaceAddMethod(metodo);
+            st.actualClassInterfaceAddMethod(method);
         }else if(Arrays.asList("punctuationComma", "punctuationSemicolon").contains(actualToken.getToken())){
             Atributo atributo = new Atributo();
-            atributo.setTipo(tipo);
+            atributo.setVarType(type);
             atributo.setVisibilidad(true);
             atributo.setVarToken(nombreMetVar);
             st.actualClassAddAtribute(atributo);
@@ -346,8 +346,8 @@ public class SyntacticAnalyzer {
     // Primeros: {boolean, char, int, idClase}
     // Siguientes: -
     private void atributo(Atributo atributo) throws LexicalException, SyntacticException, SemanticException {
-        Tipo tipo = tipo();
-            atributo.setTipo(tipo);
+        Type type = tipo();
+            atributo.setVarType(type);
             String name = actualToken.getLexeme();
             atributo.setVarToken(actualToken);
         match("idMetVar");
@@ -361,16 +361,16 @@ public class SyntacticAnalyzer {
     // Primeros: {static}
     // Siguientes: -
     private void metodoEstatico() throws LexicalException, SyntacticException, SemanticException {
-            Metodo metodo = new Metodo();
-            metodo.setClaseDefinido(st.getActualClassInterfaceName());
-            metodo.setStatic(true);
+            Method method = new Method();
+            method.setClassDeclaredMethod(st.getActualClassInterfaceName());
+            method.setStatic(true);
         match("idKeyWord_static");
-        metodo.setTipo(tipoMetodo());
-            metodo.setToken(actualToken);
+        method.setMethodType(tipoMetodo());
+            method.setMethodToken(actualToken);
         match("idMetVar");
-        argsFormales(metodo);
+        argsFormales(method);
         bloque();
-        st.actualClassInterfaceAddMethod(metodo);
+        st.actualClassInterfaceAddMethod(method);
     }
 
     // 20 ------------------------------------------------------------------------------
@@ -378,17 +378,17 @@ public class SyntacticAnalyzer {
     // Primeros: {void}
     // Siguientes: -
     private void metodoNoEstaticoVoid() throws LexicalException, SyntacticException, SemanticException {
-            Metodo metodo = new Metodo();
-            metodo.setClaseDefinido(st.getActualClassInterfaceName());
-            metodo.setStatic(false);
-            Tipo tipo = new Tipo(actualToken);
+            Method method = new Method();
+            method.setClassDeclaredMethod(st.getActualClassInterfaceName());
+            method.setStatic(false);
+            Type type = new Type(actualToken);
         match("idKeyWord_void");
-            metodo.setToken(actualToken);
+            method.setMethodToken(actualToken);
         match("idMetVar");
-            metodo.setTipo(tipo);
-        argsFormales(metodo);
+            method.setMethodType(type);
+        argsFormales(method);
         bloque();
-            st.actualClassInterfaceAddMethod(metodo);
+            st.actualClassInterfaceAddMethod(method);
     }
 
     // 21 ------------------------------------------------------------------------------
@@ -430,38 +430,38 @@ public class SyntacticAnalyzer {
     // <Tipo> ::= <TipoPrimitivo> | idClase <GenericoOpt>
     // Primeros: {boolean, char, int, idClase}
     // Siguientes: -
-    private Tipo tipo() throws LexicalException, SyntacticException {
-        Tipo tipo;
+    private Type tipo() throws LexicalException, SyntacticException {
+        Type type;
         if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())){
-            tipo = tipoPrimitivo();
+            type = tipoPrimitivo();
         }else if(Arrays.asList("idClass").contains(actualToken.getToken())){
-                tipo = new Tipo(actualToken);
+                type = new Type(actualToken);
             match("idClass");
         }else{
             throw new SyntacticException(actualToken, "{boolean, char, int, idClase}");
         }
-        return tipo;
+        return type;
     }
 
     // 24 ------------------------------------------------------------------------------
     // <TipoPrimitivo> ::= boolean | char | int
     // Primeros: {boolean, char, int}
     // Siguientes: -
-    private Tipo tipoPrimitivo() throws SyntacticException, LexicalException {
-        Tipo tipo;
+    private Type tipoPrimitivo() throws SyntacticException, LexicalException {
+        Type type;
         if(Arrays.asList("idKeyWord_boolean").contains(actualToken.getToken())){
-                tipo = new Tipo(actualToken);
+                type = new Type(actualToken);
             match("idKeyWord_boolean");
         }else if(Arrays.asList("idKeyWord_char").contains(actualToken.getToken())){
-                tipo = new Tipo(actualToken);
+                type = new Type(actualToken);
             match("idKeyWord_char");
         }else if(Arrays.asList("idKeyWord_int").contains(actualToken.getToken())){
-                tipo = new Tipo(actualToken);
+                type = new Type(actualToken);
             match("idKeyWord_int");
         }else{
             throw new SyntacticException(actualToken, "{boolean, char, int}");
         }
-        return tipo;
+        return type;
     }
 
     // 25 ------------------------------------------------------------------------------
@@ -518,13 +518,13 @@ public class SyntacticAnalyzer {
     // <EstaticoOpt> ::= static | e
     // Primeros: {static, e}
     // Siguientes: {boolean, char, int, idClase, void}
-    private void estaticoOpt(Metodo metodo) throws LexicalException, SyntacticException {
+    private void estaticoOpt(Method method) throws LexicalException, SyntacticException {
         if(Arrays.asList("idKeyWord_static").contains(actualToken.getToken())){
-                metodo.setStatic(true);
+                method.setStatic(true);
             match("idKeyWord_static");
         }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass", "idKeyWord_void").contains(actualToken.getToken())){
             // vacio
-                metodo.setStatic(false);
+                method.setStatic(false);
         }else{
             throw new SyntacticException(actualToken, "{static, boolean, char, int, idClase, void}");
         }
@@ -534,17 +534,17 @@ public class SyntacticAnalyzer {
     // <TipoMetodo> ::= <Tipo> | void
     // Primeros: {boolean, char, int, idClase, void}
     // Siguientes: -
-    private Tipo tipoMetodo() throws SyntacticException, LexicalException {
-            Tipo tipo;
+    private Type tipoMetodo() throws SyntacticException, LexicalException {
+            Type type;
         if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
-            tipo = tipo();
+            type = tipo();
         }else if(Arrays.asList("idKeyWord_void").contains(actualToken.getToken())){
-                tipo = new Tipo(actualToken);
+                type = new Type(actualToken);
             match("idKeyWord_void");
         }else{
             throw new SyntacticException(actualToken, "{boolean, char, int, idClase, void}");
         }
-        return tipo;
+        return type;
     }
 
 
@@ -553,9 +553,9 @@ public class SyntacticAnalyzer {
     // <ArgsFormales> ::= ( <ListaArgsFormalesOpt> )
     // Primeros: { ( }
     // Siguientes: -
-    private void argsFormales(Metodo metodo) throws LexicalException, SyntacticException, SemanticException {
+    private void argsFormales(Method method) throws LexicalException, SyntacticException, SemanticException {
         match("punctuationOpeningParenthesis");
-        listaArgsFormalesOpt(metodo);
+        listaArgsFormalesOpt(method);
         match("punctuationClosingParenthesis");
     }
 
@@ -563,9 +563,9 @@ public class SyntacticAnalyzer {
     // <ListaArgsFormalesOpt> ::= <ListaArgsFormales> | e
     // Primeros: {boolean, char, int, idClase, e}
     // Siguientes: { ) }
-    private void listaArgsFormalesOpt(Metodo metodo) throws SyntacticException, LexicalException, SemanticException {
+    private void listaArgsFormalesOpt(Method method) throws SyntacticException, LexicalException, SemanticException {
         if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
-            listaArgsFormales(metodo);
+            listaArgsFormales(method);
         }else if(Arrays.asList("punctuationClosingParenthesis").contains(actualToken.getToken())){
             // vacio
         }else{
@@ -577,19 +577,19 @@ public class SyntacticAnalyzer {
     // <ListaArgsFormales> ::= <ArgFormal> <ListaArgsFormalesResto>
     // Primeros: {boolean, char, int, idClase}
     // Siguientes: -
-    private void listaArgsFormales(Metodo metodo) throws SyntacticException, LexicalException, SemanticException {
-        argFormal(metodo);
-        listaArgsFormalesResto(metodo);
+    private void listaArgsFormales(Method method) throws SyntacticException, LexicalException, SemanticException {
+        argFormal(method);
+        listaArgsFormalesResto(method);
     }
 
     // 32 ------------------------------------------------------------------------------
     // <ListaArgsFormalesResto> ::= , <ListaArgsFormales> | e
     // Primeros: { , , e }
     // Siguientes: { ) }
-    private void listaArgsFormalesResto(Metodo metodo) throws SyntacticException, LexicalException, SemanticException {
+    private void listaArgsFormalesResto(Method method) throws SyntacticException, LexicalException, SemanticException {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
             match("punctuationComma");
-            listaArgsFormales(metodo);
+            listaArgsFormales(method);
         }else if(Arrays.asList("punctuationClosingParenthesis").contains(actualToken.getToken())){
             // vacio
         }else{
@@ -601,12 +601,12 @@ public class SyntacticAnalyzer {
     // <ArgFormal> ::= <Tipo> idMetVar
     // Primeros: {boolean, char, int, idClase}
     // Siguientes: -
-    private void argFormal(Metodo metodo) throws LexicalException, SyntacticException, SemanticException {
-            Parametro parametro = new Parametro();
-            parametro.setTipo(tipo());
-            parametro.setVarToken(actualToken);
-            parametro.setMetodo(metodo);
-            if(metodo.addParametro(parametro) != null) throw new SemanticExceptionDuplicatedParameter(parametro);
+    private void argFormal(Method method) throws LexicalException, SyntacticException, SemanticException {
+            Parameter parameter = new Parameter();
+            parameter.setVarType(tipo());
+            parameter.setVarToken(actualToken);
+            parameter.setMethod(method);
+            if(method.addParameter(parameter) != null) throw new SemanticExceptionDuplicatedParameter(parameter);
         match("idMetVar");
     }
 

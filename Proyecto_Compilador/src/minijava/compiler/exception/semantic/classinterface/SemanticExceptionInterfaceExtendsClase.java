@@ -1,14 +1,14 @@
 package minijava.compiler.exception.semantic.classinterface;
 
 import minijava.compiler.exception.semantic.SemanticException;
-import minijava.compiler.semantic.tables.ClaseInterface;
+import minijava.compiler.semantic.tables.ClassOrInterface;
 
 public class SemanticExceptionInterfaceExtendsClase extends SemanticException {
 
-    private ClaseInterface intDesc;
+    private ClassOrInterface intDesc;
 
-    public SemanticExceptionInterfaceExtendsClase(ClaseInterface intDesc){
-        super("La interfaz \'"+intDesc.getNombre()+"\' esta intentando heredar de una clase.", intDesc.getClaseOrinterfaceToken());
+    public SemanticExceptionInterfaceExtendsClase(ClassOrInterface intDesc){
+        super("La interfaz \'"+intDesc.getNombre()+"\' esta intentando heredar de una clase.", intDesc.getClassOrinterfaceToken());
         this.intDesc = intDesc;
     }
 }

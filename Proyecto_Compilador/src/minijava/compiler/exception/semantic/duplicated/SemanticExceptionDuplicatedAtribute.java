@@ -8,7 +8,7 @@ public class SemanticExceptionDuplicatedAtribute extends SemanticException {
     private Atributo atributo;
 
     public SemanticExceptionDuplicatedAtribute(Atributo atributo){
-        super("El atributo \'"+atributo.getNombre()+"\' posee un nombre que ya esta siendo utilizado.", atributo.getVarToken());
+        super("El atributo \'"+atributo.getVarName()+"\' posee un nombre que ya esta siendo utilizado.", atributo.getVarToken());
         this.atributo = atributo;
     }
 }

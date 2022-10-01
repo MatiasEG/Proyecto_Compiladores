@@ -8,7 +8,7 @@ public class SyntacticException extends Exception{
     private Token errorToken;
 
     public SyntacticException(Token errorToken, String posibleTokens){
-        super("Error en la linea: "+errorToken.getLineNumber()+", se encontro el lexema "+errorToken.getLexeme()+" y se esperaba un elemento del conjunto "+posibleTokens);
+        super("Error en la linea: "+errorToken.getRow()+", se encontro el lexema "+errorToken.getLexeme()+" y se esperaba un elemento del conjunto "+posibleTokens);
         this.posibleTokens = posibleTokens;
         this.errorToken = errorToken;
     }
@@ -17,5 +17,5 @@ public class SyntacticException extends Exception{
 
     public Token getErrorToken() { return errorToken; }
 
-    public int getRow(){ return errorToken.getLineNumber(); }
+    public int getRow(){ return errorToken.getRow(); }
 }

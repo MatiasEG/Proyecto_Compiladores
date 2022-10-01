@@ -11,7 +11,7 @@ public abstract class SemanticException extends Exception{
         this.errorToken = errorToken;
     }
 
-    public int getRow(){ return errorToken.getLineNumber(); };
+    public int getRow(){ return errorToken.getRow(); };
 
     public String getLexeme(){ return errorToken.getLexeme(); };
 }

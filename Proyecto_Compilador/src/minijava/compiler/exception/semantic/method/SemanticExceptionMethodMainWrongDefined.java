@@ -1,14 +1,14 @@
 package minijava.compiler.exception.semantic.method;
 
 import minijava.compiler.exception.semantic.SemanticException;
-import minijava.compiler.semantic.tables.Metodo;
+import minijava.compiler.semantic.tables.Method;
 
 public class SemanticExceptionMethodMainWrongDefined extends SemanticException {
 
-    private Metodo wrongDefinedMain;
+    private Method wrongDefinedMain;
 
-    public SemanticExceptionMethodMainWrongDefined(Metodo wrongDefinedMain){
-        super("El metodo main declarado en la linea ("+wrongDefinedMain.getLineNumber()+") esta mal declarado.", wrongDefinedMain.getToken());
+    public SemanticExceptionMethodMainWrongDefined(Method wrongDefinedMain){
+        super("El metodo main declarado en la linea ("+wrongDefinedMain.getMethodRow()+") esta mal declarado.", wrongDefinedMain.getMethodToken());
         this.wrongDefinedMain = wrongDefinedMain;
     }
 }
