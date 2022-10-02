@@ -46,3 +46,5 @@ class Clase2 extends Clase1 implements Interface1{
     void m1(A a1){}
     int m3(){}
 }
+
+class A{}

@@ -1,6 +1,6 @@
 package minijava.compiler.semantic.tables;
 
-public class Atributo extends Variable{
+public class Attribute extends Variable{
 
     private boolean isVisible;
 
@@ -8,16 +8,16 @@ public class Atributo extends Variable{
 
     public boolean isVisible() { return isVisible; }
 
-    public static Atributo clone(Atributo atributo){
-        Atributo clone = new Atributo();
-        clone.setVarType(atributo.getVarType());
-        clone.setVarToken(atributo.getVarToken());
-        clone.setVisibilidad(atributo.isVisible());
+    public static Attribute clone(Attribute attribute){
+        Attribute clone = new Attribute();
+        clone.setVarType(attribute.getVarType());
+        clone.setVarToken(attribute.getVarToken());
+        clone.setVisibilidad(attribute.isVisible());
         return clone;
     }
 
     public boolean equals(Variable var2compare){
-        Atributo atr2compare = (Atributo) var2compare;
+        Attribute atr2compare = (Attribute) var2compare;
         if(this.getVarType().equals(atr2compare.getVarType()) && this.getVarName().equals(atr2compare.getVarName())){
             return true;
         }else{

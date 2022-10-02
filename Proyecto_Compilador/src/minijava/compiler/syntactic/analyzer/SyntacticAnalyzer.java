@@ -261,10 +261,10 @@ public class SyntacticAnalyzer {
     // Siguientes: -
     private void miembro() throws SyntacticException, LexicalException, SemanticException {
         if(Arrays.asList("idKeyWord_private", "idKeyWord_public").contains(actualToken.getToken())) {
-            Atributo atributo = new Atributo();
-            atributo.setHeredityVisibility(true);
-            atributo.setVisibilidad(visibilidad());
-            atributo(atributo);
+            Attribute attribute = new Attribute();
+            attribute.setHeredityVisibility(true);
+            attribute.setVisibilidad(visibilidad());
+            atributo(attribute);
         }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
             constructorOAtrMet();
         }else if(Arrays.asList("idKeyWord_void").contains(actualToken.getToken())) {
@@ -329,12 +329,12 @@ public class SyntacticAnalyzer {
             bloque();
             st.actualClassInterfaceAddMethod(method);
         }else if(Arrays.asList("punctuationComma", "punctuationSemicolon").contains(actualToken.getToken())){
-            Atributo atributo = new Atributo();
-            atributo.setVarType(type);
-            atributo.setVisibilidad(true);
-            atributo.setVarToken(nombreMetVar);
-            st.actualClassAddAtribute(atributo);
-            listaDecAtrs(Atributo.clone(atributo));
+            Attribute attribute = new Attribute();
+            attribute.setVarType(type);
+            attribute.setVisibilidad(true);
+            attribute.setVarToken(nombreMetVar);
+            st.actualClassAddAtribute(attribute);
+            listaDecAtrs(Attribute.clone(attribute));
             match("punctuationSemicolon");
         }else{
             throw new SyntacticException(actualToken, "{ ( , , , ; , public, private, idClase, boolean, char, int, void, static, } }");
@@ -345,14 +345,14 @@ public class SyntacticAnalyzer {
     // <Atributo> ::= <Tipo> idMetVar <ListaDecAtrs> ;
     // Primeros: {boolean, char, int, idClase}
     // Siguientes: -
-    private void atributo(Atributo atributo) throws LexicalException, SyntacticException, SemanticException {
+    private void atributo(Attribute attribute) throws LexicalException, SyntacticException, SemanticException {
         Type type = tipo();
-            atributo.setVarType(type);
+            attribute.setVarType(type);
             String name = actualToken.getLexeme();
-            atributo.setVarToken(actualToken);
+            attribute.setVarToken(actualToken);
         match("idMetVar");
-            st.actualClassAddAtribute(atributo);
-        listaDecAtrs(Atributo.clone(atributo));
+            st.actualClassAddAtribute(attribute);
+        listaDecAtrs(Attribute.clone(attribute));
         match("punctuationSemicolon");
     }
 
@@ -395,13 +395,13 @@ public class SyntacticAnalyzer {
     // <ListaDecAtrs> ::= , idMetVar <ListaDecAtrs> | e
     // Primeros: { , , e }
     // Siguientes: { ; , = }
-    private void listaDecAtrs(Atributo atributo) throws LexicalException, SyntacticException, SemanticException {
+    private void listaDecAtrs(Attribute attribute) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())) {
             match("punctuationComma");
-                atributo.setVarToken(actualToken);
+                attribute.setVarToken(actualToken);
             match("idMetVar");
-            st.actualClassAddAtribute(atributo);
-            listaDecAtrs(Atributo.clone(atributo));
+            st.actualClassAddAtribute(attribute);
+            listaDecAtrs(Attribute.clone(attribute));
         }else if(Arrays.asList("punctuationSemicolon", "assignment").contains(actualToken.getToken())){
             //vacio
         }else{

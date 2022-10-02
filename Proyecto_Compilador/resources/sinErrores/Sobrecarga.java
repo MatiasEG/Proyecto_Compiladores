@@ -21,3 +21,5 @@ class B{
 interface X{
     ClaseRef m1(int i, String s);
 }
+
+class ClaseRef{}

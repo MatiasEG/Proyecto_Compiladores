@@ -16,4 +16,6 @@ public class Type {
     public boolean equals(Type type){
         return this.getLexemeType().equals(type.getLexemeType());
     }
+
+    public boolean isClassRef(){ return typeToken.getToken() == "idClass";}
 }

@@ -19,3 +19,5 @@ interface X{
 
     ClaseRef m3();
 }
+
+class ClaseRef{}

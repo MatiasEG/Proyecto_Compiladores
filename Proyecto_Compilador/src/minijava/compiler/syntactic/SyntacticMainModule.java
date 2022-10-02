@@ -36,6 +36,9 @@ public class SyntacticMainModule {
 
     // TODO los atributos heredados que fueron declarados nuevamente, aparecen ocultos en la clase? o no los agrego a la tabla?
 
+
+    //TODO CONSIDERACION si un metodo de interfaz es estatico, lo que hago es mostrar el error en el nombre del metodo ya que no guardo token del statico, lo represento con un boolean.
+
     public static void main(String[]args){
 
 //        FileManager fileManager = new FileManager(new File("resources/Clases.java"));
@@ -75,7 +78,7 @@ public class SyntacticMainModule {
 
         if(!error) {
             System.out.println("[SinErrores]");
-            st.imprimirTablas();
+            // TODO metodo para testear tablas st.imprimirTablas();
         }
 
     }

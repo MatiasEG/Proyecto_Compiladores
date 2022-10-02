@@ -17,111 +17,110 @@ import java.util.Map;
 
 public class SymbolTable {
 
-    private ClassOrInterface claseActual;
-    private HashMap<String, Class> clases;
+    private ClassOrInterface actualClassOrInterface;
+    private HashMap<String, Class> classes;
     private HashMap<String, Interface_> interfaces;
 
     public SymbolTable(){
-        clases = new HashMap<>();
+        classes = new HashMap<>();
         interfaces = new HashMap<>();
     }
 
     public void createConcreteClasses() throws SemanticException {
         Class object = DefaultClasesManager.createObjectClass();
-        clases.put(object.getNombre(), object);
+        classes.put(object.getNombre(), object);
 
         Class string = DefaultClasesManager.createStringClass();
-        clases.put(string.getNombre(), string);
+        classes.put(string.getNombre(), string);
 
         Class system = DefaultClasesManager.createSystemClass();
-        clases.put(system.getNombre(), system);
+        classes.put(system.getNombre(), system);
     }
 
     public void setActualClassOrInterface(ClassOrInterface classOrInterface){
-        claseActual = classOrInterface;
+        actualClassOrInterface = classOrInterface;
     }
 
-    public void setActualClassInterfaceListOfExtends(ArrayList<Token> extendsFrom){ claseActual.setListOfExtends(extendsFrom); }
+    public void setActualClassInterfaceListOfExtends(ArrayList<Token> extendsFrom){ actualClassOrInterface.setListOfExtends(extendsFrom); }
 
-    public void setActualClassListOfImplements(ArrayList<Token> implement){ ((Class) claseActual).setListOfImplements(implement); }
+    public void setActualClassListOfImplements(ArrayList<Token> implement){ ((Class) actualClassOrInterface).setListOfImplements(implement); }
 
-    public String getActualClassInterfaceName(){ return claseActual.getNombre(); }
+    public String getActualClassInterfaceName(){ return actualClassOrInterface.getNombre(); }
 
-    public Token getObjectClassToken(){ return clases.get("Object").getClassOrinterfaceToken(); }
+    public Token getObjectClassToken(){ return classes.get("Object").getClassOrinterfaceToken(); }
 
     public void insertarClase() throws SemanticException{
-        if(alreadyExist(claseActual.getNombre()) == null){
-            clases.put(claseActual.getNombre(), (Class) claseActual);
+        if(alreadyExist(actualClassOrInterface.getNombre()) == null){
+            classes.put(actualClassOrInterface.getNombre(), (Class) actualClassOrInterface);
         }else{
-            throw new SemanticExceptionClassInterfaceNameDuplicated("Nombre de clase repetido.", claseActual);
+            throw new SemanticExceptionClassInterfaceNameDuplicated("Nombre de clase repetido.", actualClassOrInterface);
         }
     }
 
     public void insertarInterface() throws SemanticException{
-        if(alreadyExist(claseActual.getNombre()) == null){
-            interfaces.put(claseActual.getNombre(), (Interface_) claseActual);
+        if(alreadyExist(actualClassOrInterface.getNombre()) == null){
+            interfaces.put(actualClassOrInterface.getNombre(), (Interface_) actualClassOrInterface);
         }else{
-            throw new SemanticExceptionClassInterfaceNameDuplicated("Nombre de interfaz repetido.", claseActual);
+            throw new SemanticExceptionClassInterfaceNameDuplicated("Nombre de interfaz repetido.", actualClassOrInterface);
         }
 
     }
 
-    public void actualClassAddAtribute(Atributo atributo) throws SemanticException{
-        Class clase = (Class) claseActual;
+    public void actualClassAddAtribute(Attribute attribute) throws SemanticException{
+        Class clase = (Class) actualClassOrInterface;
 
-        if(!clase.alreadyHaveAttribute(atributo)){
-            clase.addAttribute(atributo);
+        if(!clase.alreadyHaveAttribute(attribute)){
+            clase.addAttribute(attribute);
         }else{
-            throw new SemanticExceptionDuplicatedAtribute(atributo);
+            throw new SemanticExceptionDuplicatedAtribute(attribute);
         }
     }
 
     public void actualClassInterfaceAddMethod(Method method) throws SemanticException{
-        if(!claseActual.sameMethodOverloaded(method)){
-            claseActual.addMetodo(method);
+        if(!actualClassOrInterface.sameMethodOverloaded(method)){
+            actualClassOrInterface.addMetodo(method);
         }else{
             throw new SemanticExceptionDuplicatedMethod(method);
         }
     }
 
     public void actualClassInterfaceAddConstructor(Method method) throws SemanticException{
-        if(!claseActual.sameMethodOverloaded(method)){
-            if(!claseActual.getNombre().equals(method.getMethodName())) throw new SemanticExceptionWrongDefinedConstructor(method);
-            claseActual.addMetodo(method);
+        if(!actualClassOrInterface.sameMethodOverloaded(method)){
+            if(!actualClassOrInterface.getNombre().equals(method.getMethodName())) throw new SemanticExceptionWrongDefinedConstructor(method);
+            actualClassOrInterface.addMetodo(method);
         }else{
             throw new SemanticExceptionDuplicatedMethod(method);
         }
     }
 
     public ClassOrInterface alreadyExist(String classORinterface){
-        if(clases.containsKey(classORinterface)) return clases.get(classORinterface);
+        if(classes.containsKey(classORinterface)) return classes.get(classORinterface);
         if(interfaces.containsKey(classORinterface)) return interfaces.get(classORinterface);
 
         return null;
     }
 
-
-
-
-
-
     public void check() throws SemanticException{
         int main = 0;
         String s;
-        for(Map.Entry<String, Class> entry: clases.entrySet()){
+        for(Map.Entry<String, Class> entry: classes.entrySet()){
 
             for(Token t: entry.getValue().getExtendedClasses()){
                 s = t.getLexeme();
-                if(!clases.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
-                main += checkMainYConstructor(main, entry.getValue(), entry.getValue().getMethods());
+                if(!classes.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
+                main += checkMetodos(main, entry.getValue(), entry.getValue().getMethods());
                 checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
             }
 
             for(Token t: entry.getValue().getImplementedClasses()){
                 s = t.getLexeme();
-                if(clases.containsKey(s)) throw new SemanticExceptionInterfaceExtendsClase(interfaces.get(entry.getValue()));
+                if(classes.containsKey(s)) throw new SemanticExceptionInterfaceExtendsClase(interfaces.get(entry.getValue()));
                 if(!interfaces.containsKey(s)) throw new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), t);
                 checkMetodosImplementados(entry.getValue(), interfaces.get(s));
+            }
+
+            for(Attribute a: entry.getValue().getAttributes()){
+                if(a.getVarType().isClassRef() && alreadyExist(a.getVarType().getLexemeType()) == null) throw new SemanticExceptionClassRefNotExist(a.getVarType().getTokenType());
             }
 
         }
@@ -135,11 +134,15 @@ public class SymbolTable {
                 if(!interfaces.containsKey(s)) throw new SemanticExceptionExtendedInterfaceDoesNotExist(entry.getValue(), t);
                 checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
             }
+
+            for(Method m: entry.getValue().getMethods()){
+                if(m.isStatic()) throw new SemanticExceptionStaticMethodOnInterface(m);
+            }
         }
 
     }
 
-    private int checkMainYConstructor(int main, Class clase, ArrayList<Method> methods) throws SemanticException{
+    private int checkMetodos(int main, Class clase, ArrayList<Method> methods) throws SemanticException{
         boolean constructorBasico = false;
 
         for(Method m: methods){
@@ -152,6 +155,12 @@ public class SymbolTable {
             }else if(m.getMethodName().equals(m.getMethodType().getLexemeType()) && m.getParameters().size() == 0){
                 constructorBasico = true;
             }
+
+            for(Parameter p: m.getParameters()){
+                if(p.getVarType().isClassRef() && alreadyExist(p.getVarType().getLexemeType()) == null) throw new SemanticExceptionClassRefNotExist(p.getVarType().getTokenType());
+            }
+
+            if(m.getMethodType().isClassRef() && alreadyExist(m.getMethodType().getLexemeType()) == null) throw new SemanticExceptionClassRefNotExist(m.getMethodType().getTokenType());
         }
 
         if(!constructorBasico){
@@ -166,54 +175,12 @@ public class SymbolTable {
         return main;
     }
 
-    private boolean herenciaCircular(ClassOrInterface classOrInterfaceDesc, ClassOrInterface classOrInterfacePadre) {
-        boolean resultado = false;
-        for(Token herenciaDelPadre: classOrInterfacePadre.getExtendedClasses()){
-            if(herenciaDelPadre.getLexeme().equals(classOrInterfaceDesc.getNombre())) resultado = true;
-            if(!resultado) resultado = herenciaCircular(classOrInterfaceDesc, clases.get(alreadyExist(herenciaDelPadre.getLexeme()).getNombre()));
-        }
-        return resultado;
-    }
-
     private void checkMetodosImplementados(Class claseImplementa, Interface_ interface_) throws SemanticException{
         for(Method m: interface_.getMethods()){
             if(claseImplementa.getHashMapMethods().containsKey(m.getMapKey())){
                 if(!m.equals(claseImplementa.getHashMapMethods().get(m.getMapKey()))) throw new SemanticExceptionMethodWrongImplemented(claseImplementa, m);
             }else{
                 throw new SemanticExceptionMethodNotImplemented(claseImplementa, m);
-            }
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-    public void consolidacion() throws SemanticException{
-        String s;
-        for(Map.Entry<String, Class> entry: clases.entrySet()){
-            for(Token t: entry.getValue().getExtendedClasses()){
-                s = t.getLexeme();
-                checkAtributosHeredados(entry.getValue(), clases.get(s));
-                if(herenciaCircular(entry.getValue(), clases.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
-            }
-
-            for(Token t: entry.getValue().getImplementedClasses()){
-                s = t.getLexeme();
-                if(clases.containsKey(s)) throw new SemanticExceptionClassImplementClass(entry.getValue());
-            }
-        }
-
-
-        for(Map.Entry<String, Interface_> entry: interfaces.entrySet()){
-            for(Token t: entry.getValue().getExtendedClasses()){
-                s = t.getLexeme();
-                if(herenciaCircular(entry.getValue(), interfaces.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
             }
         }
     }
@@ -228,8 +195,37 @@ public class SymbolTable {
         }
     }
 
-    private void checkAtributosHeredados(Class descendiente, Class padre){
-        for(Atributo at: padre.getAttributes()){
+    public void consolidacion() throws SemanticException{
+        for(Map.Entry<String, Class> entry: classes.entrySet()){
+            for(Token t: entry.getValue().getExtendedClasses()){
+                consolidacionAtributosHeredados(entry.getValue(), classes.get(t.getLexeme()));
+                if(consolidacionHerenciaCircular(entry.getValue(), classes.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
+            }
+
+            for(Token t: entry.getValue().getImplementedClasses()){
+                if(classes.containsKey(t.getLexeme())) throw new SemanticExceptionClassImplementClass(entry.getValue());
+            }
+        }
+
+
+        for(Map.Entry<String, Interface_> entry: interfaces.entrySet()){
+            for(Token t: entry.getValue().getExtendedClasses()){
+                if(consolidacionHerenciaCircular(entry.getValue(), interfaces.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
+            }
+        }
+    }
+
+    private boolean consolidacionHerenciaCircular(ClassOrInterface classOrInterfaceDesc, ClassOrInterface classOrInterfacePadre) {
+        boolean resultado = false;
+        for(Token herenciaDelPadre: classOrInterfacePadre.getExtendedClasses()){
+            if(herenciaDelPadre.getLexeme().equals(classOrInterfaceDesc.getNombre())) resultado = true;
+            if(!resultado) resultado = consolidacionHerenciaCircular(classOrInterfaceDesc, classes.get(alreadyExist(herenciaDelPadre.getLexeme()).getNombre()));
+        }
+        return resultado;
+    }
+
+    private void consolidacionAtributosHeredados(Class descendiente, Class padre){
+        for(Attribute at: padre.getAttributes()){
             if(descendiente.getHashMapAtributes().containsKey(at.getVarName())){
                 at.setHeredityVisibility(false);
                 descendiente.addAttribute(at);
@@ -253,7 +249,7 @@ public class SymbolTable {
     public void imprimirTablas(){
         System.out.println("\n--------------------------\n\n");
         System.out.println("Clases");
-        clases.forEach((nombre,tablaClase) -> {
+        classes.forEach((nombre, tablaClase) -> {
             String s;
             System.out.println("Nombre: "+nombre);
             ArrayList<Token> aux = tablaClase.getExtendedClasses();
@@ -268,8 +264,8 @@ public class SymbolTable {
             }
 
             System.out.println("Atributos de "+nombre);
-            ArrayList<Atributo> atributos = tablaClase.getAttributes();
-            for(Atributo a: atributos){
+            ArrayList<Attribute> attributes = tablaClase.getAttributes();
+            for(Attribute a: attributes){
                 System.out.println("Atributo: "+a.getVarName()+"---------------------------------");
                 System.out.println(" > "+a.getVarName()+" visibilidad: "+a.isVisible());
                 System.out.println(" > "+a.getVarName()+" tipo: "+a.getVarType().getLexemeType());
