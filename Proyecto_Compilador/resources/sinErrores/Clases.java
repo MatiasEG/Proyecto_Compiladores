@@ -19,7 +19,8 @@ class Clase1{
     static void main(){}
 }
 
-class Clase2 extends Clase1 implements Interface1{
+// Reconozco sintacticamente la genericidad, pero no la analizo semanticamente
+class Clase2<A<C>, B> extends Clase1 implements Interface1{
 
     public boolean booleano1, booleano2;
 

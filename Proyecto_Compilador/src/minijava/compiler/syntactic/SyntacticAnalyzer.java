@@ -487,28 +487,30 @@ public class SyntacticAnalyzer {
     }
 
     // 25 AUX ------------------------------------------------------------------------------
-    // <GenericoOptResto> ::= <Tipo> <ListaTipos> | e
-    // Primeros: {boolean, char, int, idClase}
+    // <GenericoOptResto> ::= idClase <GenericoOpt> <ListaTipos> | e
+    // Primeros: {idClase}
     // Siguientes: { > }
     private void genericoOptResto() throws LexicalException, SyntacticException {
-        if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
-            tipo();
+        if(Arrays.asList("idClass").contains(actualToken.getToken())){
+            match("idClass");
+            genericoOpt();
             listaTipos();
         }else if(Arrays.asList("opGreater").contains(actualToken.getToken())){
             //vacio
         }else{
-            throw new SyntacticException(actualToken, "{boolean, char, int, idClase, > }");
+            throw new SyntacticException(actualToken, "{idClase, > }");
         }
     }
 
     // 26 ------------------------------------------------------------------------------
-    // <ListaTipos> ::= , <Tipo> <ListaTipos> | e
+    // <ListaTipos> ::= , idClase <GenericoOpt> <ListaTipos> | e
     // Primeros: { , , e }
     // Siguientes: { > }
     private void listaTipos() throws LexicalException, SyntacticException {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
             match("punctuationComma");
-            tipo();
+            match("idClass");
+            genericoOpt();
             listaTipos();
         }else if(Arrays.asList("opGreater").contains(actualToken.getToken())){
             // vacio
