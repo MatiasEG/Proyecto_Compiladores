@@ -3,7 +3,6 @@ package minijava.compiler.semantic;
 import java.io.*;
 import java.util.ArrayList;
 
-import minijava.compiler.syntactic.SyntacticMainModule;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Test;
@@ -17,7 +16,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class TesterDeCasosConErrores {
     
     //TODO: el tipo de esta variable init tiene que ser la clase que tiene el main
-    private static final SyntacticMainModule init = null;
+    private static final MainModule init = null;
     
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;

@@ -11,7 +11,7 @@ public class SemanticExceptionMethodNotImplemented extends SemanticException {
 
     public SemanticExceptionMethodNotImplemented(Class claseQueNoImplementaMetodo, Method methodNoImplementado){
         super("La clase \'"+claseQueNoImplementaMetodo.getNombre()+"\' no implementa el metodo \'" + methodNoImplementado.getMethodName()+
-                "\' de la interface \'"+ methodNoImplementado.getClassDeclaredMethod()+"\'", methodNoImplementado.getMethodToken());
+                "\' de la interface \'"+ methodNoImplementado.getClassDeclaredMethod()+"\'.", methodNoImplementado.getMethodToken());
         this.claseQueNoImplementaMetodo = claseQueNoImplementaMetodo;
         this.methodNoImplementado = methodNoImplementado;
     }

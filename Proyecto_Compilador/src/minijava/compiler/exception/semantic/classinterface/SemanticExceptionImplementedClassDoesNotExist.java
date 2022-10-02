@@ -10,7 +10,7 @@ public class SemanticExceptionImplementedClassDoesNotExist extends SemanticExcep
     private Token errorClass;
 
     public SemanticExceptionImplementedClassDoesNotExist(ClassOrInterface classOrInterface, Token errorClass){
-        super("La clase \'"+errorClass+"\' que \'"+ classOrInterface.getNombre()+"\' busca implementar no esta definida en el codigo.", errorClass);
+        super("La interfaz \'"+errorClass+"\' que \'"+ classOrInterface.getNombre()+"\' busca implementar no esta definida en el codigo.", errorClass);
         this.classOrInterface = classOrInterface;
         this.errorClass = errorClass;
     }

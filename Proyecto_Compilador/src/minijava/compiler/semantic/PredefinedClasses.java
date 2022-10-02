@@ -8,7 +8,7 @@ import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Parameter;
 import minijava.compiler.semantic.tables.Type;
 
-public class DefaultClasesManager {
+public class PredefinedClasses {
 
     public static Class createObjectClass() throws SemanticException {
         Parameter parameterIf;

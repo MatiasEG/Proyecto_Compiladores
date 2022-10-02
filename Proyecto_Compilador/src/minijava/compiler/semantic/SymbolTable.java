@@ -27,13 +27,13 @@ public class SymbolTable {
     }
 
     public void createConcreteClasses() throws SemanticException {
-        Class object = DefaultClasesManager.createObjectClass();
+        Class object = PredefinedClasses.createObjectClass();
         classes.put(object.getNombre(), object);
 
-        Class string = DefaultClasesManager.createStringClass();
+        Class string = PredefinedClasses.createStringClass();
         classes.put(string.getNombre(), string);
 
-        Class system = DefaultClasesManager.createSystemClass();
+        Class system = PredefinedClasses.createSystemClass();
         classes.put(system.getNombre(), system);
     }
 
@@ -226,11 +226,13 @@ public class SymbolTable {
 
     private void consolidacionAtributosHeredados(Class descendiente, Class padre){
         for(Attribute at: padre.getAttributes()){
-            if(descendiente.getHashMapAtributes().containsKey(at.getVarName())){
-                at.setHeredityVisibility(false);
-                descendiente.addAttribute(at);
-            }else{
-                descendiente.addAttribute(at);
+            if(at.isPublic()){
+                if(descendiente.getHashMapAtributes().containsKey(at.getVarName())){
+                    at.setHeredityVisibility(false);
+                    descendiente.addAttribute(at);
+                }else{
+                    descendiente.addAttribute(at);
+                }
             }
         }
     }
@@ -267,7 +269,7 @@ public class SymbolTable {
             ArrayList<Attribute> attributes = tablaClase.getAttributes();
             for(Attribute a: attributes){
                 System.out.println("Atributo: "+a.getVarName()+"---------------------------------");
-                System.out.println(" > "+a.getVarName()+" visibilidad: "+a.isVisible());
+                System.out.println(" > "+a.getVarName()+" visibilidad: "+a.isPublic());
                 System.out.println(" > "+a.getVarName()+" tipo: "+a.getVarType().getLexemeType());
             }
 

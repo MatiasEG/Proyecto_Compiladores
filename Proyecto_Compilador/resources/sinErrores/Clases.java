@@ -23,11 +23,14 @@ class Clase2 extends Clase1 implements Interface1{
 
     public boolean booleano1, booleano2;
 
-    private A a1, a2, a3;
+    // Correccion del analizador sintactico
+    private A a1, a2, a3 = null;
 
     int entero1;
 
-    static void metodo1(A a1, boolean booleano1){}
+    static void metodo1(A a1, boolean booleano1){
+        A.b().c = 1; // Correccion del analizador sintactico
+    }
 
     void metodo2(){}
 

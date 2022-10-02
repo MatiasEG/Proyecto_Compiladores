@@ -2,17 +2,17 @@ package minijava.compiler.semantic.tables;
 
 public class Attribute extends Variable{
 
-    private boolean isVisible;
+    private boolean isPublic;
 
-    public void setVisibilidad(boolean isVisible){ this.isVisible = isVisible; }
+    public void setVisibilidad(boolean isVisible){ this.isPublic = isVisible; }
 
-    public boolean isVisible() { return isVisible; }
+    public boolean isPublic() { return isPublic; }
 
     public static Attribute clone(Attribute attribute){
         Attribute clone = new Attribute();
         clone.setVarType(attribute.getVarType());
         clone.setVarToken(attribute.getVarToken());
-        clone.setVisibilidad(attribute.isVisible());
+        clone.setVisibilidad(attribute.isPublic());
         return clone;
     }
 

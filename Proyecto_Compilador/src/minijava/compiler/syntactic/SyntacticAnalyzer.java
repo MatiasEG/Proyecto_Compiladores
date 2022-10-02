@@ -1,4 +1,4 @@
-package minijava.compiler.syntactic.analyzer;
+package minijava.compiler.syntactic;
 
 import minijava.compiler.exception.*;
 import minijava.compiler.exception.lexical.LexicalException;
@@ -402,7 +402,10 @@ public class SyntacticAnalyzer {
             match("idMetVar");
             st.actualClassAddAtribute(attribute);
             listaDecAtrs(Attribute.clone(attribute));
-        }else if(Arrays.asList("punctuationSemicolon", "assignment").contains(actualToken.getToken())){
+        }else if(Arrays.asList("assignment").contains(actualToken.getToken())) {
+            match("assignment");
+            expresion();
+        }else if(Arrays.asList("punctuationSemicolon").contains(actualToken.getToken())){
             //vacio
         }else{
             throw new SyntacticException(actualToken, "{ , , ; , = }");

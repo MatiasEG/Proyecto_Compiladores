@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import minijava.compiler.syntactic.SyntacticMainModule;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Test;
@@ -24,7 +23,7 @@ public class TesterDeCasosSinErrores {
     private static final String testFilesDirectoryPath = "resources/sinErrores/";
 
     //TODO: el tipo de esta variable init tiene que ser la clase que tiene el main
-    private static final SyntacticMainModule init = null;
+    private static final MainModule init = null;
    
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
