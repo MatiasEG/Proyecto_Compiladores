@@ -122,7 +122,6 @@ public class SymbolTable {
             for(Attribute a: entry.getValue().getAttributes()){
                 if(a.getVarType().isClassRef() && alreadyExist(a.getVarType().getLexemeType()) == null) throw new SemanticExceptionClassRefNotExist(a.getVarType().getTokenType());
             }
-
         }
 
         if(main == 0) throw new SemanticExceptionMethodMainDoesNotExist();
@@ -225,13 +224,16 @@ public class SymbolTable {
     }
 
     private void consolidacionAtributosHeredados(Class descendiente, Class padre){
+        Attribute atDec;
         for(Attribute at: padre.getAttributes()){
             if(at.isPublic()){
+                atDec = Attribute.clone(at);
+                atDec.setAttributeIsFromFather(true);
                 if(descendiente.getHashMapAtributes().containsKey(at.getVarName())){
-                    at.setHeredityVisibility(false);
-                    descendiente.addAttribute(at);
-                }else{
-                    descendiente.addAttribute(at);
+                    atDec.setPisado(true);
+                    descendiente.addAttribute(atDec);
+                }else {
+                    descendiente.addAttribute(atDec);
                 }
             }
         }
@@ -271,6 +273,9 @@ public class SymbolTable {
                 System.out.println("Atributo: "+a.getVarName()+"---------------------------------");
                 System.out.println(" > "+a.getVarName()+" visibilidad: "+a.isPublic());
                 System.out.println(" > "+a.getVarName()+" tipo: "+a.getVarType().getLexemeType());
+                System.out.println(" > "+a.getVarName()+" clase pertenece: "+a.getClass_());
+                System.out.println(" > "+a.getVarName()+" atributo del padre: "+a.attributeIsFromFather());
+                System.out.println(" > "+a.getVarName()+" esta pisado: "+a.getPisado());
             }
 
             System.out.println("Metodos de: "+nombre);
@@ -280,6 +285,7 @@ public class SymbolTable {
                 System.out.println("Nombre metodo: "+m.getMethodName());
                 System.out.println(" > "+m.getMethodName()+" es estatico: "+m.isStatic());
                 System.out.println(" > "+m.getMethodName()+" tipo: "+m.getMethodType().getLexemeType());
+                System.out.println(" > "+m.getMethodName()+" clase pertenece: "+m.getClassDeclaredMethod());
 
                 parameters = m.getParameters();
                 for(Parameter p: parameters){
@@ -288,6 +294,9 @@ public class SymbolTable {
                     System.out.println("      Parametro pertenece a: "+p.getMethodOfDefinedParameter().getMethodName());
                 }
             }
+
+            System.out.println("---------------------------------------------------------------------------\n");
+            System.out.println("---------------------------------------------------------------------------");
         });
 
         System.out.println("\n--------------------------\n\n");
@@ -308,6 +317,7 @@ public class SymbolTable {
                 System.out.println("Nombre metodo: "+m.getMethodName());
                 System.out.println(" > "+m.getMethodName()+" es estatico: "+m.isStatic());
                 System.out.println(" > "+m.getMethodName()+" tipo: "+m.getMethodType().getLexemeType());
+                System.out.println(" > "+m.getMethodName()+" clase pertenece: "+m.getClassDeclaredMethod());
 
                 parameters = m.getParameters();
                 for(Parameter p: parameters){

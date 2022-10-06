@@ -19,7 +19,9 @@ public class MainModule {
 
     public static void main(String[]args){
 
-        FileManager fileManager = new FileManager(new File(args[0]));
+        FileManager fileManager = new FileManager(new File("resources/sinErrores/Clases.java"));
+
+//        FileManager fileManager = new FileManager(new File(args[0]));
 
 
         SymbolTable st = new SymbolTable();
@@ -54,7 +56,7 @@ public class MainModule {
 
         if(!error) {
             System.out.println("[SinErrores]");
-            // TODO metodo para testear tablas: st.imprimirTablas();
+            st.imprimirTablas();
         }
 
     }

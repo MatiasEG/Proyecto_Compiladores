@@ -3,6 +3,26 @@ package minijava.compiler.semantic.tables;
 public class Attribute extends Variable{
 
     private boolean isPublic;
+    private String belongClass;
+    private boolean attributeIsFromFather;
+    private boolean pisado;
+
+    public Attribute(){
+        attributeIsFromFather = false;
+        pisado = false;
+    }
+
+    public void setPisado(boolean pisado){ this.pisado = pisado; }
+
+    public boolean getPisado(){ return pisado; }
+
+    public void setAttributeIsFromFather(boolean attributeIsFromFather) { this.attributeIsFromFather = attributeIsFromFather; }
+
+    public boolean attributeIsFromFather(){ return attributeIsFromFather; }
+
+    public void setClass_(String belongClass){ this.belongClass = belongClass; }
+
+    public String getClass_(){ return belongClass; }
 
     public void setVisibilidad(boolean isVisible){ this.isPublic = isVisible; }
 
@@ -13,6 +33,7 @@ public class Attribute extends Variable{
         clone.setVarType(attribute.getVarType());
         clone.setVarToken(attribute.getVarToken());
         clone.setVisibilidad(attribute.isPublic());
+        clone.setClass_(attribute.getClass_());
         return clone;
     }
 

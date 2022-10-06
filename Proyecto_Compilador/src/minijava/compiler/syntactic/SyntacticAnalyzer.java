@@ -262,7 +262,7 @@ public class SyntacticAnalyzer {
     private void miembro() throws SyntacticException, LexicalException, SemanticException {
         if(Arrays.asList("idKeyWord_private", "idKeyWord_public").contains(actualToken.getToken())) {
             Attribute attribute = new Attribute();
-            attribute.setHeredityVisibility(true);
+            attribute.setClass_(st.getActualClassInterfaceName());
             attribute.setVisibilidad(visibilidad());
             atributo(attribute);
         }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idClass").contains(actualToken.getToken())){
@@ -330,6 +330,7 @@ public class SyntacticAnalyzer {
             st.actualClassInterfaceAddMethod(method);
         }else if(Arrays.asList("punctuationComma", "punctuationSemicolon").contains(actualToken.getToken())){
             Attribute attribute = new Attribute();
+            attribute.setClass_(st.getActualClassInterfaceName());
             attribute.setVarType(type);
             attribute.setVisibilidad(true);
             attribute.setVarToken(nombreMetVar);

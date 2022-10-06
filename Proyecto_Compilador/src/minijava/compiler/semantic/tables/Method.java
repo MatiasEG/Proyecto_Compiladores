@@ -12,6 +12,7 @@ public class Method {
     protected String definedClass;
     protected ArrayList<Parameter> parameters;
     protected Type type;
+    protected String ClassOrInterfaceName;
 
     public Method(){
         parameters = new ArrayList<>();

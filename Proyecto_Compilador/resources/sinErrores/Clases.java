@@ -15,6 +15,7 @@ interface Interface1 extends InterfaceAux1, InterfaceAux2{
 }
 
 class Clase1{
+    char cx;
 
     static void main(){}
 }
@@ -27,7 +28,7 @@ class Clase2<A<C>, B> extends Clase1 implements Interface1{
     // Correccion del analizador sintactico
     private A a1, a2, a3 = null;
 
-    int entero1;
+    int entero1, cx;
 
     static void metodo1(A a1, boolean booleano1){
         A.b().c = 1; // Correccion del analizador sintactico
