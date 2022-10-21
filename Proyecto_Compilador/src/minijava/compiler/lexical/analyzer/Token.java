@@ -21,4 +21,6 @@ public class Token {
 
     public void setToken(String token) { this.token = token; }
 
+    public void setLexeme(String lexeme) { this.lexeme = lexeme; }
+
 }

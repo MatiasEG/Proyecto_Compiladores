@@ -1,6 +1,7 @@
 package minijava.compiler.semantic.tables;
 
 import minijava.compiler.lexical.analyzer.Token;
+import minijava.compiler.semantic.tables.variable.Attribute;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class Class extends ClassOrInterface {
         attributes = new ArrayList<>();
         atributosHashMap = new HashMap<>();
         methods = new ArrayList<>();
+        metodosSinSobrecargaMap = new HashMap<>();
         metodoHashMap = new HashMap<>();
         this.claseOrinterfaceToken= claseToken;
     }

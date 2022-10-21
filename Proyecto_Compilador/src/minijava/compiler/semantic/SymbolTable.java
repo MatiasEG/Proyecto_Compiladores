@@ -1,15 +1,18 @@
 package minijava.compiler.semantic;
 
-import minijava.compiler.exception.semantic.*;
-import minijava.compiler.exception.semantic.classinterface.*;
-import minijava.compiler.exception.semantic.extend.SemanticExceptionCircleExtend;
-import minijava.compiler.exception.semantic.method.*;
-import minijava.compiler.exception.semantic.duplicated.SemanticExceptionDuplicatedAtribute;
-import minijava.compiler.exception.semantic.duplicated.SemanticExceptionDuplicatedMain;
-import minijava.compiler.exception.semantic.duplicated.SemanticExceptionDuplicatedMethod;
+import minijava.compiler.exception.SemanticException;
+import minijava.compiler.exception.semanticP1.classinterface.*;
+import minijava.compiler.exception.semanticP1.extend.SemanticExceptionCircleExtend;
+import minijava.compiler.exception.semanticP1.extend.SemanticExceptionRepeatedExtend;
+import minijava.compiler.exception.semanticP1.method.*;
+import minijava.compiler.exception.semanticP1.duplicated.SemanticExceptionDuplicatedAtribute;
+import minijava.compiler.exception.semanticP1.duplicated.SemanticExceptionDuplicatedMain;
+import minijava.compiler.exception.semanticP1.duplicated.SemanticExceptionDuplicatedMethod;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.tables.*;
 import minijava.compiler.semantic.tables.Class;
+import minijava.compiler.semantic.tables.variable.Attribute;
+import minijava.compiler.semantic.tables.variable.Parameter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +23,8 @@ public class SymbolTable {
     private ClassOrInterface actualClassOrInterface;
     private HashMap<String, Class> classes;
     private HashMap<String, Interface_> interfaces;
+    private Method actualMethod;
+    private Class actualClass;
 
     public SymbolTable(){
         classes = new HashMap<>();
@@ -105,6 +110,7 @@ public class SymbolTable {
         String s;
         for(Map.Entry<String, Class> entry: classes.entrySet()){
 
+            checkExtendsRepetidos(entry.getValue().getExtendedClasses());
             for(Token t: entry.getValue().getExtendedClasses()){
                 s = t.getLexeme();
                 if(!classes.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
@@ -128,6 +134,7 @@ public class SymbolTable {
 
 
         for(Map.Entry<String, Interface_> entry: interfaces.entrySet()){
+            checkExtendsRepetidos(entry.getValue().getExtendedClasses());
             for(Token t: entry.getValue().getExtendedClasses()){
                 s = t.getLexeme();
                 if(!interfaces.containsKey(s)) throw new SemanticExceptionExtendedInterfaceDoesNotExist(entry.getValue(), t);
@@ -139,6 +146,17 @@ public class SymbolTable {
             }
         }
 
+    }
+
+    private void checkExtendsRepetidos(ArrayList<Token> clasesHerencia) throws SemanticException{
+        HashMap<String, Token> clasesHerenciaHashMap = new HashMap<>();
+        for(Token token: clasesHerencia){
+            if(!clasesHerenciaHashMap.containsKey(token.getLexeme())){
+                clasesHerenciaHashMap.put(token.getLexeme(), token);
+            }else{
+                throw new SemanticExceptionRepeatedExtend(token);
+            }
+        }
     }
 
     private int checkMetodos(int main, Class clase, ArrayList<Method> methods) throws SemanticException{
@@ -168,6 +186,7 @@ public class SymbolTable {
             constructorBase.setClassDeclaredMethod(clase.getNombre());
             Type typeConstructor = new Type(new Token("idClass", clase.getNombre(), 0));
             constructorBase.setMethodType(typeConstructor);
+            constructorBase.setBlock(new Block(constructorBase));
             clase.addMetodo(constructorBase);
         }
 
@@ -239,6 +258,28 @@ public class SymbolTable {
         }
     }
 
+
+    public void checkSentences() throws SemanticException {
+        for(Map.Entry<String, Class> entry: classes.entrySet()){
+            setActualClass(entry.getValue());
+            for(Method m: entry.getValue().getMethods()){
+                setActualMethod(m);
+                m.checkBlock(this);
+            }
+        }
+    }
+
+    private void setActualClass(Class class_){ this.actualClass = class_; }
+
+    public Class getActualClass(){ return actualClass; }
+
+    public Class getClass(String className){ return classes.get(className); }
+
+    public boolean haveClass(String className){ return classes.containsKey(className); }
+
+    public void setActualMethod(Method m){ this.actualMethod = m; }
+
+    public Method getActualMethod(){ return actualMethod; }
 
 
 

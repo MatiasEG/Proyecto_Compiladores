@@ -1,11 +1,12 @@
 package minijava.compiler.semantic;
 
-import minijava.compiler.exception.semantic.SemanticException;
-import minijava.compiler.exception.semantic.duplicated.SemanticExceptionDuplicatedParameter;
+import minijava.compiler.exception.SemanticException;
+import minijava.compiler.exception.semanticP1.duplicated.SemanticExceptionDuplicatedParameter;
 import minijava.compiler.lexical.analyzer.Token;
+import minijava.compiler.semantic.tables.Block;
 import minijava.compiler.semantic.tables.Class;
 import minijava.compiler.semantic.tables.Method;
-import minijava.compiler.semantic.tables.Parameter;
+import minijava.compiler.semantic.tables.variable.Parameter;
 import minijava.compiler.semantic.tables.Type;
 
 public class PredefinedClasses {
@@ -26,6 +27,7 @@ public class PredefinedClasses {
         i.setVarType(new Type(new Token("idKeyWord_int", "int", 0)));
         if((parameterIf = debugPrint.addParameter(i)) != null) throw new SemanticExceptionDuplicatedParameter(parameterIf);
         object.addMetodo(debugPrint);
+        debugPrint.setBlock(new Block(debugPrint));
 
         return object;
     }
@@ -45,6 +47,7 @@ public class PredefinedClasses {
         read.setMethodType(new Type(new Token("idKeyWord_int", "int", 0)));
         read.setMethodToken(new Token("idMetVar", "read", 0));
         system.addMetodo(read);
+        read.setBlock(new Block(read));
 
         Method printB = new Method();
         printB.setStatic(true);
@@ -58,6 +61,7 @@ public class PredefinedClasses {
         b.setVarType(new Type(new Token("idKeyWord_boolean", "boolean", 0)));
         if((parameterIf = printB.addParameter(b)) != null) throw new SemanticExceptionDuplicatedParameter(parameterIf);
         system.addMetodo(printB);
+        printB.setBlock(new Block(printB));
 
         Method printC = new Method();
         printC.setStatic(true);
@@ -71,6 +75,7 @@ public class PredefinedClasses {
         c.setVarType(new Type(new Token("literalCharacter", "char", 0)));
         if((parameterIf = printC.addParameter(c)) != null) throw new SemanticExceptionDuplicatedParameter(parameterIf);
         system.addMetodo(printC);
+        printC.setBlock(new Block(printC));
 
         Method printI = new Method();
         printI.setStatic(true);
@@ -84,6 +89,7 @@ public class PredefinedClasses {
         i.setVarType(new Type(new Token("idKeyWord_int", "int", 0)));
         if((parameterIf = printI.addParameter(i)) != null) throw new SemanticExceptionDuplicatedParameter(parameterIf);
         system.addMetodo(printI);
+        printI.setBlock(new Block(printI));
 
         Method printS = new Method();
         printS.setStatic(true);
@@ -97,6 +103,7 @@ public class PredefinedClasses {
         s.setVarType(new Type(new Token("idClass", "String", 0)));
         if((parameterIf = printS.addParameter(s)) != null) throw new SemanticExceptionDuplicatedParameter(parameterIf);
         system.addMetodo(printS);
+        printS.setBlock(new Block(printS));
 
         Method println = new Method();
         println.setStatic(true);
@@ -104,6 +111,7 @@ public class PredefinedClasses {
         println.setMethodType(new Type(new Token("idKeyWord_void", "void", 0)));
         println.setMethodToken(new Token("idMetVar", "println", 0));
         system.addMetodo(println);
+        println.setBlock(new Block(println));
 
         Method printBln = new Method();
         printBln.setStatic(true);
@@ -117,6 +125,7 @@ public class PredefinedClasses {
         bln.setVarType(new Type(new Token("idKeyWord_boolean", "boolean", 0)));
         if((parameterIf = printBln.addParameter(bln)) != null) throw new SemanticExceptionDuplicatedParameter(parameterIf);
         system.addMetodo(printBln);
+        printBln.setBlock(new Block(printBln));
 
         Method printCln = new Method();
         printCln.setStatic(true);
@@ -130,6 +139,7 @@ public class PredefinedClasses {
         cln.setVarType(new Type(new Token("literalCharacter", "char", 0)));
         if((parameterIf = printCln.addParameter(cln)) != null) throw new SemanticExceptionDuplicatedParameter(parameterIf);
         system.addMetodo(printCln);
+        printCln.setBlock(new Block(printCln));
 
         Method printIln = new Method();
         printIln.setStatic(true);
@@ -143,6 +153,7 @@ public class PredefinedClasses {
         iln.setVarType(new Type(new Token("idKeyWord_int", "int", 0)));
         if((parameterIf = printIln.addParameter(iln)) != null) throw new SemanticExceptionDuplicatedParameter(parameterIf);
         system.addMetodo(printIln);
+        printIln.setBlock(new Block(printIln));
 
         Method printSln = new Method();
         printSln.setStatic(true);
@@ -156,6 +167,7 @@ public class PredefinedClasses {
         sln.setVarType(new Type(new Token("idClass", "String", 0)));
         if((parameterIf = printSln.addParameter(sln)) != null) throw new SemanticExceptionDuplicatedParameter(parameterIf);
         system.addMetodo(printSln);
+        printSln.setBlock(new Block(printSln));
 
         return system;
     }

@@ -10,6 +10,7 @@ public class Interface_ extends ClassOrInterface {
     public Interface_(Token interfaceToken){
         extendsFrom = new ArrayList<>();
         methods = new ArrayList<>();
+        metodosSinSobrecargaMap = new HashMap<>();
         metodoHashMap = new HashMap<>();
         this.claseOrinterfaceToken = interfaceToken;
     }

@@ -1,8 +1,13 @@
 package minijava.compiler.semantic.tables;
 
+import minijava.compiler.exception.SemanticException;
 import minijava.compiler.lexical.analyzer.Token;
+import minijava.compiler.semantic.SymbolTable;
+import minijava.compiler.semantic.nodes.Node;
+import minijava.compiler.semantic.tables.variable.Parameter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class Method {
@@ -11,13 +16,21 @@ public class Method {
     protected Token token;
     protected String definedClass;
     protected ArrayList<Parameter> parameters;
+    protected HashMap<String, Parameter> parameterHashMap;
     protected Type type;
-    protected String ClassOrInterfaceName;
+    protected ArrayList<Node> nodes;
+    protected Block block;
 
     public Method(){
         parameters = new ArrayList<>();
         isStatic = false;
+        nodes = new ArrayList<>();
+        parameterHashMap = new HashMap<>();
     }
+
+    public void setBlock(Block block){ this.block = block; }
+
+    public Block getBlock(){ return block; }
 
     public void setMethodToken(Token token) { this.token = token; }
 
@@ -39,9 +52,13 @@ public class Method {
         return isStatic;
     }
 
+    public boolean needReturn(){ return !type.getLexemeType().equals("void"); }
+
     public void setClassDeclaredMethod(String claseDefinido){ this.definedClass = claseDefinido; }
 
     public String getClassDeclaredMethod() { return definedClass; }
+
+    public Parameter getParameter(String parameterName){ return parameterHashMap.get(parameterName); }
 
     public Parameter addParameter(Parameter parameter){
         parameter.setParameterPosition(parameters.size()+1);
@@ -51,12 +68,15 @@ public class Method {
             }
         }
         parameters.add(parameter);
+        parameterHashMap.put(parameter.getVarName(), parameter);
         return null;
     }
 
     public ArrayList<Parameter> getParameters() {
         return parameters;
     }
+
+    public HashMap<String, Parameter> getParameterHashMap(){ return parameterHashMap; }
 
     public String getMapKey(){
         String encabezadoMet = this.getMethodName();
@@ -76,5 +96,9 @@ public class Method {
         }else{
             return false;
         }
+    }
+
+    public void checkBlock(SymbolTable st) throws SemanticException {
+        block.check(st);
     }
 }

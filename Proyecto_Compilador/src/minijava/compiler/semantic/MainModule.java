@@ -2,7 +2,7 @@ package minijava.compiler.semantic;
 
 import minijava.compiler.exception.*;
 import minijava.compiler.exception.lexical.LexicalException;
-import minijava.compiler.exception.semantic.SemanticException;
+import minijava.compiler.exception.SemanticException;
 import minijava.compiler.filemanager.FileManager;
 import minijava.compiler.lexical.LexicalErrorManager;
 import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
@@ -17,10 +17,19 @@ public class MainModule {
     // OK > agregar constructor por defecto a las clases
     // OK > las clases heredan de Object las interfaces no
 
+    //TODO para semantico etapa 4:
+    // VarLocales
+    //      ok -> VarLocal con tipo ref no definido
+    //      ok -> VarLocal con mismo nombre que un parametro
+    //      ok -> VarLocal no definida
+
+
     public static void main(String[]args){
 
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/Clases.java"));
-
+        FileManager fileManager = new FileManager(new File("resources/sinErrores/Correcciones.java"));
+//        FileManager fileManager = new FileManager(new File("resources/sinErrores/Clase.java"));
+//
+//        FileManager fileManager = new FileManager(new File("resources/conErrores/errVarEncadenadaNoCoincideConTipoAsignacion.java"));
 //        FileManager fileManager = new FileManager(new File(args[0]));
 
 
@@ -40,6 +49,8 @@ public class MainModule {
             st.check();
 
             st.consolidacion();
+
+            st.checkSentences();
 
         } catch (LexicalException e) {
             error = true;
