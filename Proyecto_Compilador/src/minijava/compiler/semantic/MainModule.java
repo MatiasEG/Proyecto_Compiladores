@@ -32,7 +32,6 @@ public class MainModule {
 //        FileManager fileManager = new FileManager(new File("resources/conErrores/errVarEncadenadaNoCoincideConTipoAsignacion.java"));
 //        FileManager fileManager = new FileManager(new File(args[0]));
 
-
         SymbolTable st = new SymbolTable();
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(fileManager);

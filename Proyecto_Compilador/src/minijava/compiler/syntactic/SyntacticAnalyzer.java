@@ -97,9 +97,9 @@ public class SyntacticAnalyzer {
         match("idKeyWord_class");
             Token nombreClase = actualToken;
         match("idClass");
+        genericoOpt(); // No lo contemplo semanticamente
         Class clase = new Class(nombreClase);
             st.setActualClassOrInterface(clase);
-        genericoOpt(); // No lo contemplo semanticamente
         ArrayList<Token> extendsFrom = heredaDe();
             st.setActualClassInterfaceListOfExtends(extendsFrom);
         ArrayList<Token> implement = implementaA();
@@ -120,7 +120,6 @@ public class SyntacticAnalyzer {
         match("idClass");
             Interface_ interface_ = new Interface_(nombreInterface);
             st.setActualClassOrInterface(interface_);
-        genericoOpt();
         ArrayList<Token> extendsFrom = extiendeA();
         if((extendsFrom.size() == 1) && extendsFrom.get(0).equals("Object")){
             st.setActualClassInterfaceListOfExtends(new ArrayList<>());
@@ -146,13 +145,13 @@ public class SyntacticAnalyzer {
             extendsFrom.add(actualToken);
             match("idClass");
             genericoOpt();
-            heredaDe();
+            extendsFrom.addAll(heredaDe());
         }else if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
             match("punctuationComma");
             extendsFrom.add(actualToken);
             match("idClass");
             genericoOpt();
-            heredaDe();
+            extendsFrom.addAll(heredaDe());
         }else if(Arrays.asList("idKeyWord_implements", "punctuationOpeningBracket").contains(actualToken.getToken())){
             //vacio
             extendsFrom.add(st.getObjectClassToken());
@@ -303,7 +302,7 @@ public class SyntacticAnalyzer {
         if(Arrays.asList("idClass").contains(actualToken.getToken())){
                 Type type = new Type(actualToken);
             match("idClass");
-            constructorOAtrMetResto(type);
+            constructorOAtrMetRestoTipoClase(type);
         }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())) {
             Type type = tipoPrimitivo();
             constructorOAtrMetResto(type);
@@ -335,12 +334,26 @@ public class SyntacticAnalyzer {
         }
     }
 
+    private void constructorOAtrMetRestoTipoClase(Type type) throws LexicalException, SyntacticException, SemanticException {
+        if(Arrays.asList("opLess").contains(actualToken.getToken())){
+            genericoOpt();
+            Token nombreMetVar = actualToken;
+            match("idMetVar");
+            atributoOMetodo(type, nombreMetVar);
+        }else if(Arrays.asList("idMetVar", "punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            constructorOAtrMetResto(type);
+        }else{
+            throw new SyntacticException(actualToken, "{ ( , idMetVar, < }");
+        }
+    }
+
     // 17 ------------------------------------------------------------------------------
     // <AtributoOMetodo> ::= <ArgsFormales> <Bloque> | <ListaDecAtrs> ;
     // Primeros: { ( , , , ; , e }
     // Siguientes: {public, private, idClase, boolean, char, int, void, static, } }
     public void atributoOMetodo(Type type, Token nombreMetVar) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            genericoOpt();
             Method method = new Method();
             method.setClassDeclaredMethod(st.getActualClassInterfaceName());
             method.setMethodType(type);
@@ -631,7 +644,11 @@ public class SyntacticAnalyzer {
     // Siguientes: -
     private void argFormal(Method method) throws LexicalException, SyntacticException, SemanticException {
             Parameter parameter = new Parameter();
-            parameter.setVarType(tipo());
+            Type type = tipo();
+            if(type.getTokenType().getToken().equals("idClass")){
+                genericoOpt();
+            }
+            parameter.setVarType(type);
             parameter.setVarToken(actualToken);
             parameter.setMethod(method);
             if(method.addParameter(parameter) != null) throw new SemanticExceptionDuplicatedParameter(parameter);
@@ -729,7 +746,7 @@ public class SyntacticAnalyzer {
             accesoMetodoEstatico();
             asignacion();
         }else if(Arrays.asList("opLess", "idMetVar").contains(actualToken.getToken())){
-            sentenciaNodo = varLocalTipoClase(idClass);
+            varLocalTipoClase(idClass);
         }
         return sentenciaNodo;
     }
@@ -821,7 +838,6 @@ public class SyntacticAnalyzer {
     // <VarLocalResto> ::= = <Expresion> <VarLocalResto> | <ListaDecAtrs> <VarLocalResto> ; | e
     // Primeros: { = , , }
     // Siguientes: -
-    // TODO ver si tengo que pasarle un parametro o no a este metodo
     private void varLocalResto(VarLocalNodo varLocalNodo) throws LexicalException, SyntacticException, SemanticException {
         if(varLocalNodo != null){
             if(Arrays.asList("assignment").contains(actualToken.getToken())){
@@ -862,18 +878,19 @@ public class SyntacticAnalyzer {
     // <VarLocalTipoClase> ::= idMetVar
     // Primeros: {idMetVar}
     // Siguientes: -
-    private SentenciaNodo varLocalTipoClase(Type idClass) throws LexicalException, SyntacticException, SemanticException {
+    private void varLocalTipoClase(Type idClass) throws LexicalException, SyntacticException, SemanticException {
         VarLocal localVar = new VarLocal();
-        VarLocalNodo varLocalNodo = new VarLocalNodo();
-        varLocalNodo.setVarLocalToken(actualToken);
-        //TODO varLocalNodo.setVarLocalNodoType(idClass);
+//        VarLocalNodo varLocalNodo = new VarLocalNodo();
+//        varLocalNodo.setVarLocalToken(actualToken);
+//        TODO varLocalNodo.setVarLocalNodoType(idClass);
         localVar.setVarType(idClass);
         localVar.setVarToken(actualToken);
+        genericoOpt();
         match("idMetVar");
         st.getActualMethod().getBlock().addVar(localVar);
         listaDecVarLocal(idClass);
         varLocalTipoClaseResto();
-        return varLocalNodo;
+//        return varLocalNodo;
     }
 
     // 44AUX ------------------------------------------------------------------------------
@@ -929,7 +946,6 @@ public class SyntacticAnalyzer {
     // <ExpresionOpt> ::= <Expresion> | e
     // Primeros: { + , - , ! , null, true, false, intLiteral, charLiteral, stringLiteral, this, idMetVar, new, ( , idClase,e}
     // Siguientes: { ; }
-    // TODO retornar ExpressionNode falta desarrollar, no hay return actualmente.
     private ExpresionNodo expresionOpt() throws SyntacticException, LexicalException {
         ExpresionNodo expresionNodo = null;
         if(Arrays.asList("opAddition", "opSubtraction", "opNegation", "idKeyWord_null",

@@ -24,7 +24,8 @@ class A {
     void m1(int p1)
     {
 
-        // TODO arreglar -->
+        A a1, a2 = null;
+
         int x = (3 + 4)* 4, x1;
 
         m2(p1+(i1-10), "hola!", new B());

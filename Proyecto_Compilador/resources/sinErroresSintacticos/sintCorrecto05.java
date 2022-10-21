@@ -28,7 +28,6 @@ class Correcto05{
                 "punctuationClosingParenthesis").contains(actualToken.getToken())){
             // vacio
         }else{
-            // TODO el caso de error 3 entra por aca no entiendo por que...
             // Se esperaban los argumentos del metodo
             //throw new
                     SyntacticException.throwNew(actualToken, Arrays.asList("punctuationOpeningParenthesis",

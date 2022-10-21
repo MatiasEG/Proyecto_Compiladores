@@ -120,9 +120,8 @@ public class SymbolTable {
 
             for(Token t: entry.getValue().getImplementedClasses()){
                 s = t.getLexeme();
-                if(classes.containsKey(s)) throw new SemanticExceptionInterfaceExtendsClase(interfaces.get(entry.getValue()));
+                if(classes.containsKey(s)) throw new SemanticExceptionInterfaceExtendsClase(classes.get(s));
                 if(!interfaces.containsKey(s)) throw new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), t);
-                checkMetodosImplementados(entry.getValue(), interfaces.get(s));
             }
 
             for(Attribute a: entry.getValue().getAttributes()){
@@ -193,6 +192,7 @@ public class SymbolTable {
         return main;
     }
 
+    // TODO mover esto despues de chequear la herencia de las interfaces
     private void checkMetodosImplementados(Class claseImplementa, Interface_ interface_) throws SemanticException{
         for(Method m: interface_.getMethods()){
             if(claseImplementa.getHashMapMethods().containsKey(m.getMapKey())){
@@ -221,6 +221,7 @@ public class SymbolTable {
             }
 
             for(Token t: entry.getValue().getImplementedClasses()){
+                checkMetodosImplementados(entry.getValue(), interfaces.get(t.getLexeme()));
                 if(classes.containsKey(t.getLexeme())) throw new SemanticExceptionClassImplementClass(entry.getValue());
             }
         }

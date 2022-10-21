@@ -30,7 +30,6 @@ public class AccesoMetNodo extends PrimarioNodo{
 
     @Override
     public Type check(SymbolTable st) throws SemanticException {
-        //TODO me esta pasando un test que no deberia
         Method m = st.getActualClass().getHashMapMethodsWithoutOverloaded().get(idMetodo.getLexeme());
         ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
         Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
@@ -38,8 +37,7 @@ public class AccesoMetNodo extends PrimarioNodo{
             ExpresionNodo exp;
             for(Parameter p: tiposParametrosDeclarados){
                 exp = expresionNodosIterablre.next();
-                Type typeExp = exp.check(st);
-                if(!exp.check(st).getTypeForAssignment().equals(p.getVarType().getTypeForAssignment())) throw new SemanticExceptionWrongTypeActualArgs(typeExp.getTokenType());
+                if(!exp.check(st).getTypeForAssignment().equals(p.getVarType().getTypeForAssignment())) throw new SemanticExceptionWrongTypeActualArgs(idMetodo);
             }
         }else{
             throw new SemanticExceptionWrongQuantityParameters(m.getMethodToken());
