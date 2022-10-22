@@ -1,6 +1,7 @@
 package minijava.compiler.semantic.nodes.expresion.operando.primario;
 
 import minijava.compiler.exception.SemanticException;
+import minijava.compiler.exception.SemanticP2.SemanticExceptionMethodNotExistInCallerClass;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongQuantityParameters;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongTypeActualArgs;
 import minijava.compiler.lexical.analyzer.Token;
@@ -30,6 +31,9 @@ public class AccesoMetNodo extends PrimarioNodo{
 
     @Override
     public Type check(SymbolTable st) throws SemanticException {
+        if(!st.getActualClass().getHashMapMethodsWithoutOverloaded().containsKey(idMetodo.getLexeme()))
+            throw new SemanticExceptionMethodNotExistInCallerClass(idMetodo);
+
         Method m = st.getActualClass().getHashMapMethodsWithoutOverloaded().get(idMetodo.getLexeme());
         ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
         Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
@@ -42,7 +46,6 @@ public class AccesoMetNodo extends PrimarioNodo{
         }else{
             throw new SemanticExceptionWrongQuantityParameters(m.getMethodToken());
         }
-
 
         return m.getMethodType();
     }

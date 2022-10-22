@@ -185,7 +185,7 @@ public class SymbolTable {
             constructorBase.setClassDeclaredMethod(clase.getNombre());
             Type typeConstructor = new Type(new Token("idClass", clase.getNombre(), 0));
             constructorBase.setMethodType(typeConstructor);
-            constructorBase.setBlock(new Block(constructorBase));
+            constructorBase.setMainBlock(new Block(constructorBase));
             clase.addMetodo(constructorBase);
         }
 

@@ -17,17 +17,21 @@ public class Block {
     private HashMap<String, VarLocal> varsHashMap;
     private BloqueNodo bloqueNodo;
     private ArrayList<SentenciaNodo> statements;
+    private ArrayList<Block> bloques;
 
     public Block(Method method){
         this.method = method;
         vars = new ArrayList<>();
         varsHashMap = new HashMap<>();
         statements = new ArrayList<>();
+        bloques = new ArrayList<>();
     }
 
     public void setBlockNode(BloqueNodo bloqueNodo){ this.bloqueNodo = bloqueNodo; }
 
     public void addSentenciaNodo(SentenciaNodo sentenciaNodo){ statements.add(sentenciaNodo); }
+
+    public void addBlock(Block block){ bloques.add(block); }
 
     public void addVar(VarLocal v) throws SemanticException {
         if(!method.getParameterHashMap().containsKey(v.getVarName())){

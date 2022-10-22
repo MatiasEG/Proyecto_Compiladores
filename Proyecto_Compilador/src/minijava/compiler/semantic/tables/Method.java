@@ -20,17 +20,23 @@ public class Method {
     protected Type type;
     protected ArrayList<Node> nodes;
     protected Block block;
+    protected Block actualBlock;
 
     public Method(){
         parameters = new ArrayList<>();
         isStatic = false;
         nodes = new ArrayList<>();
         parameterHashMap = new HashMap<>();
+        block = null;
     }
 
-    public void setBlock(Block block){ this.block = block; }
+    public void setMainBlock(Block block){ actualBlock = block; this.block = block; }
 
-    public Block getBlock(){ return block; }
+    public Block getMainBlock(){ return block; }
+
+    public void addNewBlock(Block block){ actualBlock.addBlock(block); }
+
+    public boolean alreadyHaveBlock(){ return block != null; }
 
     public void setMethodToken(Token token) { this.token = token; }
 

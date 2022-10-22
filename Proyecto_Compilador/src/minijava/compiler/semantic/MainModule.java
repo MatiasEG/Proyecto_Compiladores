@@ -26,8 +26,8 @@ public class MainModule {
 
     public static void main(String[]args){
 
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/Correcciones.java"));
-//        FileManager fileManager = new FileManager(new File("resources/sinErrores/Clase.java"));
+//        FileManager fileManager = new FileManager(new File("resources/sinErrores/Correcciones.java"));
+        FileManager fileManager = new FileManager(new File("resources/sinErrores/Clase.java"));
 //
 //        FileManager fileManager = new FileManager(new File("resources/conErrores/errVarEncadenadaNoCoincideConTipoAsignacion.java"));
 //        FileManager fileManager = new FileManager(new File(args[0]));

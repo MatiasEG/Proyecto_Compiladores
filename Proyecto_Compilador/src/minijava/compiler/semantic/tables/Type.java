@@ -18,7 +18,9 @@ public class Type {
     }
 
     public String getTypeForAssignment(){
-        if(typeToken.getToken().equals("idKeyWord_true"))
+        if(typeToken.getToken().equals("idKeyWord_boolean"))
+            return "boolean";
+        else if(typeToken.getToken().equals("idKeyWord_true"))
             return "boolean";
         else if(typeToken.getToken().equals("idKeyWord_false"))
             return "boolean";

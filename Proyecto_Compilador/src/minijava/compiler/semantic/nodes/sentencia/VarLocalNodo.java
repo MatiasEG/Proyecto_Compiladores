@@ -2,11 +2,9 @@ package minijava.compiler.semantic.nodes.sentencia;
 
 import minijava.compiler.exception.SemanticException;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionVarNotExist;
-import minijava.compiler.exception.semanticP1.classinterface.SemanticExceptionClassRefNotExist;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
-import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Variable;
 
 public class VarLocalNodo extends SentenciaNodo{
@@ -29,8 +27,8 @@ public class VarLocalNodo extends SentenciaNodo{
     @Override
     public void check(SymbolTable st) throws SemanticException {
 
-        if(st.getActualMethod().getBlock().getVarsHashMap().containsKey(name))
-            var = st.getActualMethod().getBlock().getVarsHashMap().get(name);
+        if(st.getActualMethod().getMainBlock().getVarsHashMap().containsKey(name))
+            var = st.getActualMethod().getMainBlock().getVarsHashMap().get(name);
         else
             throw new SemanticExceptionVarNotExist(idVarLocalToken);
 

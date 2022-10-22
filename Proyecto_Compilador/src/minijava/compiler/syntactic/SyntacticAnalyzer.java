@@ -681,10 +681,11 @@ public class SyntacticAnalyzer {
     // Siguientes: -
     private SentenciaNodo bloque() throws LexicalException, SyntacticException, SemanticException {
         Block block = new Block(st.getActualMethod());
-        st.getActualMethod().setBlock(block);
+//        if(st.getActualMethod().alreadyHaveBlock()){
+        st.getActualMethod().setMainBlock(block);
         BloqueNodo bloqueNodo = new BloqueNodo(block);
         block.setBlockNode(bloqueNodo);
-        st.getActualMethod().setBlock(block);
+        st.getActualMethod().setMainBlock(block);
         match("punctuationOpeningBracket");
         listaSentencias();
         match("punctuationClosingBracket");
@@ -700,7 +701,7 @@ public class SyntacticAnalyzer {
                 "punctuationOpeningParenthesis", "idKeyWord_var", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int",
                 "idKeyWord_return", "idKeyWord_if", "idKeyWord_while", "punctuationOpeningBracket").contains(actualToken.getToken())){
             SentenciaNodo sentenciaNodo = sentencia();
-            if(sentenciaNodo != null) st.getActualMethod().getBlock().addSentenciaNodo(sentenciaNodo);
+            if(sentenciaNodo != null) st.getActualMethod().getMainBlock().addSentenciaNodo(sentenciaNodo);
             listaSentencias();
         }else if(Arrays.asList("punctuationClosingBracket").contains(actualToken.getToken())){
             // vacio
@@ -838,14 +839,14 @@ public class SyntacticAnalyzer {
             localVar.setVarToken(actualToken);
             varLocalNodo.setVarLocalToken(actualToken);
             match("idMetVar");
-            st.getActualMethod().getBlock().addVar(localVar);
+            st.getActualMethod().getMainBlock().addVar(localVar);
             varLocalResto(varLocalNodo);
         }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())){
             Type type = tipoPrimitivo();
             localVar.setVarType(type);
             localVar.setVarToken(actualToken);
             match("idMetVar");
-            st.getActualMethod().getBlock().addVar(localVar);
+            st.getActualMethod().getMainBlock().addVar(localVar);
             //TODO revisar si este nul no perjudica, no deberia.
             varLocalResto(null);
         }else{
@@ -907,7 +908,7 @@ public class SyntacticAnalyzer {
         localVar.setVarToken(actualToken);
         genericoNotOpt();
         match("idMetVar");
-        st.getActualMethod().getBlock().addVar(localVar);
+        st.getActualMethod().getMainBlock().addVar(localVar);
         listaDecVarLocal(idClass);
         varLocalTipoClaseResto();
 //        return varLocalNodo;
@@ -939,7 +940,7 @@ public class SyntacticAnalyzer {
             varLocal.setVarToken(actualToken);
             varLocal.setVarType(varLocalType);
             match("idMetVar");
-            st.getActualMethod().getBlock().addVar(varLocal);
+            st.getActualMethod().getMainBlock().addVar(varLocal);
             listaDecVarLocal(varLocalType);
         }else if(Arrays.asList("assignment").contains(actualToken.getToken())) {
             match("assignment");

@@ -22,8 +22,8 @@ public class AccesoVarNodo extends PrimarioNodo {
     public Type check(SymbolTable st) throws SemanticException {
         if(st.getActualMethod().getParameterHashMap().containsKey(name)){
             var = st.getActualMethod().getParameter(name);
-        }else if(st.getActualMethod().getBlock().getVarsHashMap().containsKey(name)){
-            var = st.getActualMethod().getBlock().getVarsHashMap().get(name);
+        }else if(st.getActualMethod().getMainBlock().getVarsHashMap().containsKey(name)){
+            var = st.getActualMethod().getMainBlock().getVarsHashMap().get(name);
         }else if(st.getActualClass().getHashMapAtributes().containsKey(name)){
             var = st.getActualClass().getHashMapAtributes().get(name);
         }else{
