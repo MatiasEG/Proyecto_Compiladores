@@ -16,7 +16,7 @@
 //class C{}
 
 
-//---------------------------------
+//--------------------------------- LISTO
 //interface Z {  //el mensaje muestra el error aca
 //    void g(int y);
 //}
@@ -42,20 +42,18 @@
 //}
 
 
-//---------------------------------
-class B<Pepe>{}
-
-class A{
-    static void main(){}
-
-    B<Pepe4> b1, b2 = null;
-
-    B<Pepe1> m1(B<Pepe3> b){
-
-        A<B> a1 =
-                new A<>();    //TODO solo este puede ser opcional los demas tienen que contener algo
-
-
-    }
-
-}
+//--------------------------------- LISTO
+//class B<Pepe>{}
+//
+//class A{
+//    static void main(){}
+//
+//    B<Pepe4> b1, b2 = null;
+//
+//    B<Pepe1> m1(B<Pepe3> b){
+//
+//        A<B> a1 = new A<>();
+//
+//    }
+//
+//}

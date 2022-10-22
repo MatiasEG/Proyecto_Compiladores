@@ -97,7 +97,7 @@ public class SyntacticAnalyzer {
         match("idKeyWord_class");
             Token nombreClase = actualToken;
         match("idClass");
-        genericoOpt(); // No lo contemplo semanticamente
+        genericoNotOpt(); // No lo contemplo semanticamente
         Class clase = new Class(nombreClase);
             st.setActualClassOrInterface(clase);
         ArrayList<Token> extendsFrom = heredaDe();
@@ -144,13 +144,13 @@ public class SyntacticAnalyzer {
             match("idKeyWord_extends");
             extendsFrom.add(actualToken);
             match("idClass");
-            genericoOpt();
+            genericoNotOpt();
             extendsFrom.addAll(heredaDe());
         }else if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
             match("punctuationComma");
             extendsFrom.add(actualToken);
             match("idClass");
-            genericoOpt();
+            genericoNotOpt();
             extendsFrom.addAll(heredaDe());
         }else if(Arrays.asList("idKeyWord_implements", "punctuationOpeningBracket").contains(actualToken.getToken())){
             //vacio
@@ -203,7 +203,7 @@ public class SyntacticAnalyzer {
             ArrayList<Token> implementa_ = new ArrayList<>();
             implementa_.add(actualToken);
         match("idClass");
-        genericoOpt(); // No lo contemplo semanticamente
+        genericoNotOpt(); // No lo contemplo semanticamente
         implementa_.addAll(listaTipoReferenciaResto());
         return implementa_;
     }
@@ -336,7 +336,7 @@ public class SyntacticAnalyzer {
 
     private void constructorOAtrMetRestoTipoClase(Type type) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("opLess").contains(actualToken.getToken())){
-            genericoOpt();
+            genericoNotOpt();
             Token nombreMetVar = actualToken;
             match("idMetVar");
             atributoOMetodo(type, nombreMetVar);
@@ -353,7 +353,7 @@ public class SyntacticAnalyzer {
     // Siguientes: {public, private, idClase, boolean, char, int, void, static, } }
     public void atributoOMetodo(Type type, Token nombreMetVar) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
-            genericoOpt();
+            genericoNotOpt();
             Method method = new Method();
             method.setClassDeclaredMethod(st.getActualClassInterfaceName());
             method.setMethodType(type);
@@ -508,7 +508,21 @@ public class SyntacticAnalyzer {
     // Primeros: { < , e }
     // Siguientes: {extends, implements, { , idMetVar, , , > }
     // TODO no lo evaluo semanticamente
-    private void genericoOpt() throws LexicalException, SyntacticException {
+    private void genericoNotOpt() throws LexicalException, SyntacticException {
+        if(Arrays.asList("opLess").contains(actualToken.getToken())){
+            match("opLess");
+            genericoNotOptResto();
+            match("opGreater");
+        }else if(Arrays.asList("idKeyWord_extends", "idKeyWord_implements",
+                "punctuationOpeningBracket", "punctuationOpeningParenthesis", "idMetVar",
+                "punctuationComma", "punctuationPoint", "opGreater").contains(actualToken.getToken())){
+            // vacio
+        }else{
+            throw new SyntacticException(actualToken, "{ < , extends, implements, { , ( , idMetVar, , , . , > }");
+        }
+    }
+
+    private void genericoOptional() throws LexicalException, SyntacticException {
         if(Arrays.asList("opLess").contains(actualToken.getToken())){
             match("opLess");
             genericoOptResto();
@@ -529,13 +543,19 @@ public class SyntacticAnalyzer {
     private void genericoOptResto() throws LexicalException, SyntacticException {
         if(Arrays.asList("idClass").contains(actualToken.getToken())){
             match("idClass");
-            genericoOpt();
+            genericoNotOpt();
             listaTipos();
         }else if(Arrays.asList("opGreater").contains(actualToken.getToken())){
             //vacio
         }else{
             throw new SyntacticException(actualToken, "{idClase, > }");
         }
+    }
+
+    private void genericoNotOptResto() throws LexicalException, SyntacticException {
+        match("idClass");
+        genericoNotOpt();
+        listaTipos();
     }
 
     // 26 ------------------------------------------------------------------------------
@@ -546,7 +566,7 @@ public class SyntacticAnalyzer {
         if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
             match("punctuationComma");
             match("idClass");
-            genericoOpt();
+            genericoNotOpt();
             listaTipos();
         }else if(Arrays.asList("opGreater").contains(actualToken.getToken())){
             // vacio
@@ -646,7 +666,7 @@ public class SyntacticAnalyzer {
             Parameter parameter = new Parameter();
             Type type = tipo();
             if(type.getTokenType().getToken().equals("idClass")){
-                genericoOpt();
+                genericoNotOpt();
             }
             parameter.setVarType(type);
             parameter.setVarToken(actualToken);
@@ -885,7 +905,7 @@ public class SyntacticAnalyzer {
 //        TODO varLocalNodo.setVarLocalNodoType(idClass);
         localVar.setVarType(idClass);
         localVar.setVarToken(actualToken);
-        genericoOpt();
+        genericoNotOpt();
         match("idMetVar");
         st.getActualMethod().getBlock().addVar(localVar);
         listaDecVarLocal(idClass);
@@ -1194,7 +1214,7 @@ public class SyntacticAnalyzer {
             primarioNodo = expresionParentizada();
         }else if(Arrays.asList("idClass").contains(actualToken.getToken())){
             match("idClass");
-            genericoOpt();
+            genericoNotOpt();
             accesoMetodoEstatico();
         }else{
             throw new SyntacticException(actualToken,"{this, idMetVar, new, ( , idClass}");
@@ -1235,7 +1255,7 @@ public class SyntacticAnalyzer {
         match("idKeyWord_new");
         AccesoConstructorNodo accesoConstructorNodo = new AccesoConstructorNodo(actualToken);
         match("idClass");
-        genericoOpt();
+        genericoOptional();
         match("punctuationOpeningParenthesis");
         accesoConstructorNodo.setArgumentosActuales(listaExpsOpt());
         match("punctuationClosingParenthesis");
