@@ -1,6 +1,7 @@
 package minijava.compiler.semantic.nodes.expresion.operando.primario;
 
 import minijava.compiler.exception.SemanticException;
+import minijava.compiler.exception.SemanticP2.SemanticExceptionCantCallDynamicMethodOnStaticMethod;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionMethodNotExistInCallerClass;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongQuantityParameters;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongTypeActualArgs;
@@ -51,6 +52,9 @@ public class AccesoMetNodo extends PrimarioNodo{
                     throw new SemanticExceptionWrongTypeActualArgs(idMetodo);
                 }
             }
+
+            if(st.getActualMethod().isStatic()) throw new SemanticExceptionCantCallDynamicMethodOnStaticMethod(idMetodo);
+            
         }else{
             throw new SemanticExceptionWrongQuantityParameters(m.getMethodToken());
         }

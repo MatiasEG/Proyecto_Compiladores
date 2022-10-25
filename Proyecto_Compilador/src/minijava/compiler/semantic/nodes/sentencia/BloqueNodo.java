@@ -14,6 +14,6 @@ public class BloqueNodo extends SentenciaNodo {
 
     public void check(SymbolTable st) throws SemanticException {
         //TODO implementar bloques como sentencias
-        // block.check(st);
+        block.check(st);
     }
 }

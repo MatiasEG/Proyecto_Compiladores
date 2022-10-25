@@ -1,7 +1,7 @@
 package minijava.compiler.semantic.nodes.expresion.operando.primario;
 
 import minijava.compiler.exception.SemanticException;
-import minijava.compiler.exception.SemanticP2.SemanticExceptionCantCallConstructorOfInterface;
+import minijava.compiler.exception.SemanticP2.SemanticExceptionCantCallConstructor;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
@@ -26,7 +26,7 @@ public class AccesoConstructorNodo extends PrimarioNodo {
     public Type check(SymbolTable st) throws SemanticException {
 
         if(st.getClass(idClase.getLexeme())==null){
-            throw new SemanticExceptionCantCallConstructorOfInterface(idClase);
+            throw new SemanticExceptionCantCallConstructor(idClase);
         }
 
         return returnType;

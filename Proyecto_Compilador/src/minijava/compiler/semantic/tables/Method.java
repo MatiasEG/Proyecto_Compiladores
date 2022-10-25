@@ -3,7 +3,6 @@ package minijava.compiler.semantic.tables;
 import minijava.compiler.exception.SemanticException;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
-import minijava.compiler.semantic.nodes.Node;
 import minijava.compiler.semantic.tables.variable.Parameter;
 
 import java.util.ArrayList;
@@ -18,14 +17,12 @@ public class Method {
     protected ArrayList<Parameter> parameters;
     protected HashMap<String, Parameter> parameterHashMap;
     protected Type type;
-    protected ArrayList<Node> nodes;
     protected Block block;
     protected Block actualBlock;
 
     public Method(){
         parameters = new ArrayList<>();
         isStatic = false;
-        nodes = new ArrayList<>();
         parameterHashMap = new HashMap<>();
         block = null;
     }

@@ -2,6 +2,7 @@ package minijava.compiler.semantic.nodes.expresion.operando;
 
 import minijava.compiler.exception.SemanticException;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionAttributteOrMethodNotDefinedInClassRef;
+import minijava.compiler.exception.SemanticP2.SemanticExceptionCantCallDynamicMethodOnStaticMethod;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongQuantityParameters;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongTypeActualArgs;
 import minijava.compiler.lexical.analyzer.Token;
@@ -80,6 +81,7 @@ public class EncadenadoOptNodo {
                         throw new SemanticExceptionWrongTypeActualArgs(idMetVar);
                     }
                 }
+
             }else{
                 throw new SemanticExceptionWrongQuantityParameters(m.getMethodToken());
             }

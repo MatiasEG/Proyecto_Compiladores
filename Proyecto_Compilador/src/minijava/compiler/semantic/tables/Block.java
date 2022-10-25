@@ -10,6 +10,7 @@ import minijava.compiler.semantic.tables.variable.Variable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Block {
 
@@ -76,4 +77,14 @@ public class Block {
     }
 
     public HashMap<String, VarLocal> getVarsHashMap(){ return varsHashMap; }
+
+    public HashMap<String, VarLocal> getVarsAccesiblesDesdeElBloque(){
+        if(bloquePadre!=null){
+            HashMap<String, VarLocal> varsDelPadre = bloquePadre.getVarsHashMap();
+            varsDelPadre.putAll(varsHashMap);
+            return varsDelPadre;
+        }else{
+            return varsHashMap;
+        }
+    }
 }

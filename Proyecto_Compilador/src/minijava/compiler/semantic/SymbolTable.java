@@ -3,6 +3,7 @@ package minijava.compiler.semantic;
 import minijava.compiler.exception.SemanticException;
 import minijava.compiler.exception.semanticP1.classinterface.*;
 import minijava.compiler.exception.semanticP1.extend.SemanticExceptionCircleExtend;
+import minijava.compiler.exception.semanticP1.extend.SemanticExceptionClassExtendInterface;
 import minijava.compiler.exception.semanticP1.extend.SemanticExceptionRepeatedExtend;
 import minijava.compiler.exception.semanticP1.method.*;
 import minijava.compiler.exception.semanticP1.duplicated.SemanticExceptionDuplicatedAtribute;
@@ -131,6 +132,7 @@ public class SymbolTable {
             checkExtendsRepetidos(entry.getValue().getExtendedClasses());
             for(Token t: entry.getValue().getExtendedClasses()){
                 s = t.getLexeme();
+                if(interfaces.containsKey(s)) throw new SemanticExceptionClassExtendInterface(t);
                 if(!classes.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
                 main += checkMetodos(main, entry.getValue(), entry.getValue().getMethods());
                 checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
@@ -138,7 +140,7 @@ public class SymbolTable {
 
             for(Token t: entry.getValue().getImplementedClasses()){
                 s = t.getLexeme();
-                if(classes.containsKey(s)) throw new SemanticExceptionInterfaceExtendsClase(classes.get(s));
+                if(classes.containsKey(s)) throw new SemanticExceptionClassImplementClass(t);
                 if(!interfaces.containsKey(s)) throw new SemanticExceptionImplementedClassDoesNotExist(entry.getValue(), t);
             }
 
@@ -154,6 +156,7 @@ public class SymbolTable {
             checkExtendsRepetidos(entry.getValue().getExtendedClasses());
             for(Token t: entry.getValue().getExtendedClasses()){
                 s = t.getLexeme();
+                if (classes.containsKey(s)) throw new SemanticExceptionInterfaceExtendsClase(classes.get(s));
                 if(!interfaces.containsKey(s)) throw new SemanticExceptionExtendedInterfaceDoesNotExist(entry.getValue(), t);
                 checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
             }
@@ -229,7 +232,6 @@ public class SymbolTable {
 
             for(Token t: entry.getValue().getImplementedClasses()){
                 checkMetodosImplementados(entry.getValue(), interfaces.get(t.getLexeme()));
-                if(classes.containsKey(t.getLexeme())) throw new SemanticExceptionClassImplementClass(entry.getValue());
             }
         }
 

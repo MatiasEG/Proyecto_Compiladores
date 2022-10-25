@@ -1,6 +1,7 @@
 package minijava.compiler.semantic.nodes.expresion.operando.primario;
 
 import minijava.compiler.exception.SemanticException;
+import minijava.compiler.exception.SemanticP2.SemanticExceptionCantAccessAtributesOnStaticMethod;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionVarNotExist;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
@@ -25,9 +26,10 @@ public class AccesoVarNodo extends PrimarioNodo {
     public Type check(SymbolTable st) throws SemanticException {
         if(st.getActualMethod().getParameterHashMap().containsKey(name)){
             var = st.getActualMethod().getParameter(name);
-        }else if(bloqueAcceso.getVarsHashMap().containsKey(name)){
-            var = bloqueAcceso.getVarsHashMap().get(name);
+        }else if(bloqueAcceso.getVarsAccesiblesDesdeElBloque().containsKey(name)){
+            var = bloqueAcceso.getVarsAccesiblesDesdeElBloque().get(name);
         }else if(st.getActualClass().getHashMapAtributes().containsKey(name)){
+            if(st.getActualMethod().isStatic()) throw new SemanticExceptionCantAccessAtributesOnStaticMethod(varToken);
             var = st.getActualClass().getHashMapAtributes().get(name);
         }else{
             throw new SemanticExceptionVarNotExist(varToken);

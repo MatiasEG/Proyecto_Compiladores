@@ -936,8 +936,8 @@ public class SyntacticAnalyzer {
 //        varLocalNodo.setVarLocalToken(actualToken);
 //        TODO varLocalNodo.setVarLocalNodoType(idClass);
         localVar.setVarType(idClass);
-        localVar.setVarToken(actualToken);
         genericoNotOpt();
+        localVar.setVarToken(actualToken);
         match("idMetVar");
         st.getActualMethod().getActualBlock().addVar(localVar);
         listaDecVarLocal(idClass);
