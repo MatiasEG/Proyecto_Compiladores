@@ -13,7 +13,7 @@ public class MayorNodo extends ExpresionBinariaNodo {
 
     public MayorNodo(Token mayorToken, boolean mayorIgual){
         super(mayorToken);
-        this.mayorIgual = mayorIgual;
+        this.mayorIgual = mayorIgual; // TODO me va a servir para la parte de ejecucion
     }
 
     public Type check(SymbolTable st) throws SemanticException {

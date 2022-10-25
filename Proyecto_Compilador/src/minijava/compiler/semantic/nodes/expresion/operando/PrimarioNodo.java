@@ -1,4 +1,4 @@
-package minijava.compiler.semantic.nodes.expresion.operando.primario;
+package minijava.compiler.semantic.nodes.expresion.operando;
 
 import minijava.compiler.exception.SemanticException;
 import minijava.compiler.semantic.SymbolTable;

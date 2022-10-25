@@ -2,7 +2,6 @@ package minijava.compiler.semantic.nodes.expresion.operando;
 
 import minijava.compiler.exception.SemanticException;
 import minijava.compiler.semantic.SymbolTable;
-import minijava.compiler.semantic.nodes.expresion.operando.primario.PrimarioNodo;
 import minijava.compiler.semantic.tables.Type;
 
 public class AccesoNodo extends OperandoNodo {

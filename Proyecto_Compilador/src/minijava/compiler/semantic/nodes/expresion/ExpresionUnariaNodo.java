@@ -13,8 +13,6 @@ public abstract class ExpresionUnariaNodo extends ExpresionNodo {
 
     public ExpresionUnariaNodo(Token unaryOperator){ this.unaryOperator = unaryOperator; }
 
-    public void setUnaryOperator(Token unaryOperator){ this.unaryOperator = unaryOperator; }
-
     public void setOperateNode(OperandoNodo operandoNodo){ this.operandoNodo = operandoNodo; }
 
     @Override

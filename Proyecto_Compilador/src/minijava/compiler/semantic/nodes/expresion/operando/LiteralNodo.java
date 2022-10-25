@@ -1,9 +1,8 @@
-package minijava.compiler.semantic.nodes.expresion.operando.literales;
+package minijava.compiler.semantic.nodes.expresion.operando;
 
 import minijava.compiler.exception.SemanticException;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
-import minijava.compiler.semantic.nodes.expresion.operando.OperandoNodo;
 import minijava.compiler.semantic.tables.Type;
 
 public abstract class LiteralNodo extends OperandoNodo {

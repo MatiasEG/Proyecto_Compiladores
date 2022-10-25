@@ -13,12 +13,10 @@ import minijava.compiler.semantic.tables.Type;
 public class ReturnNodo extends SentenciaNodo {
 
     private ExpresionNodo expresionNodo;
-    private Method method;
     private Token returnToken;
 
 
-    public ReturnNodo(Method method, Token returnToken){
-        this.method = method;
+    public ReturnNodo(Token returnToken){
         this.returnToken = returnToken;
     }
 

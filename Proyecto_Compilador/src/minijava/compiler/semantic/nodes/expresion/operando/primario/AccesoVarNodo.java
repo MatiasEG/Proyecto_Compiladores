@@ -5,6 +5,7 @@ import minijava.compiler.exception.SemanticP2.SemanticExceptionCantAccessAtribut
 import minijava.compiler.exception.SemanticP2.SemanticExceptionVarNotExist;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
+import minijava.compiler.semantic.nodes.expresion.operando.PrimarioNodo;
 import minijava.compiler.semantic.tables.Block;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Variable;

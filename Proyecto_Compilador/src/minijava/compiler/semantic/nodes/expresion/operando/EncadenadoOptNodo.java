@@ -2,7 +2,6 @@ package minijava.compiler.semantic.nodes.expresion.operando;
 
 import minijava.compiler.exception.SemanticException;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionAttributteOrMethodNotDefinedInClassRef;
-import minijava.compiler.exception.SemanticP2.SemanticExceptionCantCallDynamicMethodOnStaticMethod;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongQuantityParameters;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongTypeActualArgs;
 import minijava.compiler.lexical.analyzer.Token;
@@ -11,7 +10,6 @@ import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
 import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Parameter;
-import minijava.compiler.semantic.tables.variable.Variable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,7 +18,6 @@ import java.util.Iterator;
 public class EncadenadoOptNodo {
 
     private EncadenadoOptNodo encadenadoOptNodo;
-    private Variable var;
     private Token idMetVar;
     private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
     private Type tipoPrimarioNodo;
@@ -28,7 +25,6 @@ public class EncadenadoOptNodo {
     public EncadenadoOptNodo(){
         actualArgsExpresionNodes = null;
         encadenadoOptNodo = null;
-        var = null;
         idMetVar = null;
         tipoPrimarioNodo = null;
     }

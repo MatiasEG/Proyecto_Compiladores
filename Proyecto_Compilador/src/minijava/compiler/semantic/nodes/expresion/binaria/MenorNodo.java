@@ -13,7 +13,7 @@ public class MenorNodo extends ExpresionBinariaNodo {
 
     public MenorNodo(Token menorToken, boolean menorIgual){
         super(menorToken);
-        this.menorIgual = menorIgual;
+        this.menorIgual = menorIgual; // TODO me va a servir para la parte de ejecucion
     }
 
     public Type check(SymbolTable st) throws SemanticException {

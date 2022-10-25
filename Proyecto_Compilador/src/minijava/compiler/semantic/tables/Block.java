@@ -80,9 +80,12 @@ public class Block {
 
     public HashMap<String, VarLocal> getVarsAccesiblesDesdeElBloque(){
         if(bloquePadre!=null){
+            HashMap<String, VarLocal> varsTotales = new HashMap<>();
             HashMap<String, VarLocal> varsDelPadre = bloquePadre.getVarsHashMap();
-            varsDelPadre.putAll(varsHashMap);
-            return varsDelPadre;
+
+            varsTotales.putAll(varsDelPadre);
+            varsTotales.putAll(varsHashMap);
+            return varsTotales;
         }else{
             return varsHashMap;
         }

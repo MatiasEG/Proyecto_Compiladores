@@ -1,8 +1,11 @@
 package minijava.compiler.semantic.nodes.sentencia;
 
+import minijava.compiler.exception.SemanticException;
+import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongConditionType;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
+import minijava.compiler.semantic.tables.Type;
 
 public class WhileNodo extends SentenciaNodo{
 
@@ -17,7 +20,13 @@ public class WhileNodo extends SentenciaNodo{
     public void setSentenciaWhile(SentenciaNodo sentenciaWhile){ this.sentenciaWhile = sentenciaWhile; }
 
     @Override
-    public void check(SymbolTable st) {
+    public void check(SymbolTable st) throws SemanticException {
+        Type tipoCondicion = condicion.check(st);
 
+        if(tipoCondicion.getTypeForAssignment().equals("boolean")){
+            sentenciaWhile.check(st);
+        }else{
+            throw new SemanticExceptionWrongConditionType(whileToken);
+        }
     }
 }

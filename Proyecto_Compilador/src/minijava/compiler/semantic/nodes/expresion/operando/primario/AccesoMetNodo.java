@@ -8,6 +8,7 @@ import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongTypeActualAr
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
+import minijava.compiler.semantic.nodes.expresion.operando.PrimarioNodo;
 import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Parameter;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class AccesoMetNodo extends PrimarioNodo{
+public class AccesoMetNodo extends PrimarioNodo {
 
     private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
     private Token idMetodo;

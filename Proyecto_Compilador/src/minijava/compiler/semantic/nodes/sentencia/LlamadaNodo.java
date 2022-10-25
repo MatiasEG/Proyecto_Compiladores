@@ -8,12 +8,11 @@ public class LlamadaNodo extends SentenciaNodo{
 
     private AccesoNodo accesoNodo;
 
-
     public void setAccesoNodo(AccesoNodo accesoNodo){ this.accesoNodo = accesoNodo; }
-
 
     @Override
     public void check(SymbolTable st) throws SemanticException {
         accesoNodo.check(st);
     }
+
 }

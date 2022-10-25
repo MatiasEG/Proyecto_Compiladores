@@ -26,7 +26,7 @@ public class MainModule {
 
     public static void main(String[]args){
 
-//        FileManager fileManager = new FileManager(new File("resources/conErrores/errBloqueAnidado.java"));
+//        FileManager fileManager = new FileManager(new File("resources/conErrores/semIIError03.java"));
 //        FileManager fileManager = new FileManager(new File("resources/sinErrores/ExpresionesYSentencias.java"));
 //        FileManager fileManager = new FileManager(new File("resources/sinErrores/correccion06.java"));
 //

@@ -5,23 +5,23 @@ import minijava.compiler.exception.SemanticP2.*;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
+import minijava.compiler.semantic.nodes.expresion.operando.PrimarioNodo;
 import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Parameter;
-import minijava.compiler.semantic.tables.variable.Variable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class AccesoMetVarEstaticoNodo extends PrimarioNodo {
+public class AccesoMetEstaticoNodo extends PrimarioNodo {
 
     private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
-    private Token idMetVar;
+    private Token idMet;
     private Type classType;
 
-    public AccesoMetVarEstaticoNodo(Type classType, Token metVarToken) {
-        idMetVar = metVarToken;
+    public AccesoMetEstaticoNodo(Type classType, Token metVarToken) {
+        idMet = metVarToken;
         this.classType = classType;
         actualArgsExpresionNodes = null;
     }
@@ -31,14 +31,13 @@ public class AccesoMetVarEstaticoNodo extends PrimarioNodo {
         this.actualArgsExpresionNodes = expresionNodos;
     }
 
-
     @Override
     public Type check(SymbolTable st) throws SemanticException {
 
         if(actualArgsExpresionNodes==null){
-            throw new SemanticExeptionInvalidStaticInvocation(idMetVar);
-        }else if(st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().containsKey(idMetVar.getLexeme())) {
-            Method m = st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMetVar.getLexeme());
+            throw new SemanticExeptionInvalidStaticInvocation(idMet);
+        }else if(st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().containsKey(idMet.getLexeme())) {
+            Method m = st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMet.getLexeme());
             if (m.isStatic()) {
                 ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
                 Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
@@ -53,7 +52,7 @@ public class AccesoMetVarEstaticoNodo extends PrimarioNodo {
                         } else if (typeExp.getLexemeType().equals("null") && p.getVarType().isClassRef()) {
                             // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
                         } else if (!typeExp.getTypeForAssignment().equals(p.getVarType().getTypeForAssignment())) {
-                            throw new SemanticExceptionWrongTypeActualArgs(idMetVar);
+                            throw new SemanticExceptionWrongTypeActualArgs(idMet);
                         }
                     }
                 } else {
@@ -61,10 +60,10 @@ public class AccesoMetVarEstaticoNodo extends PrimarioNodo {
                 }
                 return m.getMethodType();
             } else {
-                throw new SemanticExeptionInvalidStaticInvocation(idMetVar);
+                throw new SemanticExeptionInvalidStaticInvocation(idMet);
             }
         }else{
-            throw new SemanticExceptionMethodNotExistInCallerClass(idMetVar);
+            throw new SemanticExceptionMethodNotExistInCallerClass(idMet);
         }
     }
 
