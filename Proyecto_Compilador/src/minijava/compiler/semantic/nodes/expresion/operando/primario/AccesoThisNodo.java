@@ -8,14 +8,16 @@ import minijava.compiler.semantic.tables.Type;
 public class AccesoThisNodo extends PrimarioNodo {
 
     private Token thisToken;
+    private String nombreClase;
 
-    public AccesoThisNodo(Token thisToken){
+    public AccesoThisNodo(Token thisToken, String nombreClase){
         this.thisToken = thisToken;
+        this.nombreClase = nombreClase;
     }
 
     @Override
     public Type check(SymbolTable st) throws SemanticException {
-        return null;
+        return new Type(new Token("idClass", nombreClase, thisToken.getRow()));
     }
 
     @Override

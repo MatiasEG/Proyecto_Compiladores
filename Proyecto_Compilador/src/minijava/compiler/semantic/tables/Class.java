@@ -1,6 +1,7 @@
 package minijava.compiler.semantic.tables;
 
 import minijava.compiler.lexical.analyzer.Token;
+import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.tables.variable.Attribute;
 
 import java.util.ArrayList;
@@ -38,6 +39,21 @@ public class Class extends ClassOrInterface {
     public void addAttribute(Attribute attribute){
         attributes.add(attribute);
         atributosHashMap.put(attribute.getVarName(), attribute);
+    }
+
+    public String subtipo(SymbolTable st, ClassOrInterface claseInterfazSubtipo){
+        String nombre = null;
+        for(Token padre: extendsFrom){
+            if(padre.getLexeme().equals(claseInterfazSubtipo.getNombre())) return padre.getLexeme();
+            nombre = st.alreadyExist(padre.getLexeme()).subtipo(st, claseInterfazSubtipo);
+        }
+        if(nombre == null){
+            for(Token interfazPadre: implement){
+                if(interfazPadre.getLexeme().equals(claseInterfazSubtipo.getNombre())) return interfazPadre.getLexeme();
+                nombre = st.alreadyExist(interfazPadre.getLexeme()).subtipo(st, claseInterfazSubtipo);
+            }
+        }
+        return nombre;
     }
 
     public boolean alreadyHaveAttribute(Attribute attribute){

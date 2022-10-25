@@ -41,20 +41,6 @@ public class EncadenadoOptNodo {
         actualArgsExpresionNodes = expresionNodos;
     }
 
-//    public Type check(Variable classRefVar, SymbolTable st) throws SemanticException {
-//        if(st.getClass(classRefVar.getVarName()).getHashMapAtributes().containsKey(classRefVar.getVarName())){
-//            var = st.getClass(classRefVar.getVarName()).getHashMapAtributes().get(classRefVar.getVarName());
-//        }else{
-//            throw new SemanticExceptionClassRefNotExist(classRefVar.getVarType().getTokenType());
-//        }
-//
-//        if(encadenadoOptNodo == null){
-//            return var.getVarType();
-//        }else{
-//            return encadenadoOptNodo.check(var, st);
-//        }
-//    }
-
     public boolean isAssignable(SymbolTable st){
         if(encadenadoOptNodo == null){
             if(isAtribute(tipoPrimarioNodo, st))
@@ -68,7 +54,7 @@ public class EncadenadoOptNodo {
         }
     }
 
-    public Type check(Type tipoPrimarioNodo, SymbolTable st) throws SemanticException {
+    public Type check(Type tipoPrimarioNodo, SymbolTable st) throws SemanticException{
         this.tipoPrimarioNodo = tipoPrimarioNodo;
         if(isAtribute(tipoPrimarioNodo, st)){
             if(encadenadoOptNodo == null){
@@ -77,23 +63,30 @@ public class EncadenadoOptNodo {
                 return encadenadoOptNodo.check(st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapAtributes().get(idMetVar.getLexeme()).getVarType(), st);
             }
         }else if(isMethod(tipoPrimarioNodo, st)){
-            //TODO ver codigo repetido con AccesoMetNodo, se puede resolver esto mejor?
-            if(encadenadoOptNodo == null){
-                Method m = st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMetVar.getLexeme());
-                ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
-                Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
-                if(actualArgsExpresionNodes.size() == tiposParametrosDeclarados.size()){
-                    ExpresionNodo exp;
-                    for(Parameter p: tiposParametrosDeclarados){
-                        exp = expresionNodosIterablre.next();
-                        if(!exp.check(st).getTypeForAssignment().equals(p.getVarType().getTypeForAssignment())) throw new SemanticExceptionWrongTypeActualArgs(idMetVar);
+            Method m = st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMetVar.getLexeme());
+            ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
+            Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
+            if(actualArgsExpresionNodes.size() == tiposParametrosDeclarados.size()){
+                ExpresionNodo exp;
+                for(Parameter p: tiposParametrosDeclarados){
+                    exp = expresionNodosIterablre.next();
+                    Type typeExp = exp.check(st);
+                    if(typeExp.isClassRef() && p.getVarType().isClassRef() &&
+                            st.bSubtipoA(typeExp.getLexemeType(), p.getVarType().getLexemeType()) != null){
+                        // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
+                    }else if(typeExp.getLexemeType().equals("null") && p.getVarType().isClassRef()){
+                        // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
+                    }else if(!typeExp.getTypeForAssignment().equals(p.getVarType().getTypeForAssignment())){
+                        throw new SemanticExceptionWrongTypeActualArgs(idMetVar);
                     }
-                }else{
-                    throw new SemanticExceptionWrongQuantityParameters(m.getMethodToken());
                 }
-                return st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMetVar.getLexeme()).getMethodType();
             }else{
-                return encadenadoOptNodo.check(st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMetVar.getLexeme()).getMethodType(), st);
+                throw new SemanticExceptionWrongQuantityParameters(m.getMethodToken());
+            }
+            if(encadenadoOptNodo == null){
+                return m.getMethodType();
+            }else{
+                return encadenadoOptNodo.check(m.getMethodType(), st);
             }
         }else
             throw new SemanticExceptionAttributteOrMethodNotDefinedInClassRef(idMetVar);

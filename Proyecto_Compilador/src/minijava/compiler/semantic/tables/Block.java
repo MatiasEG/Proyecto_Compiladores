@@ -6,6 +6,7 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.sentencia.BloqueNodo;
 import minijava.compiler.semantic.nodes.sentencia.SentenciaNodo;
 import minijava.compiler.semantic.tables.variable.VarLocal;
+import minijava.compiler.semantic.tables.variable.Variable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class Block {
     private HashMap<String, VarLocal> varsHashMap;
     private BloqueNodo bloqueNodo;
     private ArrayList<SentenciaNodo> statements;
+    private Block bloquePadre;
     private ArrayList<Block> bloques;
 
     public Block(Method method){
@@ -25,20 +27,45 @@ public class Block {
         varsHashMap = new HashMap<>();
         statements = new ArrayList<>();
         bloques = new ArrayList<>();
+        bloquePadre = null;
     }
+
+    public Block(Method method, Block bloquePadre){
+        this.method = method;
+        vars = new ArrayList<>();
+        varsHashMap = new HashMap<>();
+        statements = new ArrayList<>();
+        bloques = new ArrayList<>();
+        this.bloquePadre = bloquePadre;
+    }
+
+    public Block getBloquePadre(){ return bloquePadre; }
 
     public void setBlockNode(BloqueNodo bloqueNodo){ this.bloqueNodo = bloqueNodo; }
 
     public void addSentenciaNodo(SentenciaNodo sentenciaNodo){ statements.add(sentenciaNodo); }
 
-    public void addBlock(Block block){ bloques.add(block); }
-
     public void addVar(VarLocal v) throws SemanticException {
-        if(!method.getParameterHashMap().containsKey(v.getVarName())){
+        if (bloquePadre!= null && bloquePadre.contains(v.getVarName()) == null && !varsHashMap.containsKey(v.getVarName())){
+            vars.add(v);
+            varsHashMap.put(v.getVarName(), v);
+        }else if(bloquePadre == null && !method.getParameterHashMap().containsKey(v.getVarName()) && !varsHashMap.containsKey(v.getVarName())) {
             vars.add(v);
             varsHashMap.put(v.getVarName(), v);
         }else{
             throw new SemanticExceptionVarLocalAlreadyExist(method, v);
+        }
+    }
+
+    public Variable contains(String varName){
+        if(method.getParameterHashMap().containsKey(varName)){
+            return method.getParameterHashMap().get(varName);
+        }else if(varsHashMap.containsKey(varName)){
+            return varsHashMap.get(varName);
+        }else if(bloquePadre != null){
+            return bloquePadre.contains(varName);
+        }else{
+            return null;
         }
     }
 

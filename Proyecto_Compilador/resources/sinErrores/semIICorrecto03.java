@@ -4,24 +4,18 @@
 
 class A {
     private int a1;
-    
-    
-     void m1(){
+
+    void m1(){
         a1 = a1;
     }
-    
-
 }
 
 
-class B extends A{
-    
-}
+class B extends A{}
 
 
 class Init{
-    static void main()
-    { }
+    static void main(){}
 }
 
 

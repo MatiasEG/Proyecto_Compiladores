@@ -1,6 +1,7 @@
 package minijava.compiler.semantic.tables;
 
 import minijava.compiler.lexical.analyzer.Token;
+import minijava.compiler.semantic.SymbolTable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,4 +16,13 @@ public class Interface_ extends ClassOrInterface {
         this.claseOrinterfaceToken = interfaceToken;
     }
 
+
+    public String subtipo(SymbolTable st, ClassOrInterface claseInterfazSubtipo){
+        String nombre = null;
+        for(Token padre: extendsFrom){
+            if(padre.getLexeme().equals(claseInterfazSubtipo.getNombre())) return padre.getLexeme();
+            nombre = st.alreadyExist(padre.getLexeme()).subtipo(st, claseInterfazSubtipo);
+        }
+        return nombre;
+    }
 }

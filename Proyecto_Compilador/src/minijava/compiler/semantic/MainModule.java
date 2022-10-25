@@ -26,11 +26,12 @@ public class MainModule {
 
     public static void main(String[]args){
 
-//        FileManager fileManager = new FileManager(new File("resources/sinErrores/Correcciones.java"));
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/Clase.java"));
+//        FileManager fileManager = new FileManager(new File("resources/conErrores/errNewInterface.java"));
+//        FileManager fileManager = new FileManager(new File("resources/sinErrores/ExpresionesYSentencias.java"));
+//        FileManager fileManager = new FileManager(new File("resources/sinErrores/Clase.java"));
 //
 //        FileManager fileManager = new FileManager(new File("resources/conErrores/errVarEncadenadaNoCoincideConTipoAsignacion.java"));
-//        FileManager fileManager = new FileManager(new File(args[0]));
+        FileManager fileManager = new FileManager(new File(args[0]));
 
         SymbolTable st = new SymbolTable();
 

@@ -6,26 +6,19 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.operando.OperandoNodo;
 import minijava.compiler.semantic.tables.Type;
 
-public class ExpresionUnariaNodo extends ExpresionNodo {
+public abstract class ExpresionUnariaNodo extends ExpresionNodo {
 
-    private Token unaryOperator;
-    private OperandoNodo operandoNodo;
+    protected Token unaryOperator;
+    protected OperandoNodo operandoNodo;
 
-    public ExpresionUnariaNodo(){}
+    public ExpresionUnariaNodo(Token unaryOperator){ this.unaryOperator = unaryOperator; }
 
     public void setUnaryOperator(Token unaryOperator){ this.unaryOperator = unaryOperator; }
 
     public void setOperateNode(OperandoNodo operandoNodo){ this.operandoNodo = operandoNodo; }
 
     @Override
-    public Type check(SymbolTable st) throws SemanticException {
-        if(unaryOperator == null){
-            return operandoNodo.check(st);
-        }else{
-            //TODO ver else
-            return null;
-        }
-    }
+    public abstract Type check(SymbolTable st) throws SemanticException;
 
     @Override
     public boolean isAssignable(SymbolTable st) {

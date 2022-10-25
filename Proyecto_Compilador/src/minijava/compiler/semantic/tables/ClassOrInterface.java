@@ -1,6 +1,7 @@
 package minijava.compiler.semantic.tables;
 
 import minijava.compiler.lexical.analyzer.Token;
+import minijava.compiler.semantic.SymbolTable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,8 @@ public abstract class ClassOrInterface {
     public HashMap<String, Method> getHashMapMethods(){ return metodoHashMap; }
 
     public HashMap<String, Method> getHashMapMethodsWithoutOverloaded(){ return metodosSinSobrecargaMap; }
+
+    public abstract String subtipo(SymbolTable st, ClassOrInterface claseInterfazSubtipo);
 
     public boolean sameMethodOverloaded(Method method){
         for(Method m: methods){

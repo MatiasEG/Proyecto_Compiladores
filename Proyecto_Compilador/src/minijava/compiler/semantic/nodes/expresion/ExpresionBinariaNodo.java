@@ -6,21 +6,19 @@ import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.tables.Type;
 
-public class ExpresionBinariaNodo extends ExpresionNodo{
+public abstract class ExpresionBinariaNodo extends ExpresionNodo{
 
-    private Token operatorToken;
-    private ExpresionNodo ladoIzquierdo;
-    private ExpresionNodo ladoDerecho;
+    protected Token operatorToken;
+    protected ExpresionNodo ladoIzquierdo;
+    protected ExpresionNodo ladoDerecho;
 
-    public ExpresionBinariaNodo(Token operatorToken){
-        this.operatorToken = operatorToken;
-    }
+    public ExpresionBinariaNodo(Token operatorToken){ this. operatorToken = operatorToken; }
 
     public void setLeftExpressionNode(ExpresionNodo exp){ ladoIzquierdo = exp; }
 
     public void setRightExpressionNode(ExpresionNodo exp){ ladoDerecho = exp; }
 
-    @Override
+    //TODO hacer abstracto este metodo
     public Type check(SymbolTable st) throws SemanticException {
         Type tipoLadoIzq = ladoIzquierdo.check(st);
         Type tipoLadoDer = ladoDerecho.check(st);

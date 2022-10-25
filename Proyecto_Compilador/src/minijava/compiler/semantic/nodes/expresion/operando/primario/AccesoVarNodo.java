@@ -4,6 +4,7 @@ import minijava.compiler.exception.SemanticException;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionVarNotExist;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
+import minijava.compiler.semantic.tables.Block;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Variable;
 
@@ -12,18 +13,20 @@ public class AccesoVarNodo extends PrimarioNodo {
     private Variable var;
     private String name;
     private Token varToken;
+    private Block bloqueAcceso;
 
-    public AccesoVarNodo(Token varToken){
+    public AccesoVarNodo(Token varToken, Block bloqueAcceso){
         this.var = null;
         name = varToken.getLexeme();
         this.varToken = varToken;
+        this.bloqueAcceso = bloqueAcceso;
     }
 
     public Type check(SymbolTable st) throws SemanticException {
         if(st.getActualMethod().getParameterHashMap().containsKey(name)){
             var = st.getActualMethod().getParameter(name);
-        }else if(st.getActualMethod().getMainBlock().getVarsHashMap().containsKey(name)){
-            var = st.getActualMethod().getMainBlock().getVarsHashMap().get(name);
+        }else if(bloqueAcceso.getVarsHashMap().containsKey(name)){
+            var = bloqueAcceso.getVarsHashMap().get(name);
         }else if(st.getActualClass().getHashMapAtributes().containsKey(name)){
             var = st.getActualClass().getHashMapAtributes().get(name);
         }else{

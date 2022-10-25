@@ -8,14 +8,22 @@ import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.*;
 import minijava.compiler.semantic.nodes.expresion.ExpresionBinariaNodo;
+import minijava.compiler.semantic.nodes.expresion.binaria.*;
 import minijava.compiler.semantic.nodes.expresion.operando.literales.*;
 import minijava.compiler.semantic.nodes.expresion.operando.primario.*;
+import minijava.compiler.semantic.nodes.expresion.unaria.ExpresionUnariaSinOperador;
+import minijava.compiler.semantic.nodes.expresion.unaria.NegacionUnariaNodo;
+import minijava.compiler.semantic.nodes.expresion.unaria.RestaUnariaNodo;
+import minijava.compiler.semantic.nodes.expresion.unaria.SumaUnariaNodo;
 import minijava.compiler.semantic.nodes.sentencia.*;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
 import minijava.compiler.semantic.nodes.expresion.ExpresionUnariaNodo;
 import minijava.compiler.semantic.nodes.expresion.operando.OperandoNodo;
 import minijava.compiler.semantic.nodes.expresion.operando.AccesoNodo;
 import minijava.compiler.semantic.nodes.expresion.operando.EncadenadoOptNodo;
+import minijava.compiler.semantic.nodes.sentencia.asignacion.AsignacionEstandarNodo;
+import minijava.compiler.semantic.nodes.sentencia.asignacion.AsignacionMasNodo;
+import minijava.compiler.semantic.nodes.sentencia.asignacion.AsignacionMenosNodo;
 import minijava.compiler.semantic.tables.*;
 import minijava.compiler.semantic.tables.Class;
 import minijava.compiler.semantic.tables.variable.Attribute;
@@ -680,15 +688,27 @@ public class SyntacticAnalyzer {
     // Primeros: { { }
     // Siguientes: -
     private SentenciaNodo bloque() throws LexicalException, SyntacticException, SemanticException {
-        Block block = new Block(st.getActualMethod());
-//        if(st.getActualMethod().alreadyHaveBlock()){
-        st.getActualMethod().setMainBlock(block);
+        Block block;
+        boolean setPadre = false;
+        if(!st.getActualMethod().alreadyHaveBlock()){
+            block = new Block(st.getActualMethod());
+            st.getActualMethod().setMainBlock(block);
+        }else{
+            setPadre = true;
+            block = new Block(st.getActualMethod(), st.getActualMethod().getActualBlock());
+        }
+        st.getActualMethod().setActualBlock(block);
+
         BloqueNodo bloqueNodo = new BloqueNodo(block);
         block.setBlockNode(bloqueNodo);
-        st.getActualMethod().setMainBlock(block);
         match("punctuationOpeningBracket");
         listaSentencias();
         match("punctuationClosingBracket");
+
+        if(setPadre) st.getActualMethod().setActualBlock(block.getBloquePadre());
+
+        //TODO seguir desarrollando la relacion padre hijo de los bloques
+
         return bloqueNodo;
     }
 
@@ -701,7 +721,7 @@ public class SyntacticAnalyzer {
                 "punctuationOpeningParenthesis", "idKeyWord_var", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int",
                 "idKeyWord_return", "idKeyWord_if", "idKeyWord_while", "punctuationOpeningBracket").contains(actualToken.getToken())){
             SentenciaNodo sentenciaNodo = sentencia();
-            if(sentenciaNodo != null) st.getActualMethod().getMainBlock().addSentenciaNodo(sentenciaNodo);
+            if(sentenciaNodo != null) st.getActualMethod().getActualBlock().addSentenciaNodo(sentenciaNodo);
             listaSentencias();
         }else if(Arrays.asList("punctuationClosingBracket").contains(actualToken.getToken())){
             // vacio
@@ -738,15 +758,15 @@ public class SyntacticAnalyzer {
     }
 
     // 37 ------------------------------------------------------------------------------
-    // <LlamadaOVarLocal> ::= idClase <GenericoOpt> <LlamadaOVarLocalResto> | <Llamada> | <VarLocal>
+    // <LlamadaOVarLocal> ::= idClase <GenericoOpt> <LlamadaOVarLocalEstaticoResto> | <Llamada> | <VarLocal>
     // Primeros: {idClase, this, idMetVar, new, ( , var, boolean, char, int}
     // Siguientes: -
     private SentenciaNodo llamadaOVarLocal() throws LexicalException, SyntacticException, SemanticException {
         SentenciaNodo sentenciaNodo;
         if(Arrays.asList("idClass").contains(actualToken.getToken())){
-            Type idClass = new Type(actualToken);
+            Token clase = actualToken;
             match("idClass");
-            sentenciaNodo = llamadaOVarLocalResto(idClass);
+            sentenciaNodo = llamadaOVarLocalEstaticoResto(clase);
         }else if(Arrays.asList("idKeyWord_this", "idMetVar", "idKeyWord_new", "punctuationOpeningParenthesis").contains(actualToken.getToken())){
             sentenciaNodo = llamada();
         }else if(Arrays.asList("idKeyWord_var", "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())){
@@ -761,15 +781,22 @@ public class SyntacticAnalyzer {
     // <LlamadaOVarLocalResto> ::= <AccesoMetodoEstatico> <Asignacion> |  <VarLocalTipoClase>
     // Primeros: { . , < , idMetVar}
     // Siguientes: -
-    private SentenciaNodo llamadaOVarLocalResto(Type idClass) throws LexicalException, SyntacticException, SemanticException {
-        SentenciaNodo sentenciaNodo = null;
+    //TODO arreglar
+    private SentenciaNodo llamadaOVarLocalEstaticoResto(Token clase) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("punctuationPoint").contains(actualToken.getToken())){
-            accesoMetodoEstatico();
-            asignacion();
+            AccesoNodo accesoNodo = new AccesoNodo();
+            LlamadaNodo llamadaNodo = new LlamadaNodo();
+            AccesoClase accesoClase = new AccesoClase(clase);
+            accesoNodo.setPrimarioNodo(accesoClase);
+            llamadaNodo.setAccesoNodo(accesoNodo);
+            accesoClase.setEncadenadoClaseEstatico(accesoMetodoEstatico(new Type(clase)));
+            accesoNodo.setEncadenadoOptNodo(encadenadoOpt(null));
+            return llamadaNodo;
+
         }else if(Arrays.asList("opLess", "idMetVar").contains(actualToken.getToken())){
-            varLocalTipoClase(idClass);
+            varLocalTipoClase(new Type(clase));
         }
-        return sentenciaNodo;
+        return null;
     }
 
     // 39 ------------------------------------------------------------------------------
@@ -779,7 +806,7 @@ public class SyntacticAnalyzer {
     private AsignacionNodo asignacion() throws SyntacticException, LexicalException {
         AsignacionNodo asignacionNodo;
         if(Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction").contains(actualToken.getToken())){
-            asignacionNodo = new AsignacionNodo(tipoDeAsignacion());
+            asignacionNodo = tipoDeAsignacion();
             asignacionNodo.setParteDerecha(expresion());
         }else if(Arrays.asList("punctuationSemicolon").contains(actualToken.getToken())){
             // vacio
@@ -794,18 +821,21 @@ public class SyntacticAnalyzer {
     // <TipoDeAsignacion> ::= = | += | -=
     // Primeros: { = , += , -= }
     // Siguientes: -
-    private Token tipoDeAsignacion() throws SyntacticException, LexicalException {
-        Token tipoAsignacion = actualToken;
+    private AsignacionNodo tipoDeAsignacion() throws SyntacticException, LexicalException {
+        AsignacionNodo asignacionNodo;
         if(Arrays.asList("assignment").contains(actualToken.getToken())){
+            asignacionNodo = new AsignacionEstandarNodo(actualToken);
             match("assignment");
         }else if(Arrays.asList("assignmentAddition").contains(actualToken.getToken())){
+            asignacionNodo = new AsignacionMasNodo(actualToken);
             match("assignmentAddition");
         }else if(Arrays.asList("assignmentSubtraction").contains(actualToken.getToken())){
+            asignacionNodo = new AsignacionMenosNodo(actualToken);
             match("assignmentSubtraction");
         }else{
             throw new SyntacticException(actualToken, "{ = , += , -= }");
         }
-        return tipoAsignacion;
+        return asignacionNodo;
     }
 
     // 41 ------------------------------------------------------------------------------
@@ -833,21 +863,19 @@ public class SyntacticAnalyzer {
         VarLocal localVar = new VarLocal();
         VarLocalNodo varLocalNodo = null;
         if(Arrays.asList("idKeyWord_var").contains(actualToken.getToken())){
-            varLocalNodo = new VarLocalNodo();
+            varLocalNodo = new VarLocalNodo(st.getActualMethod().getActualBlock());
             match("idKeyWord_var");
-            //TODO asignarle un tipo mediante el tipo resultado de la asignacion?
             localVar.setVarToken(actualToken);
             varLocalNodo.setVarLocalToken(actualToken);
             match("idMetVar");
-            st.getActualMethod().getMainBlock().addVar(localVar);
+            st.getActualMethod().getActualBlock().addVar(localVar);
             varLocalResto(varLocalNodo);
         }else if(Arrays.asList("idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int").contains(actualToken.getToken())){
             Type type = tipoPrimitivo();
             localVar.setVarType(type);
             localVar.setVarToken(actualToken);
             match("idMetVar");
-            st.getActualMethod().getMainBlock().addVar(localVar);
-            //TODO revisar si este nul no perjudica, no deberia.
+            st.getActualMethod().getActualBlock().addVar(localVar);
             varLocalResto(null);
         }else{
             throw new SyntacticException(actualToken, "{var, boolean, char, int}");
@@ -861,19 +889,22 @@ public class SyntacticAnalyzer {
     // Siguientes: -
     private void varLocalResto(VarLocalNodo varLocalNodo) throws LexicalException, SyntacticException, SemanticException {
         if(varLocalNodo != null){
-            if(Arrays.asList("assignment").contains(actualToken.getToken())){
-                match("assignment");
-                varLocalNodo.setParteDerecha(expresion());
-                varLocalResto(null);
-            }else if(Arrays.asList("punctuationComma").contains(actualToken.getToken())) {
-                match("punctuationComma");
-                match("idMetVar");
-                varLocalResto(null);
-            }else if(Arrays.asList("punctuationSemicolon").contains(actualToken.getToken())){
-                //vacio
-            }else{
-                throw new SyntacticException(actualToken, "{ = , , , ; }");
-            }
+            match("assignment");
+            varLocalNodo.setParteDerecha(expresion());
+            //TODO borrar esto
+//            if(Arrays.asList("assignment").contains(actualToken.getToken())){
+//                match("assignment");
+//                varLocalNodo.setParteDerecha(expresion());
+//                varLocalResto(null);
+//            }else if(Arrays.asList("punctuationComma").contains(actualToken.getToken())) {
+//                match("punctuationComma");
+//                match("idMetVar");
+//                varLocalResto(null);
+//            }else if(Arrays.asList("punctuationSemicolon").contains(actualToken.getToken())){
+//                //vacio
+//            }else{
+//                throw new SyntacticException(actualToken, "{ = , , , ; }");
+//            }
         }else{
             varLocalRestoSinNodo();
         }
@@ -908,7 +939,7 @@ public class SyntacticAnalyzer {
         localVar.setVarToken(actualToken);
         genericoNotOpt();
         match("idMetVar");
-        st.getActualMethod().getMainBlock().addVar(localVar);
+        st.getActualMethod().getActualBlock().addVar(localVar);
         listaDecVarLocal(idClass);
         varLocalTipoClaseResto();
 //        return varLocalNodo;
@@ -940,7 +971,7 @@ public class SyntacticAnalyzer {
             varLocal.setVarToken(actualToken);
             varLocal.setVarType(varLocalType);
             match("idMetVar");
-            st.getActualMethod().getMainBlock().addVar(varLocal);
+            st.getActualMethod().getActualBlock().addVar(varLocal);
             listaDecVarLocal(varLocalType);
         }else if(Arrays.asList("assignment").contains(actualToken.getToken())) {
             match("assignment");
@@ -989,23 +1020,24 @@ public class SyntacticAnalyzer {
     // Primeros: {if}
     // Siguientes: -
     private SentenciaNodo if_() throws LexicalException, SyntacticException, SemanticException {
+        IfNodo ifNodo = new IfNodo(actualToken);
         match("idKeyWord_if");
         match("punctuationOpeningParenthesis");
-        expresion();
+        ifNodo.setCondicion(expresion());
         match("punctuationClosingParenthesis");
-        sentencia();
-        ifResto();
-        return null;
+        ifNodo.setSentenciaIf(sentencia());
+        ifResto(ifNodo);
+        return ifNodo;
     }
 
     // 48 ------------------------------------------------------------------------------
     // <IfResto> ::= else <Sentencia> | e
     // Primeros: {else, e}
     // Siguientes: {else, ; , idClase, this, idMetVar, new, ( , var, boolean, char, int, return, if, while, { , } }
-    private void ifResto() throws LexicalException, SyntacticException, SemanticException {
+    private void ifResto(IfNodo ifNodo) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("idKeyWord_else").contains(actualToken.getToken())){
             match("idKeyWord_else");
-            sentencia();
+            ifNodo.setSentenciaElse(sentencia());
         }else if(Arrays.asList("idKeyWord_else", "punctuationSemicolon", "idClass", "idKeyWord_this", "idMetVar",
                 "idKeyWord_new", "punctuationOpeningParenthesis", "idKeyWord_var",
                 "idKeyWord_boolean", "idKeyWord_char", "idKeyWord_int", "idKeyWord_return",
@@ -1022,12 +1054,13 @@ public class SyntacticAnalyzer {
     // Primeros: {while}
     // Siguientes: -
     private SentenciaNodo while_() throws LexicalException, SyntacticException, SemanticException {
+        WhileNodo whileNodo = new WhileNodo(actualToken);
         match("idKeyWord_while");
         match("punctuationOpeningParenthesis");
-        expresion();
+        whileNodo.setCondicion(expresion());
         match("punctuationClosingParenthesis");
-        sentencia();
-        return null;
+        whileNodo.setSentenciaWhile(sentencia());
+        return whileNodo;
     }
 
     // 50 ------------------------------------------------------------------------------
@@ -1057,7 +1090,8 @@ public class SyntacticAnalyzer {
             expresionBinariaNodo.setLeftExpressionNode(leftExpresionNodo);
             ExpresionNodo rightExpresionNodo = expresionUnaria();
             expresionBinariaNodo.setRightExpressionNode(rightExpresionNodo);
-            expresionRec(rightExpresionNodo);
+            ExpresionNodo newExpresionNodo = expresionRec(expresionBinariaNodo);
+            if(newExpresionNodo != null) return newExpresionNodo;
         }else if(Arrays.asList("punctuationSemicolon", "punctuationComma", "punctuationClosingParenthesis").contains(actualToken.getToken())){
             // vacio
         }else{
@@ -1071,32 +1105,45 @@ public class SyntacticAnalyzer {
     // Primeros: { || , && , == , != , < , > , <= , >= , + , - , * , / , % }
     // Siguientes: -
     private ExpresionBinariaNodo operadorBinario() throws LexicalException, SyntacticException {
-        ExpresionBinariaNodo binaryOperatorNode = new ExpresionBinariaNodo(actualToken);
+        ExpresionBinariaNodo binaryOperatorNode;
         if(Arrays.asList("opLogicOr").contains(actualToken.getToken())){
+            binaryOperatorNode = new OrNodo(actualToken);
             match("opLogicOr");
         }else if(Arrays.asList("opLogicAnd").contains(actualToken.getToken())){
+            binaryOperatorNode = new AndNodo(actualToken);
             match("opLogicAnd");
         }else if(Arrays.asList("opEqual").contains(actualToken.getToken())){
+            binaryOperatorNode = new EqualNodo(actualToken);
             match("opEqual");
         }else if(Arrays.asList("opDistinct").contains(actualToken.getToken())){
+            binaryOperatorNode = new DistinctNodo(actualToken);
             match("opDistinct");
         }else if(Arrays.asList("opLess").contains(actualToken.getToken())){
+            binaryOperatorNode = new MenorNodo(actualToken, false);
             match("opLess");
         }else if(Arrays.asList("opGreater").contains(actualToken.getToken())){
+            binaryOperatorNode = new MayorNodo(actualToken, false);
             match("opGreater");
         }else if(Arrays.asList("opLessOrEqual").contains(actualToken.getToken())){
+            binaryOperatorNode = new MenorNodo(actualToken, true);
             match("opLessOrEqual");
         }else if(Arrays.asList("opGreaterOrEqual").contains(actualToken.getToken())){
+            binaryOperatorNode = new MayorNodo(actualToken, true);
             match("opGreaterOrEqual");
         }else if(Arrays.asList("opAddition").contains(actualToken.getToken())){
+            binaryOperatorNode = new SumaNodo(actualToken);
             match("opAddition");
         }else if(Arrays.asList("opSubtraction").contains(actualToken.getToken())){
+            binaryOperatorNode = new RestaNodo(actualToken);
             match("opSubtraction");
         }else if(Arrays.asList("opMultiplication").contains(actualToken.getToken())){
+            binaryOperatorNode = new MultiplicacionNodo(actualToken);
             match("opMultiplication");
         }else if(Arrays.asList("opDivision").contains(actualToken.getToken())){
+            binaryOperatorNode = new DivisionNodo(actualToken);
             match("opDivision");
         }else if(Arrays.asList("opModule").contains(actualToken.getToken())){
+            binaryOperatorNode = new ModuloNodo(actualToken);
             match("opModule");
         }else{
             throw new SyntacticException(actualToken, "{ || , && , == , != , < , > , <= , >= , + , - , * , / , % }");
@@ -1109,36 +1156,40 @@ public class SyntacticAnalyzer {
     // Primeros: { + , - , ! , null, true, false, intLiteral, charLiteral, stringLiteral, this, idMetVar, new, ( , idClase}
     // Siguientes: -
     private ExpresionUnariaNodo expresionUnaria() throws LexicalException, SyntacticException {
-        ExpresionUnariaNodo unaryExpressionNode = new ExpresionUnariaNodo();
+        ExpresionUnariaNodo unaryExpressionNodo;
         if(Arrays.asList("opAddition", "opSubtraction", "opNegation").contains(actualToken.getToken())){
-            unaryExpressionNode.setUnaryOperator(operadorUnario());
-            unaryExpressionNode.setOperateNode(operando());
+            unaryExpressionNodo = operadorUnario();
+            unaryExpressionNodo.setOperateNode(operando());
         }else if(Arrays.asList("idKeyWord_null", "idKeyWord_true", "idKeyWord_false",
                 "literalInteger", "literalCharacter","literalString", "idKeyWord_this",
                 "idMetVar", "idKeyWord_new", "punctuationOpeningParenthesis", "idClass").contains(actualToken.getToken())){
-            unaryExpressionNode.setOperateNode(operando());
+            unaryExpressionNodo = new ExpresionUnariaSinOperador();
+            unaryExpressionNodo.setOperateNode(operando());
         }else{
             throw new SyntacticException(actualToken, "{ + , - , ! , null, true, false, intLiteral, charLiteral, stringLiteral, this, idMetVar, new, ( }");
         }
-        return unaryExpressionNode;
+        return unaryExpressionNodo;
     }
 
     // 54 ------------------------------------------------------------------------------
     // <OperadorUnario> ::= + | - | !
     // Primeros: { + , - , ! }
     // Siguientes: -
-    private Token operadorUnario() throws LexicalException, SyntacticException {
-        Token unaryOperator = actualToken;
+    private ExpresionUnariaNodo operadorUnario() throws LexicalException, SyntacticException {
+        ExpresionUnariaNodo expresionUnariaNodo;
         if(Arrays.asList("opAddition").contains(actualToken.getToken())){
+            expresionUnariaNodo = new SumaUnariaNodo(actualToken);
             match("opAddition");
         }else if(Arrays.asList("opSubtraction").contains(actualToken.getToken())){
+            expresionUnariaNodo = new RestaUnariaNodo(actualToken);
             match("opSubtraction");
         }else if(Arrays.asList("opNegation").contains(actualToken.getToken())){
+            expresionUnariaNodo = new NegacionUnariaNodo(actualToken);
             match("opNegation");
         }else{
             throw new SyntacticException(actualToken, "{ + , - , ! }");
         }
-        return unaryOperator;
+        return expresionUnariaNodo;
     }
 
     // 55 ------------------------------------------------------------------------------
@@ -1195,7 +1246,7 @@ public class SyntacticAnalyzer {
     private AccesoNodo acceso() throws LexicalException, SyntacticException {
         AccesoNodo accesoNodo = new AccesoNodo();
         accesoNodo.setPrimarioNodo(primario());
-        accesoNodo.setEncadenadoOptNodo(encadenadoOpt());
+        accesoNodo.setEncadenadoOptNodo(encadenadoOpt(null));
         return accesoNodo;
     }
 
@@ -1214,9 +1265,12 @@ public class SyntacticAnalyzer {
         }else if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())) {
             primarioNodo = expresionParentizada();
         }else if(Arrays.asList("idClass").contains(actualToken.getToken())){
+            Token clase = actualToken;
             match("idClass");
             genericoNotOpt();
-            accesoMetodoEstatico();
+            AccesoClase accesoClase = new AccesoClase(clase);
+            accesoClase.setEncadenadoClaseEstatico(accesoMetodoEstatico(new Type(clase)));
+            primarioNodo = accesoClase;
         }else{
             throw new SyntacticException(actualToken,"{this, idMetVar, new, ( , idClass}");
         }
@@ -1228,7 +1282,7 @@ public class SyntacticAnalyzer {
     // Primeros: {this}
     // Siguientes: -
     private AccesoThisNodo accesoThis() throws LexicalException, SyntacticException {
-        AccesoThisNodo thisPrimaryNode = new AccesoThisNodo(actualToken);
+        AccesoThisNodo thisPrimaryNode = new AccesoThisNodo(actualToken, st.getActualMethod().getClassDeclaredMethod());
         match("idKeyWord_this");
         return thisPrimaryNode;
     }
@@ -1242,7 +1296,7 @@ public class SyntacticAnalyzer {
         match("idMetVar");
         AccesoMetNodo accesoMetNodo = accesoMetodo(idMetVar);
         if(accesoMetNodo == null){
-            return new AccesoVarNodo(idMetVar);
+            return new AccesoVarNodo(idMetVar, st.getActualMethod().getActualBlock());
         }else{
             return accesoMetNodo;
         }
@@ -1300,31 +1354,31 @@ public class SyntacticAnalyzer {
     // <AccesoMetodoEstatico> ::= . idMetVar <AccesoMetodoVariableEstatico>
     // Primeros: { . }
     // Siguientes: -
-    private void accesoMetodoEstatico() throws LexicalException, SyntacticException {
-        if(Arrays.asList("punctuationPoint").contains(actualToken.getToken())){
-            match("punctuationPoint");
-            match("idMetVar");
-            accesoMetodoVariableEstatica();
-        }
+    private AccesoMetVarEstaticoNodo accesoMetodoEstatico(Type classType) throws LexicalException, SyntacticException {
+        match("punctuationPoint");
+        AccesoMetVarEstaticoNodo metEstaticoNodo = new AccesoMetVarEstaticoNodo(classType, actualToken);
+        match("idMetVar");
+        accesoMetodoVariableEstatica(metEstaticoNodo);
+        return metEstaticoNodo;
     }
 
     // <AccesoMetodoVariableEstatico> ::= <argsActuales> <AccesoMetodoEstatico> | e
     // Primeros: { ( , e }
     // Siguientes: { = , += , -= , || , && , == , != , < , > , <= , >= , + , - , * , / , % , . , ; , , , ) }
-    private void accesoMetodoVariableEstatica() throws LexicalException, SyntacticException {
-        if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
-            argsActuales();
-            accesoMetodoEstatico();
-        }else if(Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction",
-                "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
-                "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
-                "opAddition", "opSubtraction", "opMultiplication", "opDivision", "opModule",
-                "punctuationSemicolon", "punctuationComma", "punctuationSemicolon",
-                "punctuationClosingParenthesis").contains(actualToken.getToken())){
-            //vacio
-        }else{
-            throw new SyntacticException(actualToken, "{ = , += , -= , || , && , == , != , < , > , <= , >= , + , - , * , / , % , . , ; , , , ) }");
-        }
+    private void accesoMetodoVariableEstatica(AccesoMetVarEstaticoNodo metEstaticoNodo) throws LexicalException, SyntacticException {
+//        if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
+            metEstaticoNodo.setArgsActuales(argsActuales());
+////            metEstaticoNodo.setEncadenadoEstatico(accesoMetodoEstatico());
+//        }else if(Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction",
+//                "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
+//                "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
+//                "opAddition", "opSubtraction", "opMultiplication", "opDivision", "opModule",
+//                "punctuationSemicolon", "punctuationComma", "punctuationSemicolon",
+//                "punctuationClosingParenthesis").contains(actualToken.getToken())){
+//            //vacio
+//        }else{
+//            throw new SyntacticException(actualToken, "{ = , += , -= , || , && , == , != , < , > , <= , >= , + , - , * , / , % , . , ; , , , ) }");
+//        }
     }
 
     // 65 ------------------------------------------------------------------------------
@@ -1391,14 +1445,16 @@ public class SyntacticAnalyzer {
     // <EncadenadoOpt> ::= . idMetVar <MetVarEncadenada> | e
     // Primeros: { . , e }
     // Siguientes: { = , += , -= , || , && , == , != , < , > , <= , >= , + , - , * , / , % , ; , , , ) }
-    private EncadenadoOptNodo encadenadoOpt() throws LexicalException, SyntacticException {
-        EncadenadoOptNodo encadenadoOptNodo = null;
+    private EncadenadoOptNodo encadenadoOpt(EncadenadoOptNodo encadenadoOptNodoAnterior) throws LexicalException, SyntacticException {
+        EncadenadoOptNodo encadenadoOptNodoActual = null;
         if(Arrays.asList("punctuationPoint").contains(actualToken.getToken())){
             match("punctuationPoint");
-            encadenadoOptNodo = new EncadenadoOptNodo();
-            encadenadoOptNodo.setIdMetVarToken(actualToken);
+            encadenadoOptNodoActual = new EncadenadoOptNodo();
+            encadenadoOptNodoActual.setIdMetVarToken(actualToken);
             match("idMetVar");
-            metVarEncadenada(encadenadoOptNodo);
+            if(encadenadoOptNodoAnterior != null)
+                encadenadoOptNodoAnterior.setChainedOptNode(encadenadoOptNodoActual);
+            metVarEncadenada(encadenadoOptNodoActual);
         }else if(Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction",
                 "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
                 "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
@@ -1408,7 +1464,7 @@ public class SyntacticAnalyzer {
         }else{
             throw new SyntacticException(actualToken, "{ . , = , += , -= , || , && , == , != , < , > , <= , >= , + , - , * , / , % , ; , , , ) }");
         }
-        return encadenadoOptNodo;
+        return encadenadoOptNodoActual;
     }
 
     // 70 ------------------------------------------------------------------------------
@@ -1421,10 +1477,12 @@ public class SyntacticAnalyzer {
                 "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
                 "opAddition", "opSubtraction", "opMultiplication", "opDivision",
                 "opModule", "punctuationSemicolon", "punctuationComma", "punctuationClosingParenthesis").contains(actualToken.getToken())){
-            encadenadoOpt();
+//            encadenadoOpt(null);
+            encadenadoOpt(encadenadoOptNodo);
         }else if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
             encadenadoOptNodo.setArgumentos(argsActuales());
-            encadenadoOptNodo.setChainedOptNode(encadenadoOpt());
+//            encadenadoOptNodo.setChainedOptNode(encadenadoOpt(null));
+            encadenadoOpt(encadenadoOptNodo);
         }else{
             throw new SyntacticException(actualToken, "{ . , = , += , -= , || , && , == , != , < , > , <= , >= , + , - , * , / , % , ; , , , ) , ( }");
         }

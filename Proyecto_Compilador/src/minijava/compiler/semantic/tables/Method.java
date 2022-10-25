@@ -30,11 +30,13 @@ public class Method {
         block = null;
     }
 
-    public void setMainBlock(Block block){ actualBlock = block; this.block = block; }
+    public void setActualBlock(Block actualBlock){ this.actualBlock = actualBlock; }
 
-    public Block getMainBlock(){ return block; }
+    public Block getActualBlock(){ return actualBlock; }
 
-    public void addNewBlock(Block block){ actualBlock.addBlock(block); }
+    public void setMainBlock(Block block){ this.block = block; }
+
+//    public Block getMainBlock(){ return block; }
 
     public boolean alreadyHaveBlock(){ return block != null; }
 

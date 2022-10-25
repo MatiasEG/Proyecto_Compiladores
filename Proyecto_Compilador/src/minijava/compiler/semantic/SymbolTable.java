@@ -105,6 +105,24 @@ public class SymbolTable {
         return null;
     }
 
+    public String bSubtipoA(String b, String a){
+        if(classes.containsKey(a) && classes.containsKey(b)){
+            String subAclaseBclase = classes.get(b).subtipo(this, classes.get(a));
+            if(subAclaseBclase != null)
+                return subAclaseBclase;
+        }else if(interfaces.containsKey(a) && interfaces.containsKey(b)) {
+            String subAinterfaceBinterface = interfaces.get(b).subtipo(this, interfaces.get(a));
+            if (subAinterfaceBinterface != null)
+                return subAinterfaceBinterface;
+        }else if(interfaces.containsKey(a) && classes.containsKey(b)) {
+            String subAclaseBinterface = classes.get(b).subtipo(this, interfaces.get(a));
+            if (subAclaseBinterface != null) {
+                return subAclaseBinterface;
+            }
+        }
+        return null;
+    }
+
     public void check() throws SemanticException{
         int main = 0;
         String s;
@@ -192,17 +210,6 @@ public class SymbolTable {
         return main;
     }
 
-    // TODO mover esto despues de chequear la herencia de las interfaces
-    private void checkMetodosImplementados(Class claseImplementa, Interface_ interface_) throws SemanticException{
-        for(Method m: interface_.getMethods()){
-            if(claseImplementa.getHashMapMethods().containsKey(m.getMapKey())){
-                if(!m.equals(claseImplementa.getHashMapMethods().get(m.getMapKey()))) throw new SemanticExceptionMethodWrongImplemented(claseImplementa, m);
-            }else{
-                throw new SemanticExceptionMethodNotImplemented(claseImplementa, m);
-            }
-        }
-    }
-
     private void checkSignaturaMetodosRedefinidosPorHerencia(ClassOrInterface descendiente, ClassOrInterface padre) throws SemanticException{
         for(Method m: padre.getMethods()){
             if(!descendiente.getHashMapMethods().containsKey(m.getMapKey()) && !m.getMethodType().getLexemeType().equals(m.getMethodName())) {
@@ -230,6 +237,16 @@ public class SymbolTable {
         for(Map.Entry<String, Interface_> entry: interfaces.entrySet()){
             for(Token t: entry.getValue().getExtendedClasses()){
                 if(consolidacionHerenciaCircular(entry.getValue(), interfaces.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
+            }
+        }
+    }
+
+    private void checkMetodosImplementados(Class claseImplementa, Interface_ interface_) throws SemanticException{
+        for(Method m: interface_.getMethods()){
+            if(claseImplementa.getHashMapMethods().containsKey(m.getMapKey())){
+                if(!m.equals(claseImplementa.getHashMapMethods().get(m.getMapKey()))) throw new SemanticExceptionMethodWrongImplemented(claseImplementa, m);
+            }else{
+                throw new SemanticExceptionMethodNotImplemented(claseImplementa, m);
             }
         }
     }
@@ -265,7 +282,7 @@ public class SymbolTable {
             setActualClass(entry.getValue());
             for(Method m: entry.getValue().getMethods()){
                 setActualMethod(m);
-                m.checkBlock(this);
+                if(m.getClassDeclaredMethod().equals(entry.getKey())) m.checkBlock(this);
             }
         }
     }
@@ -274,7 +291,10 @@ public class SymbolTable {
 
     public Class getActualClass(){ return actualClass; }
 
-    public Class getClass(String className){ return classes.get(className); }
+    public Class getClass(String className){
+        if (classes.containsKey(className)) return classes.get(className);
+        else return null;
+    }
 
     public boolean haveClass(String className){ return classes.containsKey(className); }
 

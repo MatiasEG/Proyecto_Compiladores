@@ -41,12 +41,19 @@ public class AccesoMetNodo extends PrimarioNodo{
             ExpresionNodo exp;
             for(Parameter p: tiposParametrosDeclarados){
                 exp = expresionNodosIterablre.next();
-                if(!exp.check(st).getTypeForAssignment().equals(p.getVarType().getTypeForAssignment())) throw new SemanticExceptionWrongTypeActualArgs(idMetodo);
+                Type typeExp = exp.check(st);
+                if(typeExp.isClassRef() && p.getVarType().isClassRef() &&
+                        st.bSubtipoA(typeExp.getLexemeType(), p.getVarType().getLexemeType()) != null){
+                    // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
+                }else if(typeExp.getLexemeType().equals("null") && p.getVarType().isClassRef()){
+                    // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
+                }else if(!typeExp.getTypeForAssignment().equals(p.getVarType().getTypeForAssignment())){
+                    throw new SemanticExceptionWrongTypeActualArgs(idMetodo);
+                }
             }
         }else{
             throw new SemanticExceptionWrongQuantityParameters(m.getMethodToken());
         }
-
         return m.getMethodType();
     }
 
