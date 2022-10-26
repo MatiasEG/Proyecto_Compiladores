@@ -777,7 +777,6 @@ public class SyntacticAnalyzer {
     // <LlamadaOVarLocalResto> ::= <AccesoMetodoEstatico> <Asignacion> |  <VarLocalTipoClase>
     // Primeros: { . , < , idMetVar}
     // Siguientes: -
-    //TODO arreglar
     private SentenciaNodo llamadaOVarLocalEstaticoResto(Token clase) throws LexicalException, SyntacticException, SemanticException {
         if(Arrays.asList("punctuationPoint").contains(actualToken.getToken())){
             AccesoNodo accesoNodo = new AccesoNodo();

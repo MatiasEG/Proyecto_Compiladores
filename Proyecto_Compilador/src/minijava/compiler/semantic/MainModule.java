@@ -12,25 +12,8 @@ import java.io.File;
 
 public class MainModule {
 
-    // Chequear a mano
-    // OK > agregar atributos heredados
-    // OK > agregar constructor por defecto a las clases
-    // OK > las clases heredan de Object las interfaces no
-
-    //TODO para semantico etapa 4:
-    // VarLocales
-    //      ok -> VarLocal con tipo ref no definido
-    //      ok -> VarLocal con mismo nombre que un parametro
-    //      ok -> VarLocal no definida
-
-
     public static void main(String[]args){
 
-//        FileManager fileManager = new FileManager(new File("resources/conErrores/semIIError03.java"));
-//        FileManager fileManager = new FileManager(new File("resources/sinErrores/ExpresionesYSentencias.java"));
-//        FileManager fileManager = new FileManager(new File("resources/sinErrores/correccion06.java"));
-//
-//        FileManager fileManager = new FileManager(new File("resources/conErrores/errVarEncadenadaNoCoincideConTipoAsignacion.java"));
         FileManager fileManager = new FileManager(new File(args[0]));
 
         SymbolTable st = new SymbolTable();
@@ -48,9 +31,9 @@ public class MainModule {
 
             st.check();
 
-            st.consolidacion();
+            st.consolidacion(); // TODO comentar de ser necesario
 
-            st.checkSentences();
+            st.checkSentences(); // TODO comentar de ser necesario
 
         } catch (LexicalException e) {
             error = true;

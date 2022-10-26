@@ -6,6 +6,6 @@ import minijava.compiler.lexical.analyzer.Token;
 public class SemanticExceptionWrongConditionType extends SemanticException {
 
     public SemanticExceptionWrongConditionType(Token estructuraDeControl){
-        super("El tipo de la exprecion de condicion debe ser boolean.", estructuraDeControl);
+        super("El tipo de la expresion de condicion debe ser boolean.", estructuraDeControl);
     }
 }

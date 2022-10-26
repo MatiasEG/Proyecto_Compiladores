@@ -24,11 +24,13 @@ public class AsignacionEstandarNodo extends AsignacionNodo {
                 if(!tipoParteIzquierda.getTypeForAssignment().equals(tipoParteDerecha.getTypeForAssignment())){
                     throw new SemanticExceptionAssignmentWithDiferentTypes(tipoAsignacion);
                 }
-            }else if(!tipoParteIzquierda.getLexemeType().equals(tipoParteDerecha.getTypeForAssignment())){
-                if(!tipoParteDerecha.getLexemeType().equals("null")){
-                    if(tipoParteDerecha.isClassRef() &&
-                            st.bSubtipoA(tipoParteDerecha.getLexemeType(), tipoParteIzquierda.getLexemeType()) == null)
-                        throw new SemanticExceptionAssignmentWithDiferentTypes(tipoAsignacion);
+            }else if(!tipoParteIzquierda.getLexemeType().equals("Object")){
+                if(!tipoParteIzquierda.getLexemeType().equals(tipoParteDerecha.getTypeForAssignment())){
+                    if(!tipoParteDerecha.getLexemeType().equals("null")){
+                        if(tipoParteDerecha.isClassRef() &&
+                                st.bSubtipoA(tipoParteDerecha.getLexemeType(), tipoParteIzquierda.getLexemeType()) == null)
+                            throw new SemanticExceptionAssignmentWithDiferentTypes(tipoAsignacion);
+                    }
                 }
             }
         }else{
