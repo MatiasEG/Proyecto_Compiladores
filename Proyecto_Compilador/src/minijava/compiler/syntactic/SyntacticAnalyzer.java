@@ -10,6 +10,8 @@ import minijava.compiler.semantic.*;
 import minijava.compiler.semantic.nodes.expresion.ExpresionBinariaNodo;
 import minijava.compiler.semantic.nodes.expresion.binaria.*;
 import minijava.compiler.semantic.nodes.expresion.operando.*;
+import minijava.compiler.semantic.nodes.expresion.operando.encadenado.MetEncadenadoNodo;
+import minijava.compiler.semantic.nodes.expresion.operando.encadenado.VarEncadenadaNodo;
 import minijava.compiler.semantic.nodes.expresion.operando.literales.*;
 import minijava.compiler.semantic.nodes.expresion.operando.primario.*;
 import minijava.compiler.semantic.nodes.expresion.unaria.ExpresionUnariaSinOperador;
@@ -1411,12 +1413,13 @@ public class SyntacticAnalyzer {
         EncadenadoOptNodo encadenadoOptNodoActual = null;
         if(Arrays.asList("punctuationPoint").contains(actualToken.getToken())){
             match("punctuationPoint");
-            encadenadoOptNodoActual = new EncadenadoOptNodo();
-            encadenadoOptNodoActual.setIdMetVarToken(actualToken);
+            Token idMetVar = actualToken;
             match("idMetVar");
+            encadenadoOptNodoActual = metVarEncadenada(idMetVar);
+
             if(encadenadoOptNodoAnterior != null)
                 encadenadoOptNodoAnterior.setChainedOptNode(encadenadoOptNodoActual);
-            metVarEncadenada(encadenadoOptNodoActual);
+
         }else if(Arrays.asList("assignment", "assignmentAddition", "assignmentSubtraction",
                 "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
                 "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
@@ -1433,16 +1436,22 @@ public class SyntacticAnalyzer {
     // <MetVarEncadenada> ::= <EncadenadoOpt> | <ArgsActuales> <EncadenadoOpt>
     // Primeros: { . , = , += , -= , || , && , == , != , < , > , <= , >= , + , - , * , / , % , ; , , , ) , ( }
     // Siguientes: -
-    private void metVarEncadenada(EncadenadoOptNodo encadenadoOptNodo) throws LexicalException, SyntacticException {
+    private EncadenadoOptNodo metVarEncadenada(Token idMetVar) throws LexicalException, SyntacticException {
         if(Arrays.asList("punctuationPoint", "assignment", "assignmentAddition", "assignmentSubtraction",
                 "opLogicOr", "opLogicAnd", "opEqual", "opDistinct",
                 "opGreater", "opGreaterOrEqual", "opLess", "opLessOrEqual",
                 "opAddition", "opSubtraction", "opMultiplication", "opDivision",
                 "opModule", "punctuationSemicolon", "punctuationComma", "punctuationClosingParenthesis").contains(actualToken.getToken())){
-            encadenadoOpt(encadenadoOptNodo);
+            VarEncadenadaNodo varEncadenadaNodo = new VarEncadenadaNodo();
+            varEncadenadaNodo.setIdMetVarToken(idMetVar);
+            encadenadoOpt(varEncadenadaNodo);
+            return varEncadenadaNodo;
         }else if(Arrays.asList("punctuationOpeningParenthesis").contains(actualToken.getToken())){
-            encadenadoOptNodo.setArgumentos(argsActuales());
-            encadenadoOpt(encadenadoOptNodo);
+            MetEncadenadoNodo metEncadenadoNodo = new MetEncadenadoNodo();
+            metEncadenadoNodo.setIdMetVarToken(idMetVar);
+            metEncadenadoNodo.setArgumentos(argsActuales());
+            encadenadoOpt(metEncadenadoNodo);
+            return metEncadenadoNodo;
         }else{
             throw new SyntacticException(actualToken, "{ . , = , += , -= , || , && , == , != , < , > , <= , >= , + , - , * , / , % , ; , , , ) , ( }");
         }
