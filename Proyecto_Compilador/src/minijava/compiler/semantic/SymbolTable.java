@@ -15,6 +15,8 @@ import minijava.compiler.semantic.tables.Class;
 import minijava.compiler.semantic.tables.variable.Attribute;
 import minijava.compiler.semantic.tables.variable.Parameter;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +28,7 @@ public class SymbolTable {
     private HashMap<String, Interface_> interfaces;
     private Method actualMethod;
     private Class actualClass;
+    private FileWriter writer;
 
     public SymbolTable(){
         classes = new HashMap<>();
@@ -106,7 +109,7 @@ public class SymbolTable {
         return null;
     }
 
-    public String bSubtipoA(String b, String a){
+    public String bSubtipoA(String a, String b){
         if(classes.containsKey(a) && classes.containsKey(b)){
             String subAclaseBclase = classes.get(b).subtipo(this, classes.get(a));
             if(subAclaseBclase != null)
@@ -130,11 +133,14 @@ public class SymbolTable {
         for(Map.Entry<String, Class> entry: classes.entrySet()){
 
             checkExtendsRepetidos(entry.getValue().getExtendedClasses());
+
+            main += checkMetodos(main, entry.getValue(), entry.getValue().getMethods());
+
             for(Token t: entry.getValue().getExtendedClasses()){
                 s = t.getLexeme();
                 if(interfaces.containsKey(s)) throw new SemanticExceptionClassExtendInterface(t);
                 if(!classes.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
-                main += checkMetodos(main, entry.getValue(), entry.getValue().getMethods());
+//                main += checkMetodos(main, entry.getValue(), entry.getValue().getMethods());
                 checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
             }
 
@@ -298,13 +304,17 @@ public class SymbolTable {
         else return null;
     }
 
-    public boolean haveClass(String className){ return classes.containsKey(className); }
-
     public void setActualMethod(Method m){ this.actualMethod = m; }
 
     public Method getActualMethod(){ return actualMethod; }
 
+    public void setWriter(FileWriter writer){
+        this.writer = writer;
+    }
 
+    public void write(String txt2write) throws IOException {
+        writer.write(txt2write);
+    }
 
 
 

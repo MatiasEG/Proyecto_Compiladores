@@ -23,6 +23,7 @@ public class ReturnNodo extends SentenciaNodo {
     public void setExpressionNode(ExpresionNodo expresionNodo){ this.expresionNodo = expresionNodo; }
 
     public void check(SymbolTable st) throws SemanticException {
+        //TODO controlar expresion vacia
         Type typeExp = expresionNodo.check(st);
         Type mType = st.getActualMethod().getMethodType();
 
