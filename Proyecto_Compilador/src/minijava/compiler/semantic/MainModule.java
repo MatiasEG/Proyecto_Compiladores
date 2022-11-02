@@ -12,6 +12,14 @@ import java.io.File;
 
 public class MainModule {
 
+    // TODO return vacio
+
+    // TODO == con dos tipo referencia
+
+    // TODO variables locales clasicas etapa 4
+
+    // TODO constructores controlados
+
     public static void main(String[]args){
 
         FileManager fileManager = new FileManager(new File(args[0]));
