@@ -44,16 +44,22 @@ public class Class extends ClassOrInterface {
     public String subtipo(SymbolTable st, ClassOrInterface claseInterfazSubtipo){
         String nombre = null;
         for(Token padre: extendsFrom){
-            if(padre.getLexeme().equals(claseInterfazSubtipo.getNombre())) return padre.getLexeme();
+            if(padre.getLexeme().equals(claseInterfazSubtipo.getNombre()))
+                return padre.getLexeme();
             nombre = st.alreadyExist(padre.getLexeme()).subtipo(st, claseInterfazSubtipo);
+            if(nombre != null)
+                return nombre;
         }
         if(nombre == null){
             for(Token interfazPadre: implement){
-                if(interfazPadre.getLexeme().equals(claseInterfazSubtipo.getNombre())) return interfazPadre.getLexeme();
+                if(interfazPadre.getLexeme().equals(claseInterfazSubtipo.getNombre()))
+                    return interfazPadre.getLexeme();
                 nombre = st.alreadyExist(interfazPadre.getLexeme()).subtipo(st, claseInterfazSubtipo);
+                if(nombre != null)
+                    return nombre;
             }
         }
-        return nombre;
+        return null;
     }
 
     public boolean alreadyHaveAttribute(Attribute attribute){

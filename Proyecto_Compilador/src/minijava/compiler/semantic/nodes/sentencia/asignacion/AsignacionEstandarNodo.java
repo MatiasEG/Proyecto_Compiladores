@@ -28,8 +28,9 @@ public class AsignacionEstandarNodo extends AsignacionNodo {
                 if(!tipoParteIzquierda.getLexemeType().equals(tipoParteDerecha.getTypeForAssignment())){
                     if(!tipoParteDerecha.getLexemeType().equals("null")){
                         if(tipoParteDerecha.isClassRef() &&
-                                st.bSubtipoA(tipoParteDerecha.getLexemeType(), tipoParteIzquierda.getLexemeType()) == null)
+                                st.bSubtipoA(tipoParteIzquierda.getLexemeType(), tipoParteDerecha.getLexemeType()) == null)
                             throw new SemanticExceptionAssignmentWithDiferentTypes(tipoAsignacion);
+                        if(!tipoParteDerecha.isClassRef()) throw new SemanticExceptionAssignmentWithDiferentTypes(tipoAsignacion);
                     }
                 }
             }

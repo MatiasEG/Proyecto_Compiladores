@@ -9,6 +9,8 @@ import minijava.compiler.lexical.analyzer.LexicalAnalyzer;
 import minijava.compiler.syntactic.SyntacticAnalyzer;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class MainModule {
 
@@ -21,8 +23,11 @@ public class MainModule {
     // TODO constructores controlados
 
     public static void main(String[]args){
+        File myObj = new File("CodigoMaquina.txt");
 
-        FileManager fileManager = new FileManager(new File(args[0]));
+        FileManager fileManager = new FileManager(new File("resources/sinErrores/correcciones.java"));
+//        FileManager fileManager = new FileManager(new File("resources/codigoMaquina/test1Main.java"));
+//        FileManager fileManager = new FileManager(new File(args[0]));
 
         SymbolTable st = new SymbolTable();
 
@@ -33,6 +38,20 @@ public class MainModule {
         boolean error = false;
 
         try {
+
+            if (myObj.createNewFile()) {
+                System.out.println("Archivo creado: " + myObj.getName());
+            } else {
+                System.out.println("El archivo ya existe, lo sobreescribo.");
+                myObj.delete();
+                myObj.createNewFile();
+            }
+
+            FileWriter writer = new FileWriter("CodigoMaquina.txt");
+//            myWriter.write("HolaMundo\n");
+
+            st.setWriter(writer);
+
             st.createConcreteClasses();
 
             syntacticAnalyzer.inicial();
@@ -42,6 +61,8 @@ public class MainModule {
             st.consolidacion(); // TODO comentar de ser necesario
 
             st.checkSentences(); // TODO comentar de ser necesario
+
+            writer.close();
 
         } catch (LexicalException e) {
             error = true;
@@ -54,11 +75,14 @@ public class MainModule {
             error = true;
             System.out.println("[Error:"+e.getLexeme()+"|"+e.getRow()+"]");
             System.out.println(e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Ocurrio un error con el archivo de codigo maquina.");
+            e.printStackTrace();
         }
 
         if(!error) {
             System.out.println("[SinErrores]");
-            st.imprimirTablas();
+//            st.imprimirTablas();
         }
 
     }
