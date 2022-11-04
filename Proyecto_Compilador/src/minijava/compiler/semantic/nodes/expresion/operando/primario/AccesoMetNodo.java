@@ -20,10 +20,9 @@ import java.util.Iterator;
 public class AccesoMetNodo extends PrimarioNodo {
 
     private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
-    private Token idMetodo;
 
     public AccesoMetNodo(Token metToken) {
-        idMetodo = metToken;
+        this.idPrimario = metToken;
     }
 
     public void setArgsActuales(ArrayList<ExpresionNodo> expresionNodos){
@@ -33,10 +32,10 @@ public class AccesoMetNodo extends PrimarioNodo {
 
     @Override
     public Type check(SymbolTable st) throws SemanticException {
-        if(!st.getActualClass().getHashMapMethodsWithoutOverloaded().containsKey(idMetodo.getLexeme()))
-            throw new SemanticExceptionMethodNotExistInCallerClass(idMetodo);
+        if(!st.getActualClass().getHashMapMethodsWithoutOverloaded().containsKey(idPrimario.getLexeme()))
+            throw new SemanticExceptionMethodNotExistInCallerClass(idPrimario);
 
-        Method m = st.getActualClass().getHashMapMethodsWithoutOverloaded().get(idMetodo.getLexeme());
+        Method m = st.getActualClass().getHashMapMethodsWithoutOverloaded().get(idPrimario.getLexeme());
         ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
         Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
         if(actualArgsExpresionNodes.size() == tiposParametrosDeclarados.size()){
@@ -50,11 +49,11 @@ public class AccesoMetNodo extends PrimarioNodo {
                 }else if(typeExp.getLexemeType().equals("null") && p.getVarType().isClassRef()){
                     // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
                 }else if(!typeExp.getTypeForAssignment().equals(p.getVarType().getTypeForAssignment())){
-                    throw new SemanticExceptionWrongTypeActualArgs(idMetodo);
+                    throw new SemanticExceptionWrongTypeActualArgs(idPrimario);
                 }
             }
 
-            if(st.getActualMethod().isStatic()) throw new SemanticExceptionCantCallDynamicMethodOnStaticMethod(idMetodo);
+            if(st.getActualMethod().isStatic()) throw new SemanticExceptionCantCallDynamicMethodOnStaticMethod(idPrimario);
             
         }else{
             throw new SemanticExceptionWrongQuantityParameters(m.getMethodToken());
@@ -66,4 +65,5 @@ public class AccesoMetNodo extends PrimarioNodo {
     public boolean isAssignable(SymbolTable st) {
         return false;
     }
+
 }

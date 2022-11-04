@@ -21,7 +21,10 @@ public abstract class ClassOrInterface {
     public void addMetodo(Method method){
         methods.add(method);
         metodoHashMap.put(method.getMapKey(), method);
-        metodosSinSobrecargaMap.put(method.getMethodName(), method);
+
+        if(!metodosSinSobrecargaMap.containsKey(method.getMethodName())){
+            metodosSinSobrecargaMap.put(method.getMethodName(), method);
+        }
     }
 
     public String getNombre() { return claseOrinterfaceToken.getLexeme(); }

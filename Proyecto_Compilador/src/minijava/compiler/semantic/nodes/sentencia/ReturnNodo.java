@@ -1,6 +1,7 @@
 package minijava.compiler.semantic.nodes.sentencia;
 
 import minijava.compiler.exception.SemanticException;
+import minijava.compiler.exception.SemanticP2.SemanticExceptionEmptyReturn;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionReturn;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongReturnType;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongTypeActualArgs;
@@ -24,22 +25,26 @@ public class ReturnNodo extends SentenciaNodo {
 
     public void check(SymbolTable st) throws SemanticException {
         //TODO controlar expresion vacia
-        Type typeExp = expresionNodo.check(st);
-        Type mType = st.getActualMethod().getMethodType();
+        if(expresionNodo != null) {
+            Type typeExp = expresionNodo.check(st);
+            Type mType = st.getActualMethod().getMethodType();
 
-        if(st.getActualMethod().needReturn()){
+            if (st.getActualMethod().needReturn()) {
 
-            if(typeExp.isClassRef() && mType.isClassRef() &&
-                    st.bSubtipoA(mType.getLexemeType(), typeExp.getLexemeType()) != null){
-                // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
-            }else if(typeExp.getLexemeType().equals("null") && typeExp.isClassRef()){
-                // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
-            }else if(!typeExp.getTypeForAssignment().equals(mType.getTypeForAssignment())){
-                throw new SemanticExceptionWrongReturnType(st.getActualMethod(), typeExp.getTokenType());
+                if (typeExp.isClassRef() && mType.isClassRef() &&
+                        st.bSubtipoA(mType.getLexemeType(), typeExp.getLexemeType()) != null) {
+                    // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
+                } else if (typeExp.getLexemeType().equals("null") && typeExp.isClassRef()) {
+                    // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
+                } else if (!typeExp.getTypeForAssignment().equals(mType.getTypeForAssignment())) {
+                    throw new SemanticExceptionWrongReturnType(st.getActualMethod(), typeExp.getTokenType());
+                }
+
+            } else {
+                throw new SemanticExceptionReturn(st.getActualMethod(), returnToken);
             }
-
-        }else{
-            throw new SemanticExceptionReturn(st.getActualMethod(), returnToken);
+        }else if(st.getActualMethod().needReturn()){
+            throw new SemanticExceptionEmptyReturn(returnToken);
         }
     }
 }

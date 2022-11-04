@@ -32,7 +32,6 @@ class A0 implements X{
         var variableBooleana = ((4+ 10 + 33) > 12) || ((99*15) == 23) && (97<=12) || !true && ((4/2) != 2);
         boo = x == a;       // true
         boo = a == x;       // true
-        boo = b == a;       // false
         variableBooleana = true;
         // -----------------------------
 

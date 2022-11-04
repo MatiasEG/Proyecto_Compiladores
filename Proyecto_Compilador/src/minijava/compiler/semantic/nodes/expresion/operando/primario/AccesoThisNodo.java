@@ -9,23 +9,27 @@ import minijava.compiler.semantic.tables.Type;
 
 public class AccesoThisNodo extends PrimarioNodo {
 
-    private Token thisToken;
     private String nombreClase;
 
     public AccesoThisNodo(Token thisToken, String nombreClase){
-        this.thisToken = thisToken;
+        this.idPrimario = thisToken;
         this.nombreClase = nombreClase;
     }
 
     @Override
     public Type check(SymbolTable st) throws SemanticException {
-        if(st.getActualMethod().isStatic()) throw new SemanticExceptionCantCallThisOnStaticMethod(thisToken);
+        if(st.getActualMethod().isStatic()) throw new SemanticExceptionCantCallThisOnStaticMethod(idPrimario);
 
-        return new Type(new Token("idClass", nombreClase, thisToken.getRow()));
+        return new Type(new Token("idClass", nombreClase, idPrimario.getRow()));
     }
 
     @Override
     public boolean isAssignable(SymbolTable st) {
+        return false;
+    }
+
+    @Override
+    public boolean esLlamable() {
         return false;
     }
 }

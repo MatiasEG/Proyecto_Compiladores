@@ -17,11 +17,10 @@ import java.util.Iterator;
 public class AccesoMetEstaticoNodo extends PrimarioNodo {
 
     private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
-    private Token idMet;
     private Type classType;
 
     public AccesoMetEstaticoNodo(Type classType, Token metVarToken) {
-        idMet = metVarToken;
+        this.idPrimario = metVarToken;
         this.classType = classType;
         actualArgsExpresionNodes = null;
     }
@@ -35,9 +34,9 @@ public class AccesoMetEstaticoNodo extends PrimarioNodo {
     public Type check(SymbolTable st) throws SemanticException {
 
         if(actualArgsExpresionNodes==null){
-            throw new SemanticExeptionInvalidStaticInvocation(idMet);
-        }else if(st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().containsKey(idMet.getLexeme())) {
-            Method m = st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMet.getLexeme());
+            throw new SemanticExeptionInvalidStaticInvocation(idPrimario);
+        }else if(st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().containsKey(idPrimario.getLexeme())) {
+            Method m = st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idPrimario.getLexeme());
             if (m.isStatic()) {
                 ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
                 Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
@@ -52,7 +51,7 @@ public class AccesoMetEstaticoNodo extends PrimarioNodo {
                         } else if (typeExp.getLexemeType().equals("null") && p.getVarType().isClassRef()) {
                             // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
                         } else if (!typeExp.getTypeForAssignment().equals(p.getVarType().getTypeForAssignment())) {
-                            throw new SemanticExceptionWrongTypeActualArgs(idMet);
+                            throw new SemanticExceptionWrongTypeActualArgs(idPrimario);
                         }
                     }
                 } else {
@@ -60,12 +59,13 @@ public class AccesoMetEstaticoNodo extends PrimarioNodo {
                 }
                 return m.getMethodType();
             } else {
-                throw new SemanticExeptionInvalidStaticInvocation(idMet);
+                throw new SemanticExeptionInvalidStaticInvocation(idPrimario);
             }
         }else{
-            throw new SemanticExceptionMethodNotExistInCallerClass(idMet);
+            throw new SemanticExceptionMethodNotExistInCallerClass(idPrimario);
         }
     }
 
     public boolean isAssignable(SymbolTable st) { return false; }
+
 }

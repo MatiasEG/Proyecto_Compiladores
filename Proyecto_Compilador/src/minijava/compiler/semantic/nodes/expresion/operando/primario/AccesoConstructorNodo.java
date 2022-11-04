@@ -17,12 +17,11 @@ import java.util.Iterator;
 
 public class AccesoConstructorNodo extends PrimarioNodo {
 
-    private Token idClase;
     private Type returnType;
     private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
 
     public AccesoConstructorNodo(Token idClase){
-        this.idClase = idClase;
+        this.idPrimario = idClase;
         returnType = new Type(idClase);
     }
 
@@ -31,11 +30,11 @@ public class AccesoConstructorNodo extends PrimarioNodo {
     @Override
     public Type check(SymbolTable st) throws SemanticException {
 
-        if(st.getClass(idClase.getLexeme())==null){
-            throw new SemanticExceptionCantCallConstructor(idClase);
+        if(st.getClass(idPrimario.getLexeme())==null){
+            throw new SemanticExceptionCantCallConstructor(idPrimario);
         }
 
-        Method m = st.getClass(idClase.getLexeme()).getHashMapMethodsWithoutOverloaded().get(idClase.getLexeme());
+        Method m = st.getClass(idPrimario.getLexeme()).getHashMapMethodsWithoutOverloaded().get(idPrimario.getLexeme());
         ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
         Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
         if(actualArgsExpresionNodes.size() == tiposParametrosDeclarados.size()){
@@ -49,7 +48,7 @@ public class AccesoConstructorNodo extends PrimarioNodo {
                 }else if(typeExp.getLexemeType().equals("null") && p.getVarType().isClassRef()){
                     // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
                 }else if(!typeExp.getTypeForAssignment().equals(p.getVarType().getTypeForAssignment())){
-                    throw new SemanticExceptionWrongTypeActualArgs(idClase);
+                    throw new SemanticExceptionWrongTypeActualArgs(idPrimario);
                 }
             }
 
@@ -64,4 +63,5 @@ public class AccesoConstructorNodo extends PrimarioNodo {
     public boolean isAssignable(SymbolTable st) {
         return false;
     }
+
 }

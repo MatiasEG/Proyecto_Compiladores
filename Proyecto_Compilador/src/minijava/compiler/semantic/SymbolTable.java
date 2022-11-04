@@ -111,15 +111,15 @@ public class SymbolTable {
 
     public String bSubtipoA(String a, String b){
         if(classes.containsKey(a) && classes.containsKey(b)){
-            String subAclaseBclase = classes.get(b).subtipo(this, classes.get(a));
+            String subAclaseBclase = classes.get(a).subtipo(this, classes.get(b));
             if(subAclaseBclase != null)
                 return subAclaseBclase;
         }else if(interfaces.containsKey(a) && interfaces.containsKey(b)) {
-            String subAinterfaceBinterface = interfaces.get(b).subtipo(this, interfaces.get(a));
+            String subAinterfaceBinterface = interfaces.get(a).subtipo(this, interfaces.get(b));
             if (subAinterfaceBinterface != null)
                 return subAinterfaceBinterface;
-        }else if(interfaces.containsKey(a) && classes.containsKey(b)) {
-            String subAclaseBinterface = classes.get(b).subtipo(this, interfaces.get(a));
+        }else if(classes.containsKey(a) && interfaces.containsKey(b)) {
+            String subAclaseBinterface = classes.get(a).subtipo(this, interfaces.get(b));
             if (subAclaseBinterface != null) {
                 return subAclaseBinterface;
             }

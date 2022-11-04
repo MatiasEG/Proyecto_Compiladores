@@ -31,10 +31,7 @@ public class MainModule {
 
         try {
 
-            if (myObj.createNewFile()) {
-                System.out.println("Archivo creado: " + myObj.getName());
-            } else {
-                System.out.println("El archivo ya existe, lo sobreescribo.");
+            if (!myObj.createNewFile()) {
                 myObj.delete();
                 myObj.createNewFile();
             }

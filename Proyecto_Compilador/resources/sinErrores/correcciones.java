@@ -56,20 +56,68 @@
 //    }
 //}
 
-//ERROR 7 (valido) RESOLVER ------------- TODO que hago si me viene un return vacio en un metodo que no es void?
+//ERROR 7 (valido) SOLUCIONADO ------------- TODO que hago si me viene un return vacio en un metodo que no es void?
 //class A {
 //    void m1() {
 //        return;
 //    }
 //}
 
-//ERROR 8 () (invalido) SOLUCIONADO -------------
+//ERROR 8 (invalido) SOLUCIONADO -------------
 //class A {
 //    void m1(A p1) {
 //        p1 = "Hola!";
 //    }
 //}
 
+//ERROR 9 (invalido) SOLUCIONADO -------------
+//class A {
+//    public B a1;
+//    void m1() { a1.x = 5; }
+//}
+//class B {
+//    private int x;
+//}
+
+//ERROR 10 (invalido) SOLUCIONADO -------------
+//class A {
+//    void m1(int p1){ this; }
+//}
+
+//ERROR 11 (invalido) SOLUCIONADO -------------
+//class A {
+//    public A a;
+//    public B b;
+//    void m1() {
+//        var r = true;
+//        r = a == b;
+//    }
+//}
+//class B {}
+
+//ERROR 12 (invalido) SOLUCIONADO -------------
+//class A {
+//    void m1() { var x = m2(); }
+//    void m2() { }
+//}
+
+//------------------------------------------------
+//ERROR 1 (logro-valido) SOLUCIONADO -------------
+// Lo que hago es que, si ya esta el metodo declarado, no lo puedo sobrecargar mas,
+// ya que no se guardara en la estructura que posee los metodos de la clase
+//class A {
+//    A(int x) { }
+//    void m1() {
+//        new A(1).m2();
+//    }
+//    void m2() { }
+//}
+
+//------------------------------------------------
+//ERROR 2 (logro-valido) SOLUCIONADO -------------
+//class A {
+//    public A<A> a1;
+//}
 
 //------------- MAIN -------------
 class MainModule{

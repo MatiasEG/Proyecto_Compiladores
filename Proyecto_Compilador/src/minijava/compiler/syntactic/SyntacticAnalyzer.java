@@ -391,6 +391,7 @@ public class SyntacticAnalyzer {
     private void atributo(Attribute attribute) throws LexicalException, SyntacticException, SemanticException {
         Type type = tipo();
             attribute.setVarType(type);
+            if(type.isClassRef()) genericoNotOpt();
             attribute.setVarToken(actualToken);
         match("idMetVar");
             st.actualClassAddAtribute(attribute);

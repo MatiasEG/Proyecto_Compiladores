@@ -14,13 +14,12 @@ public class AccesoVarNodo extends PrimarioNodo {
 
     private Variable var;
     private String name;
-    private Token varToken;
     private Block bloqueAcceso;
 
     public AccesoVarNodo(Token varToken, Block bloqueAcceso){
         this.var = null;
         name = varToken.getLexeme();
-        this.varToken = varToken;
+        this.idPrimario = varToken;
         this.bloqueAcceso = bloqueAcceso;
     }
 
@@ -30,10 +29,10 @@ public class AccesoVarNodo extends PrimarioNodo {
         }else if(bloqueAcceso.getVarsAccesiblesDesdeElBloque().containsKey(name)){
             var = bloqueAcceso.getVarsAccesiblesDesdeElBloque().get(name);
         }else if(st.getActualClass().getHashMapAtributes().containsKey(name)){
-            if(st.getActualMethod().isStatic()) throw new SemanticExceptionCantAccessAtributesOnStaticMethod(varToken);
+            if(st.getActualMethod().isStatic()) throw new SemanticExceptionCantAccessAtributesOnStaticMethod(idPrimario);
             var = st.getActualClass().getHashMapAtributes().get(name);
         }else{
-            throw new SemanticExceptionVarNotExist(varToken);
+            throw new SemanticExceptionVarNotExist(idPrimario);
         }
 
         return var.getVarType();
@@ -43,4 +42,5 @@ public class AccesoVarNodo extends PrimarioNodo {
     public boolean isAssignable(SymbolTable st) {
         return true;
     }
+
 }

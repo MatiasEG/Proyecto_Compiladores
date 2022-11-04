@@ -16,4 +16,5 @@ public class ExpresionUnariaSinOperador extends ExpresionUnariaNodo {
     public Type check(SymbolTable st) throws SemanticException {
         return operandoNodo.check(st);
     }
+
 }

@@ -3,6 +3,7 @@ package minijava.compiler.semantic.nodes.sentencia;
 import minijava.compiler.exception.SemanticException;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionInvalidNullAsignment;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionVarNotExist;
+import minijava.compiler.exception.SemanticP2.SemanticExceptionVoidAsignment;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
@@ -39,9 +40,11 @@ public class VarLocalNodo extends SentenciaNodo{
 
         Type type = parteDerecha.check(st);
 
-        if(!type.getLexemeType().equals("null"))
+        if(!type.getLexemeType().equals("null")){
+            if(type.getLexemeType().equals("void"))
+                throw new SemanticExceptionVoidAsignment(idVarLocalToken);
             var.setVarType(type);
-        else
+        }else
             throw new SemanticExceptionInvalidNullAsignment(idVarLocalToken);
     }
 }
