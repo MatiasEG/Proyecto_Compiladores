@@ -7,6 +7,7 @@ public abstract class Variable {
 
     protected Type type;
     protected Token varToken;
+    protected int offset;
 
     public void setVarType(Type type) { this.type = type; }
 
@@ -17,4 +18,8 @@ public abstract class Variable {
     public Type getVarType() { return type; }
 
     public String getVarName() { return varToken.getLexeme(); }
+
+    public void setOffset(int offset){ this.offset = offset; }
+
+    public int getOffset(){ return offset; }
 }

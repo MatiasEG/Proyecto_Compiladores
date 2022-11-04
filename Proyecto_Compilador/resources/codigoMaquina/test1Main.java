@@ -1,6 +1,8 @@
 
 class MainModule{
     static void main(){
-        System.printI(99);
+        var x = 2;
+        var y = 3;
+        System.printI(x+y);
     }
 }

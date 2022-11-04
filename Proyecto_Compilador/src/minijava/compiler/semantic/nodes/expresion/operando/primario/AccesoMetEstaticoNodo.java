@@ -19,6 +19,7 @@ public class AccesoMetEstaticoNodo extends PrimarioNodo {
 
     private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
     private Type classType;
+    private Method m;
 
     public AccesoMetEstaticoNodo(Type classType, Token metVarToken) {
         this.idPrimario = metVarToken;
@@ -37,7 +38,7 @@ public class AccesoMetEstaticoNodo extends PrimarioNodo {
         if(actualArgsExpresionNodes==null){
             throw new SemanticExeptionInvalidStaticInvocation(idPrimario);
         }else if(st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().containsKey(idPrimario.getLexeme())) {
-            Method m = st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idPrimario.getLexeme());
+            m = st.getClass(classType.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idPrimario.getLexeme());
             if (m.isStatic()) {
                 ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
                 Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
@@ -72,6 +73,9 @@ public class AccesoMetEstaticoNodo extends PrimarioNodo {
     @Override
     public void generar(SymbolTable st) throws IOException {
         //TODO generar
+        if(m.needReturn()){
+            st.write("RMEM 1 # Lugar de retorno.");
+        }
         if(actualArgsExpresionNodes != null){
             ArrayList<ExpresionNodo> actualArgsExpresionNodesInvertido = actualArgsExpresionNodes;
             Collections.reverse(actualArgsExpresionNodesInvertido);

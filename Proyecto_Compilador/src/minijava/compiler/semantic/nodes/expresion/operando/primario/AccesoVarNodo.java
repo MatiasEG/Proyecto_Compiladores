@@ -10,6 +10,8 @@ import minijava.compiler.semantic.tables.Block;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Variable;
 
+import java.io.IOException;
+
 public class AccesoVarNodo extends PrimarioNodo {
 
     private Variable var;
@@ -44,8 +46,8 @@ public class AccesoVarNodo extends PrimarioNodo {
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        st.write("LOAD "+var.getOffset()+" # Apilo el valor de la variable.\n");
     }
 
 }

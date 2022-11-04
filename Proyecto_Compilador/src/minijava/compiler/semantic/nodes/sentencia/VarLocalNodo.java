@@ -11,6 +11,8 @@ import minijava.compiler.semantic.tables.Block;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Variable;
 
+import java.io.IOException;
+
 public class VarLocalNodo extends SentenciaNodo{
 
     private Token idVarLocalToken;
@@ -49,7 +51,9 @@ public class VarLocalNodo extends SentenciaNodo{
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        st.write("RMEM 1 # Se guarda un espacio para la varLocal.\n");
+        parteDerecha.generar(st);
+        st.write("STORE "+var.getOffset()+" # Posicion de la var local.\n");
     }
 }

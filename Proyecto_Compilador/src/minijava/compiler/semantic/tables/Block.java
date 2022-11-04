@@ -22,6 +22,7 @@ public class Block {
     private ArrayList<SentenciaNodo> statements;
     private Block bloquePadre;
     private ArrayList<Block> bloques;
+    private int offset;
 
     public Block(Method method){
         this.method = method;
@@ -30,6 +31,7 @@ public class Block {
         statements = new ArrayList<>();
         bloques = new ArrayList<>();
         bloquePadre = null;
+        offset = 0;
     }
 
     public Block(Method method, Block bloquePadre){
@@ -49,9 +51,13 @@ public class Block {
 
     public void addVar(VarLocal v) throws SemanticException {
         if (bloquePadre!= null && bloquePadre.contains(v.getVarName()) == null && !varsHashMap.containsKey(v.getVarName())){
+            v.setOffset(offset);
+            offset--;
             vars.add(v);
             varsHashMap.put(v.getVarName(), v);
         }else if(bloquePadre == null && !method.getParameterHashMap().containsKey(v.getVarName()) && !varsHashMap.containsKey(v.getVarName())) {
+            v.setOffset(offset);
+            offset--;
             vars.add(v);
             varsHashMap.put(v.getVarName(), v);
         }else{
@@ -81,6 +87,7 @@ public class Block {
         for(SentenciaNodo sentencia: statements){
             sentencia.generar(st);
         }
+        st.write("FMEM "+vars.size()+" # Se elimina el espacio reservado para las variables locales.\n");
     }
 
     public HashMap<String, VarLocal> getVarsHashMap(){ return varsHashMap; }

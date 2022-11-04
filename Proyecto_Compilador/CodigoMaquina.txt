@@ -106,9 +106,18 @@ printSlnSystem:LOADFP
 mainMainModule:LOADFP
                LOADSP
                STOREFP
-               PUSH 99
+               RMEM 1 # Se guarda un espacio para la varLocal.
+               PUSH 2
+               STORE 0 # Posicion de la var local.
+               RMEM 1 # Se guarda un espacio para la varLocal.
+               PUSH 3
+               STORE -1 # Posicion de la var local.
+               LOAD 0 # Apilo el valor de la variable.
+               LOAD -1 # Apilo el valor de la variable.
+               ADD
                PUSH printISystem
                CALL
+               FMEM 2 # Se elimina el espacio reservado para las variables locales.
                STOREFP
                RET 0
 
@@ -116,6 +125,7 @@ mainMainModule:LOADFP
 MainModuleMainModule:LOADFP
                      LOADSP
                      STOREFP
+                     FMEM 0 # Se elimina el espacio reservado para las variables locales.
                      STOREFP
                      RET 0
 

@@ -14,6 +14,8 @@ import java.io.IOException;
 
 public class MainModule {
 
+    // TODO cmd: java -jar CeIVM-cei2011.jar CodigoMaquina.txt
+
     public static void main(String[]args){
         File myObj = new File("CodigoMaquina.txt");
 
