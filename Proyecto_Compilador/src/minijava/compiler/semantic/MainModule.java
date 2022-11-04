@@ -14,6 +14,14 @@ import java.io.IOException;
 
 public class MainModule {
 
+    // TODO return vacio
+
+    // TODO == con dos tipo referencia
+
+    // TODO variables locales clasicas etapa 4
+
+    // TODO constructores controlados
+
     public static void main(String[]args){
         File myObj = new File("CodigoMaquina.txt");
 
