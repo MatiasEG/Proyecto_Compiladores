@@ -29,10 +29,13 @@ public class SymbolTable {
     private Method actualMethod;
     private Class actualClass;
     private FileWriter writer;
+    private String identacionParaCodigo;
+    private String mainClass;
 
     public SymbolTable(){
         classes = new HashMap<>();
         interfaces = new HashMap<>();
+        identacionParaCodigo = "";
     }
 
     public void createConcreteClasses() throws SemanticException {
@@ -190,6 +193,7 @@ public class SymbolTable {
 
         for(Method m: methods){
             if(m.getMethodName().equals("main") && main == 0 && m.getMethodType().getLexemeType().equals("void") && m.isStatic() && m.getParameters().size()==0){
+                mainClass = clase.getNombre();
                 main++;
             }else if(m.getMethodName().equals("main") && main == 1 && m.getMethodType().getLexemeType().equals("void") && m.isStatic()){
                 throw new SemanticExceptionDuplicatedMain(m, clase);
@@ -308,13 +312,47 @@ public class SymbolTable {
 
     public Method getActualMethod(){ return actualMethod; }
 
+
+
+
+
+
+
+
+    public void generarCodigo() throws IOException {
+        write(".CODE\n" +
+                "   PUSH main"+mainClass+"\n" +
+                "   CALL\n" +
+                "   HALT\n\n");
+
+        PredefinedClasses.generateCode(this);
+
+        for(Map.Entry<String, Class> entry: classes.entrySet()){
+            setActualClass(entry.getValue());
+            for(Method m: entry.getValue().getMethods()){
+                setActualMethod(m);
+                if(m.getClassDeclaredMethod().equals(entry.getKey())) m.generarCodigoBloque(this);
+            }
+        }
+    }
+
     public void setWriter(FileWriter writer){
         this.writer = writer;
     }
 
-    public void write(String txt2write) throws IOException {
+    public void writeLabel(String txt2write) throws IOException {
         writer.write(txt2write);
     }
+
+    public void write(String txt2write) throws IOException {
+        writer.write(identacionParaCodigo+txt2write);
+    }
+
+    public void setIdentacionParaCodigo(String espacios){ identacionParaCodigo = espacios; }
+
+
+
+
 
 
 

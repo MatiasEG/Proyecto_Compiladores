@@ -34,4 +34,9 @@ public class IfNodo extends SentenciaNodo{
         }
 
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

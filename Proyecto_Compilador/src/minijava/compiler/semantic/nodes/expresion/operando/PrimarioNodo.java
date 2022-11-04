@@ -5,6 +5,8 @@ import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public abstract class PrimarioNodo {
 
     protected Token idPrimario;
@@ -16,4 +18,6 @@ public abstract class PrimarioNodo {
     public abstract boolean isAssignable(SymbolTable st);
 
     public boolean esLlamable(){ return true; }
+
+    public abstract void generar(SymbolTable st) throws IOException;
 }

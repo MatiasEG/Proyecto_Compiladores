@@ -8,6 +8,7 @@ import minijava.compiler.semantic.nodes.sentencia.SentenciaNodo;
 import minijava.compiler.semantic.tables.variable.VarLocal;
 import minijava.compiler.semantic.tables.variable.Variable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,6 +74,12 @@ public class Block {
     public void check(SymbolTable st) throws SemanticException {
         for(SentenciaNodo sentencia: statements){
             sentencia.check(st);
+        }
+    }
+
+    public void generarCodigoSentencias(SymbolTable st) throws IOException {
+        for(SentenciaNodo sentencia: statements){
+            sentencia.generar(st);
         }
     }
 

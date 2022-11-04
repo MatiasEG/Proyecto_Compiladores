@@ -26,4 +26,8 @@ public class MayorNodo extends ExpresionBinariaNodo {
         }
     }
 
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

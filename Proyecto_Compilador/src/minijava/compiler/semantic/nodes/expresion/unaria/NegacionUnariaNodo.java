@@ -28,4 +28,9 @@ public class NegacionUnariaNodo extends ExpresionUnariaNodo {
             }
         }
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

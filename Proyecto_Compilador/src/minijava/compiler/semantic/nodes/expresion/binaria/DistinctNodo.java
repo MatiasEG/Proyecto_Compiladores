@@ -42,4 +42,9 @@ public class DistinctNodo extends ExpresionBinariaNodo {
             }
         }
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

@@ -23,4 +23,6 @@ public abstract class AsignacionNodo extends SentenciaNodo{
     @Override
     public abstract void check(SymbolTable st) throws SemanticException;
 
+
+
 }

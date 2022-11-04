@@ -47,4 +47,9 @@ public class ReturnNodo extends SentenciaNodo {
             throw new SemanticExceptionEmptyReturn(returnToken);
         }
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

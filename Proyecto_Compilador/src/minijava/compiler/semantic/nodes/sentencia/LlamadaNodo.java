@@ -5,6 +5,8 @@ import minijava.compiler.exception.SemanticP2.SemanticExceptionThisNeedChained;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.operando.AccesoNodo;
 
+import java.io.IOException;
+
 public class LlamadaNodo extends SentenciaNodo{
 
     private AccesoNodo accesoNodo;
@@ -18,5 +20,10 @@ public class LlamadaNodo extends SentenciaNodo{
         }else{
             throw new SemanticExceptionThisNeedChained(accesoNodo.getIdPrimario());
         }
+    }
+
+    @Override
+    public void generar(SymbolTable st) throws IOException {
+        accesoNodo.generar(st);
     }
 }

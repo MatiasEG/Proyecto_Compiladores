@@ -24,4 +24,9 @@ public class RestaUnariaNodo extends ExpresionUnariaNodo {
             }
         }
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

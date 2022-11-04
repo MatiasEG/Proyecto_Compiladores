@@ -29,4 +29,9 @@ public class WhileNodo extends SentenciaNodo{
             throw new SemanticExceptionWrongConditionType(whileToken);
         }
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

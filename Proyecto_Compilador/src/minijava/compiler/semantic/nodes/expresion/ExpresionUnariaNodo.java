@@ -6,6 +6,8 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.operando.OperandoNodo;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public abstract class ExpresionUnariaNodo extends ExpresionNodo {
 
     protected Token unaryOperator;
@@ -22,4 +24,6 @@ public abstract class ExpresionUnariaNodo extends ExpresionNodo {
     public boolean isAssignable(SymbolTable st) {
         return false;
     }
+
+    public abstract void generar(SymbolTable st) throws IOException;
 }

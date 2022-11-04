@@ -24,4 +24,9 @@ public class SumaUnariaNodo extends ExpresionUnariaNodo {
             }
         }
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

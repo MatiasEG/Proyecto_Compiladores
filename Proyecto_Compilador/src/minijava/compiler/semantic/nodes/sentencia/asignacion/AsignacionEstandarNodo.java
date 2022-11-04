@@ -39,4 +39,9 @@ public class AsignacionEstandarNodo extends AsignacionNodo {
         }
 
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

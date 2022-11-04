@@ -9,6 +9,8 @@ import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.variable.Parameter;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public class PredefinedClasses {
 
     public static Class createObjectClass() throws SemanticException {
@@ -170,5 +172,121 @@ public class PredefinedClasses {
         printSln.setMainBlock(new Block(printSln));
 
         return system;
+    }
+
+    public static void generateCode(SymbolTable st) throws IOException {
+        st.writeLabel("# ---------------- debugPrintObject ---------------- \n");
+        String spaces = String.format("%"+("debugPrint".length()+"Object".length()+1)+"s", "");
+        st.writeLabel("debugPrintObject:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                spaces+"LOAD 3\n" +
+                // TODO generar debugPrintObject...
+                spaces+"STOREFP\n" +
+                spaces+"RET 1\n\n");
+
+        // TODO generar codigo de clase String?
+
+        st.writeLabel("# ---------------- readSystem ---------------- \n");
+        spaces = String.format("%"+("read".length()+"System".length()+1)+"s", "");
+        st.writeLabel("readSystem:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                // TODO generar readSystem...
+                spaces+"STOREFP\n" +
+                spaces+"RET 0\n\n");
+
+        st.writeLabel("# ---------------- printBSystem ---------------- \n");
+        spaces = String.format("%"+("printB".length()+"System".length()+1)+"s", "");
+        st.writeLabel("printBSystem:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                spaces+"LOAD 3\n" +
+                spaces+"BPRINT\n" +
+                spaces+"STOREFP\n" +
+                spaces+"RET 1\n\n");
+
+        st.writeLabel("# ---------------- printCSystem ---------------- \n");
+        spaces = String.format("%"+("printC".length()+"System".length()+1)+"s", "");
+        st.writeLabel("printCSystem:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                spaces+"LOAD 3\n" +
+                spaces+"CPRINT\n" +
+                spaces+"STOREFP\n" +
+                spaces+"RET 1\n\n");
+
+        st.writeLabel("# ---------------- printISystem ---------------- \n");
+        spaces = String.format("%"+("printI".length()+"System".length()+1)+"s", "");
+        st.writeLabel("printISystem:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                spaces+"LOAD 3\n" +
+                spaces+"IPRINT\n" +
+                spaces+"STOREFP\n" +
+                spaces+"RET 1\n\n");
+
+        st.writeLabel("# ---------------- printSSystem ---------------- \n");
+        spaces = String.format("%"+("printS".length()+"System".length()+1)+"s", "");
+        st.writeLabel("printSSystem:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                spaces+"LOAD 3\n" +
+                spaces+"SPRINT\n" +
+                spaces+"STOREFP\n" +
+                spaces+"RET 1\n\n");
+
+        st.writeLabel("# ---------------- printlnSystem ---------------- \n");
+        spaces = String.format("%"+("println".length()+"System".length()+1)+"s", "");
+        st.writeLabel("printlnSystem:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                spaces+"PRNLN\n" +
+                spaces+"STOREFP\n" +
+                spaces+"RET 0\n\n");
+
+        st.writeLabel("# ---------------- printBlnSystem ---------------- \n");
+        spaces = String.format("%"+("printBln".length()+"System".length()+1)+"s", "");
+        st.writeLabel("printBlnSystem:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                spaces+"LOAD 3\n" +
+                spaces+"BPRINT\n" +
+                spaces+"PRNLN\n" +
+                spaces+"STOREFP\n" +
+                spaces+"RET 1\n\n");
+
+        st.writeLabel("# ---------------- printClnSystem ---------------- \n");
+        spaces = String.format("%"+("printCln".length()+"System".length()+1)+"s", "");
+        st.writeLabel("printClnSystem:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                spaces+"LOAD 3\n" +
+                spaces+"CPRINT\n" +
+                spaces+"PRNLN\n" +
+                spaces+"STOREFP\n" +
+                spaces+"RET 1\n\n");
+
+        st.writeLabel("# ---------------- printIlnSystem ---------------- \n");
+        spaces = String.format("%"+("printIln".length()+"System".length()+1)+"s", "");
+        st.writeLabel("printIlnSystem:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                spaces+"LOAD 3\n" +
+                spaces+"IPRINT\n" +
+                spaces+"PRNLN\n" +
+                spaces+"STOREFP\n" +
+                spaces+"RET 1\n\n");
+
+        st.writeLabel("# ---------------- printSlnSystem ---------------- \n");
+        spaces = String.format("%"+("printSln".length()+"System".length()+1)+"s", "");
+        st.writeLabel("printSlnSystem:LOADFP\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP\n" +
+                spaces+"LOAD 3\n" +
+                spaces+"SPRINT\n" +
+                spaces+"PRNLN\n" +
+                spaces+"STOREFP\n" +
+                spaces+"RET 1\n\n");
     }
 }

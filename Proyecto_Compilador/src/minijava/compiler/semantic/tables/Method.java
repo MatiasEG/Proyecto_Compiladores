@@ -5,6 +5,7 @@ import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.tables.variable.Parameter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -105,5 +106,22 @@ public class Method {
 
     public void checkBlock(SymbolTable st) throws SemanticException {
         block.check(st);
+    }
+
+    public void generarCodigoBloque(SymbolTable st) throws IOException {
+        if(!getClassDeclaredMethod().equals("System") &&
+                !getClassDeclaredMethod().equals("Object") &&
+                !getClassDeclaredMethod().equals("String")){
+            int espacios = this.getMethodName().length()+this.getClassDeclaredMethod().length()+1;
+            String spaces = String.format("%"+(espacios)+"s", "");
+            st.setIdentacionParaCodigo(spaces);
+            st.writeLabel("# ---------------- "+ getMethodName()+""+getClassDeclaredMethod() +" ---------------- \n");
+            st.writeLabel(this.getMethodName()+this.getClassDeclaredMethod()+":LOADFP\n" +
+                    spaces+"LOADSP\n" +
+                    spaces+"STOREFP\n");
+            block.generarCodigoSentencias(st);
+            st.write("STOREFP\n");
+            st.write("RET "+this.getParameterHashMap().size()+"\n\n");
+        }
     }
 }

@@ -16,4 +16,9 @@ public class LiteralNullNodo extends LiteralNodo {
     public Type check(SymbolTable st) throws SemanticException {
         return new Type(literalToken);
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

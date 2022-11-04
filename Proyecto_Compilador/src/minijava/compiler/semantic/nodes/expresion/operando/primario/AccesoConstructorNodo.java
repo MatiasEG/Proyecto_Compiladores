@@ -64,4 +64,8 @@ public class AccesoConstructorNodo extends PrimarioNodo {
         return false;
     }
 
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

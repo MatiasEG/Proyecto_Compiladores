@@ -1,0 +1,121 @@
+.CODE
+   PUSH mainMainModule
+   CALL
+   HALT
+
+# ---------------- debugPrintObject ---------------- 
+debugPrintObject:LOADFP
+                 LOADSP
+                 STOREFP
+                 LOAD 3
+                 STOREFP
+                 RET 1
+
+# ---------------- readSystem ---------------- 
+readSystem:LOADFP
+           LOADSP
+           STOREFP
+           STOREFP
+           RET 0
+
+# ---------------- printBSystem ---------------- 
+printBSystem:LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             BPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printCSystem ---------------- 
+printCSystem:LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             CPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printISystem ---------------- 
+printISystem:LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             IPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printSSystem ---------------- 
+printSSystem:LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             SPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printlnSystem ---------------- 
+printlnSystem:LOADFP
+              LOADSP
+              STOREFP
+              PRNLN
+              STOREFP
+              RET 0
+
+# ---------------- printBlnSystem ---------------- 
+printBlnSystem:LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               BPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printClnSystem ---------------- 
+printClnSystem:LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               CPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printIlnSystem ---------------- 
+printIlnSystem:LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               IPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printSlnSystem ---------------- 
+printSlnSystem:LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               SPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- mainMainModule ---------------- 
+mainMainModule:LOADFP
+               LOADSP
+               STOREFP
+               PUSH 99
+               PUSH printISystem
+               CALL
+               STOREFP
+               RET 0
+
+# ---------------- MainModuleMainModule ---------------- 
+MainModuleMainModule:LOADFP
+                     LOADSP
+                     STOREFP
+                     STOREFP
+                     RET 0
+

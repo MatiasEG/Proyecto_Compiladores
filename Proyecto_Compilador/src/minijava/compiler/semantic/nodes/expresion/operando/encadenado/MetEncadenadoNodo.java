@@ -79,4 +79,9 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
             throw new SemanticExceptionMethodNotDefinedInClassRef(idMetVar);
         }
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

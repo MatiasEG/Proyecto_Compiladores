@@ -27,4 +27,9 @@ public class AsignacionMasNodo extends AsignacionNodo {
         }
 
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

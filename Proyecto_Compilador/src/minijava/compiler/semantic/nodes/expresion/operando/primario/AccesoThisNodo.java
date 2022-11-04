@@ -32,4 +32,9 @@ public class AccesoThisNodo extends PrimarioNodo {
     public boolean esLlamable() {
         return false;
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

@@ -25,4 +25,9 @@ public class MenorNodo extends ExpresionBinariaNodo {
             throw new SemanticExceptionBinaryExpressionWithDiferentTypes(operatorToken);
         }
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

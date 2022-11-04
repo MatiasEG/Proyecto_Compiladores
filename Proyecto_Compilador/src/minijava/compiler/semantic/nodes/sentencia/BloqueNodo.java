@@ -16,4 +16,9 @@ public class BloqueNodo extends SentenciaNodo {
         //TODO implementar bloques como sentencias
         block.check(st);
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

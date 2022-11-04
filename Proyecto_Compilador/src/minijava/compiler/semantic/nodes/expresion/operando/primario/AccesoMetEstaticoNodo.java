@@ -10,6 +10,7 @@ import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Parameter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -67,5 +68,21 @@ public class AccesoMetEstaticoNodo extends PrimarioNodo {
     }
 
     public boolean isAssignable(SymbolTable st) { return false; }
+
+    @Override
+    public void generar(SymbolTable st) throws IOException {
+        //TODO generar
+        if(actualArgsExpresionNodes != null){
+            ArrayList<ExpresionNodo> actualArgsExpresionNodesInvertido = actualArgsExpresionNodes;
+            Collections.reverse(actualArgsExpresionNodesInvertido);
+            for(ExpresionNodo exp: actualArgsExpresionNodesInvertido){
+                exp.generar(st);
+            }
+            st.write("PUSH "+idPrimario.getLexeme()+""+classType.getLexemeType()+"\n");
+        }else{
+            st.write("PUSH "+idPrimario.getLexeme()+""+classType.getLexemeType()+"\n");
+        }
+        st.write("CALL\n");
+    }
 
 }

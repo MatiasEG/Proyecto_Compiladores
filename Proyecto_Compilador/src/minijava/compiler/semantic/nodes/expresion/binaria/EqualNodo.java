@@ -45,4 +45,9 @@ public class EqualNodo extends ExpresionBinariaNodo {
             }
         }
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

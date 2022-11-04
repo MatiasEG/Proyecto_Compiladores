@@ -14,19 +14,11 @@ import java.io.IOException;
 
 public class MainModule {
 
-    // TODO return vacio
-
-    // TODO == con dos tipo referencia
-
-    // TODO variables locales clasicas etapa 4
-
-    // TODO constructores controlados
-
     public static void main(String[]args){
         File myObj = new File("CodigoMaquina.txt");
 
-        FileManager fileManager = new FileManager(new File("resources/sinErrores/correcciones.java"));
-//        FileManager fileManager = new FileManager(new File("resources/codigoMaquina/test1Main.java"));
+//        FileManager fileManager = new FileManager(new File("resources/sinErrores/correcciones.java"));
+        FileManager fileManager = new FileManager(new File("resources/codigoMaquina/test1Main.java"));
 //        FileManager fileManager = new FileManager(new File(args[0]));
 
         SymbolTable st = new SymbolTable();
@@ -45,7 +37,7 @@ public class MainModule {
             }
 
             FileWriter writer = new FileWriter("CodigoMaquina.txt");
-//            myWriter.write("HolaMundo\n");
+//            writer.write("HolaMundo\n");
 
             st.setWriter(writer);
 
@@ -58,6 +50,8 @@ public class MainModule {
             st.consolidacion(); // TODO comentar de ser necesario
 
             st.checkSentences(); // TODO comentar de ser necesario
+
+            st.generarCodigo();
 
             writer.close();
 

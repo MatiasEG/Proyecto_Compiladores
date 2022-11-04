@@ -43,4 +43,9 @@ public class AccesoVarNodo extends PrimarioNodo {
         return true;
     }
 
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
+
 }

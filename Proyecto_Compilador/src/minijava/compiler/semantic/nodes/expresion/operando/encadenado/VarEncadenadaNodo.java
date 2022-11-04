@@ -39,4 +39,9 @@ public class VarEncadenadaNodo extends EncadenadoOptNodo {
         }
     }
 
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
+
 }

@@ -47,4 +47,9 @@ public class VarLocalNodo extends SentenciaNodo{
         }else
             throw new SemanticExceptionInvalidNullAsignment(idVarLocalToken);
     }
+
+    @Override
+    public void generar(SymbolTable st) {
+        //TODO generar
+    }
 }

@@ -6,6 +6,8 @@ import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public class AccesoNodo extends OperandoNodo {
 
     private PrimarioNodo primarioNodo;
@@ -43,5 +45,15 @@ public class AccesoNodo extends OperandoNodo {
         }else{
             return encadenadoOptNodo.check(tipoPrimarioNodo, st);
         }
+    }
+
+    @Override
+    public void generar(SymbolTable st) throws IOException {
+        primarioNodo.generar(st);
+
+        if(encadenadoOptNodo != null){
+            encadenadoOptNodo.generar(st);
+        }
+        //TODO probablemente haya que hacer el CALL aca
     }
 }
