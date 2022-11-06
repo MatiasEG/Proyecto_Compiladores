@@ -7,6 +7,8 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionBinariaNodo;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public class AndNodo extends ExpresionBinariaNodo {
 
     public AndNodo(Token and){
@@ -23,7 +25,9 @@ public class AndNodo extends ExpresionBinariaNodo {
         }
     }
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        ladoIzquierdo.generar(st);
+        ladoDerecho.generar(st);
+        st.write("AND\n");
     }
 }

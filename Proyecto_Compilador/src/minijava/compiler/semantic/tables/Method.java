@@ -20,12 +20,14 @@ public class Method {
     protected Type type;
     protected Block block;
     protected Block actualBlock;
+    protected int offsetParametro;
 
     public Method(){
         parameters = new ArrayList<>();
         isStatic = false;
         parameterHashMap = new HashMap<>();
         block = null;
+        offsetParametro = 0;
     }
 
     public void setActualBlock(Block actualBlock){ this.actualBlock = actualBlock; }
@@ -74,6 +76,7 @@ public class Method {
             }
         }
         parameters.add(parameter);
+        parameter.setOffset(offsetParametro--);
         parameterHashMap.put(parameter.getVarName(), parameter);
         return null;
     }

@@ -17,22 +17,29 @@ public class AccesoVarNodo extends PrimarioNodo {
     private Variable var;
     private String name;
     private Block bloqueAcceso;
+    private boolean esAtributo, esParametro, esVarLocal;
 
     public AccesoVarNodo(Token varToken, Block bloqueAcceso){
         this.var = null;
         name = varToken.getLexeme();
         this.idPrimario = varToken;
         this.bloqueAcceso = bloqueAcceso;
+        esAtributo = false;
+        esParametro = false;
+        esVarLocal = false;
     }
 
     public Type check(SymbolTable st) throws SemanticException {
         if(st.getActualMethod().getParameterHashMap().containsKey(name)){
             var = st.getActualMethod().getParameter(name);
+            esParametro = true;
         }else if(bloqueAcceso.getVarsAccesiblesDesdeElBloque().containsKey(name)){
             var = bloqueAcceso.getVarsAccesiblesDesdeElBloque().get(name);
+            esVarLocal = true;
         }else if(st.getActualClass().getHashMapAtributes().containsKey(name)){
             if(st.getActualMethod().isStatic()) throw new SemanticExceptionCantAccessAtributesOnStaticMethod(idPrimario);
             var = st.getActualClass().getHashMapAtributes().get(name);
+            esAtributo = true;
         }else{
             throw new SemanticExceptionVarNotExist(idPrimario);
         }
@@ -47,7 +54,13 @@ public class AccesoVarNodo extends PrimarioNodo {
 
     @Override
     public void generar(SymbolTable st) throws IOException {
-        st.write("LOAD "+var.getOffset()+" # Apilo el valor de la variable.\n");
+        if(esVarLocal){
+            st.write("LOAD "+var.getOffset()+" # Apilo el valor de la variable.\n");
+        }else if(esParametro){
+            st.write("LOAD "+(3-var.getOffset())+" # Apilo el valor de la variable.\n");
+        }else if(esAtributo){
+            // TODO completar
+        }
     }
 
 }

@@ -7,6 +7,8 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionBinariaNodo;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public class MenorNodo extends ExpresionBinariaNodo {
 
     private boolean menorIgual;
@@ -27,7 +29,12 @@ public class MenorNodo extends ExpresionBinariaNodo {
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        ladoIzquierdo.generar(st);
+        ladoDerecho.generar(st);
+        if(menorIgual)
+            st.write("LE\n");
+        else
+            st.write("LT\n");
     }
 }

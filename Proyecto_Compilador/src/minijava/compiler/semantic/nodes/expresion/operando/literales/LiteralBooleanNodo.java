@@ -21,6 +21,9 @@ public class LiteralBooleanNodo extends LiteralNodo {
 
     @Override
     public void generar(SymbolTable st) throws IOException {
-        st.write("PUSH "+literalToken.getLexeme()+"\n");
+        if(literalToken.getLexeme().equals("true"))
+            st.write("PUSH 1\n");
+        else
+            st.write("PUSH 0\n");
     }
 }
