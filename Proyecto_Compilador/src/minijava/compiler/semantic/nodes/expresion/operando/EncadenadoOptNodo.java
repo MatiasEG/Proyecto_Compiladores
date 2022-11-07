@@ -12,6 +12,7 @@ public abstract class EncadenadoOptNodo {
     protected EncadenadoOptNodo encadenadoOptNodo;
     protected Token idMetVar;
     protected Type tipoPrimarioNodo;
+    protected boolean esLadoIzquierdo;
 
     public void setIdMetVarToken(Token idMetVarToken){ idMetVar = idMetVarToken; }
 
@@ -22,5 +23,7 @@ public abstract class EncadenadoOptNodo {
     public abstract Type check(Type tipoPrimarioNodo, SymbolTable st) throws SemanticException;
 
     public abstract void generar(SymbolTable st) throws IOException;
+
+    public void esLadoIzquierdo(boolean esLadoIzquierdo){ this.esLadoIzquierdo = esLadoIzquierdo; }
 
 }

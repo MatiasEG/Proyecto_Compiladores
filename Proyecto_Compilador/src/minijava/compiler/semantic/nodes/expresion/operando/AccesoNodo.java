@@ -47,11 +47,14 @@ public class AccesoNodo extends OperandoNodo {
         }
     }
 
+    public void esLadoIzquierod(boolean esLadoIzquierdo){ primarioNodo.esLadoIzquierdo(esLadoIzquierdo); }
+
     @Override
     public void generar(SymbolTable st) throws IOException {
         primarioNodo.generar(st);
 
         if(encadenadoOptNodo != null){
+            encadenadoOptNodo.esLadoIzquierdo(primarioNodo.esLadoIzquierdo);
             encadenadoOptNodo.generar(st);
         }
         //TODO probablemente haya que hacer el CALL aca

@@ -12,6 +12,7 @@ import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Parameter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -65,7 +66,21 @@ public class AccesoConstructorNodo extends PrimarioNodo {
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        st.write("RMEM 1 # Resultado de malloc, referencia al CIR de un objeto\n");
+        st.write("PUSH "+(st.getClass(idPrimario.getLexeme()).getHashMapAtributes().size()+1)+" # Parametro malloc, cant de atributos del objeto + 1 para VT\n");
+        st.write("PUSH simple_malloc\n");
+        st.write("CALL\n");
+        st.write("DUP # de la referencia al nuevo CIR\n");
+        st.write("PUSH "+st.getClass(idPrimario.getLexeme()).getVtLabel()+"\n");
+        st.write("STOREREF 0 # Consume una de las dupicas de la referencia al CIR\n");
+        st.write("DUP # de la referencia al objeto\n");
+
+        for(ExpresionNodo parametroActualExp: actualArgsExpresionNodes){
+            parametroActualExp.generar(st);
+            st.write("SWAP # Muevo al tope el this, por cada parametro generado\n");
+        }
+        st.write("PUSH "+idPrimario.getLexeme()+idPrimario.getLexeme()+"\n");
+        st.write("CALL # Invoco el constructor\n");
     }
 }

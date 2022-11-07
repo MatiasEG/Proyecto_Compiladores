@@ -217,6 +217,7 @@ public class SymbolTable {
             Type typeConstructor = new Type(new Token("idClass", clase.getNombre(), 0));
             constructorBase.setMethodType(typeConstructor);
             constructorBase.setMainBlock(new Block(constructorBase));
+            constructorBase.setStatic(true);
             clase.addMetodo(constructorBase);
         }
 
@@ -325,13 +326,16 @@ public class SymbolTable {
                 "   CALL\n" +
                 "   HALT\n\n");
 
-        PredefinedClasses.generateCode(this);
+        generarCodigoDeRutinasHeap();
+        PredefinedClasses.generarCodigoClasesXDefecto(this);
 
         for(Map.Entry<String, Class> entry: classes.entrySet()){
-            setActualClass(entry.getValue());
-            for(Method m: entry.getValue().getMethods()){
-                setActualMethod(m);
-                if(m.getClassDeclaredMethod().equals(entry.getKey())) m.generarCodigoBloque(this);
+            if(entry.getValue().getNombre()!="Object" &&
+                    entry.getValue().getNombre()!="String" &&
+                    entry.getValue().getNombre()!="System") {
+
+                entry.getValue().generarCodigoData(this);
+                setActualClass(entry.getValue());
             }
         }
     }
@@ -350,6 +354,27 @@ public class SymbolTable {
 
     public void setIdentacionParaCodigo(String espacios){ identacionParaCodigo = espacios; }
 
+    private void generarCodigoDeRutinasHeap() throws IOException {
+        writeLabel("# ---------------- simple_heap_init ---------------- \n");
+        writeLabel("simple_heap_init:RET 0 # Inicializacion simple del .heap\n\n");
+
+
+        writeLabel("# ---------------- simple_malloc ---------------- \n");
+        String spaces = String.format("%"+("simple_malloc".length()+1)+"s", "");
+        writeLabel("simple_malloc:LOADFP # Inicializacion unidad\n" +
+                spaces+"LOADSP\n" +
+                spaces+"STOREFP # Finaliza inicializacion del RA\n" +
+                spaces+"LOADHL # hl\n" +
+                spaces+"DUP # hl\n" +
+                spaces+"PUSH 1\n" +
+                spaces+"ADD # hl + 1\n" +
+                spaces+"STORE 4 # Guarda resultado (puntero a base del bloque)\n" +
+                spaces+"LOAD 3 # Carga cantidad de celdas a alojar (parametro)\n" +
+                spaces+"ADD\n" +
+                spaces+"STOREHL # Mueve el heap limit (hl)\n" +
+                spaces+"STOREFP\n" +
+                spaces+"RET 1 # Retorna eliminando el parametro\n\n");
+    }
 
 
 

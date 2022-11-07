@@ -14,6 +14,7 @@ public class Interface_ extends ClassOrInterface {
         metodosSinSobrecargaMap = new HashMap<>();
         metodoHashMap = new HashMap<>();
         this.claseOrinterfaceToken = interfaceToken;
+        metodosDinamicos = new HashMap<>();
     }
 
 

@@ -153,13 +153,11 @@ public class SyntacticAnalyzer {
             extendsFrom.add(actualToken);
             match("idClass");
             genericoNotOpt();
-            extendsFrom.addAll(heredaDe());
         }else if(Arrays.asList("punctuationComma").contains(actualToken.getToken())){
             match("punctuationComma");
             extendsFrom.add(actualToken);
             match("idClass");
             genericoNotOpt();
-            extendsFrom.addAll(heredaDe());
         }else if(Arrays.asList("idKeyWord_implements", "punctuationOpeningBracket").contains(actualToken.getToken())){
             //vacio
             extendsFrom.add(st.getObjectClassToken());

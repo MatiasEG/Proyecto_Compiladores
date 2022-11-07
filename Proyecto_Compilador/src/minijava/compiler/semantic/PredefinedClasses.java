@@ -174,7 +174,7 @@ public class PredefinedClasses {
         return system;
     }
 
-    public static void generateCode(SymbolTable st) throws IOException {
+    public static void generarCodigoClasesXDefecto(SymbolTable st) throws IOException {
         st.writeLabel("# ---------------- debugPrintObject ---------------- \n");
         String spaces = String.format("%"+("debugPrint".length()+"Object".length()+1)+"s", "");
         st.writeLabel("debugPrintObject:LOADFP\n" +

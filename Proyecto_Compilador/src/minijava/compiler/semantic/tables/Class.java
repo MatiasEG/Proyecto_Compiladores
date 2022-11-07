@@ -4,14 +4,18 @@ import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.tables.variable.Attribute;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Class extends ClassOrInterface {
 
     private ArrayList<Token> implement;
     private ArrayList<Attribute> attributes;
     private HashMap<String, Attribute> atributosHashMap;
+    private int offsetAtributo;
+    private String vtLabel;
 
     public Class(Token claseToken){
         extendsFrom = new ArrayList<>();
@@ -22,6 +26,9 @@ public class Class extends ClassOrInterface {
         metodosSinSobrecargaMap = new HashMap<>();
         metodoHashMap = new HashMap<>();
         this.claseOrinterfaceToken= claseToken;
+        metodosDinamicos = new HashMap<>();
+        offsetAtributo = 1;
+        vtLabel = "VT_"+getNombre();
     }
 
     public void setListOfImplements(ArrayList<Token> implement){
@@ -38,6 +45,7 @@ public class Class extends ClassOrInterface {
 
     public void addAttribute(Attribute attribute){
         attributes.add(attribute);
+        attribute.setOffset(offsetAtributo++);
         atributosHashMap.put(attribute.getVarName(), attribute);
     }
 
@@ -67,5 +75,38 @@ public class Class extends ClassOrInterface {
             if(a.getVarName().equals(attribute.getVarName())) return true;
         }
         return false;
+    }
+
+    public String getVtLabel(){ return vtLabel; }
+
+    public void generarCodigoData(SymbolTable st) throws IOException {
+        st.writeLabel(".DATA\n\n");
+        st.writeLabel(vtLabel+": ");
+        int cantMetodosDinamicos = metodosDinamicos.size();
+        if(cantMetodosDinamicos>0){
+            st.writeLabel("DW ");
+            int comasNecesarias = cantMetodosDinamicos-1;
+            for(Map.Entry<String, Method> entry: metodosDinamicos.entrySet()){
+                st.writeLabel(entry.getValue().getMethodName()+getNombre());
+                if(comasNecesarias>0){
+                    comasNecesarias--;
+                    st.writeLabel(", ");
+                }else{
+                    st.writeLabel("\n\n");
+                }
+            }
+        }else{
+            st.writeLabel("NOP\n\n");
+        }
+
+        st.writeLabel(".CODE\n\n");
+        for(Map.Entry<String, Method> entry: metodosSinSobrecargaMap.entrySet()){
+            st.setActualMethod(entry.getValue());
+            if(entry.getValue().getClassDeclaredMethod().equals(getNombre())){
+                entry.getValue().generarCodigoBloque(st);
+            }
+        }
+
+        //TODO seguir con esta generacion de codigo, generar bloque
     }
 }

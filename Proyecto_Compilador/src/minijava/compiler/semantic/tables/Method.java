@@ -21,6 +21,7 @@ public class Method {
     protected Block block;
     protected Block actualBlock;
     protected int offsetParametro;
+    protected int offsetMetodo;
 
     public Method(){
         parameters = new ArrayList<>();
@@ -111,20 +112,34 @@ public class Method {
         block.check(st);
     }
 
+    public void setOffsetMetodo(int offsetMetodo){ this.offsetMetodo = offsetMetodo; }
+
+    public int getOffsetMetodo(){ return offsetMetodo; }
+
     public void generarCodigoBloque(SymbolTable st) throws IOException {
         if(!getClassDeclaredMethod().equals("System") &&
                 !getClassDeclaredMethod().equals("Object") &&
-                !getClassDeclaredMethod().equals("String")){
-            int espacios = this.getMethodName().length()+this.getClassDeclaredMethod().length()+1;
-            String spaces = String.format("%"+(espacios)+"s", "");
+                !getClassDeclaredMethod().equals("String")) {
+            int espacios = this.getMethodName().length() + this.getClassDeclaredMethod().length() + 1;
+            String spaces = String.format("%" + (espacios) + "s", "");
             st.setIdentacionParaCodigo(spaces);
-            st.writeLabel("# ---------------- "+ getMethodName()+""+getClassDeclaredMethod() +" ---------------- \n");
-            st.writeLabel(this.getMethodName()+this.getClassDeclaredMethod()+":LOADFP\n" +
-                    spaces+"LOADSP\n" +
-                    spaces+"STOREFP\n");
+            st.writeLabel("# ---------------- " + getMethodName() + "" + getClassDeclaredMethod() + " ---------------- \n");
+            st.writeLabel(this.getMethodName() + this.getClassDeclaredMethod() + ":LOADFP\n" +
+                    spaces + "LOADSP\n" +
+                    spaces + "STOREFP\n");
+            //setActualBlock(block);
             block.generarCodigoSentencias(st);
             st.write("STOREFP\n");
-            st.write("RET "+this.getParameterHashMap().size()+"\n\n");
+
+            if (getMethodName().equals(definedClass)) // Constructor
+                st.write("RET " + (this.getParameterHashMap().size() + 1) + "\n\n"); // Elimina el this con el que se invoco
+            else {
+                if(!isStatic){
+                    st.write("RET " + (this.getParameterHashMap().size() + 1) + "\n\n"); // Elimina el this con el que se invoco
+                }else{
+                    st.write("RET "+this.getParameterHashMap().size()+"\n\n");
+                }
+            }
         }
     }
 }

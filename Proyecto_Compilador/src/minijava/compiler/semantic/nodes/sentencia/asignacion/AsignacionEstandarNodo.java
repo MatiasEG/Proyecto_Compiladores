@@ -8,6 +8,8 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.sentencia.AsignacionNodo;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public class AsignacionEstandarNodo extends AsignacionNodo {
 
     public AsignacionEstandarNodo(Token tipoAsignacion){
@@ -41,7 +43,9 @@ public class AsignacionEstandarNodo extends AsignacionNodo {
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        parteDerecha.generar(st);
+        parteIzquierda.esLadoIzquierod(true);
+        parteIzquierda.generar(st);
     }
 }

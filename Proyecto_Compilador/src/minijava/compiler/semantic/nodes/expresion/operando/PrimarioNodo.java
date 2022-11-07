@@ -10,6 +10,7 @@ import java.io.IOException;
 public abstract class PrimarioNodo {
 
     protected Token idPrimario;
+    protected boolean esLadoIzquierdo;
 
     public Token getIdPrimario(){ return idPrimario; }
 
@@ -18,6 +19,8 @@ public abstract class PrimarioNodo {
     public abstract boolean isAssignable(SymbolTable st);
 
     public boolean esLlamable(){ return true; }
+
+    public void esLadoIzquierdo(boolean esLadoIzquierdo){ this.esLadoIzquierdo = esLadoIzquierdo; }
 
     public abstract void generar(SymbolTable st) throws IOException;
 }

@@ -16,6 +16,8 @@ public class MainModule {
 
     // TODO cmd: java -jar CeIVM-cei2011.jar CodigoMaquina.txt
 
+    // TODO invocar metodos
+
     public static void main(String[]args){
         File myObj = new File("CodigoMaquina.txt");
 

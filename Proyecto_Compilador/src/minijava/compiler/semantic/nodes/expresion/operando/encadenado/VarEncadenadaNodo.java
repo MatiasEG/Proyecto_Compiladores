@@ -5,8 +5,13 @@ import minijava.compiler.exception.SemanticP2.SemanticExceptionAttributteNotDefi
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.operando.EncadenadoOptNodo;
 import minijava.compiler.semantic.tables.Type;
+import minijava.compiler.semantic.tables.variable.Attribute;
+
+import java.io.IOException;
 
 public class VarEncadenadaNodo extends EncadenadoOptNodo {
+
+    private Attribute atributo;
 
     public VarEncadenadaNodo(){
         encadenadoOptNodo = null;
@@ -29,6 +34,7 @@ public class VarEncadenadaNodo extends EncadenadoOptNodo {
     public Type check(Type tipoPrimarioNodo, SymbolTable st) throws SemanticException{
         this.tipoPrimarioNodo = tipoPrimarioNodo;
         if(isAtribute(tipoPrimarioNodo, st)) {
+            atributo = st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapAtributes().get(idMetVar.getLexeme());
             if (encadenadoOptNodo == null) {
                 return st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapAtributes().get(idMetVar.getLexeme()).getVarType();
             } else {
@@ -40,8 +46,13 @@ public class VarEncadenadaNodo extends EncadenadoOptNodo {
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        if(!esLadoIzquierdo){
+            st.write("LOADREF "+atributo.getOffset()+" # Cargo el atributo en el tope\n");
+        }else{
+            st.write("SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1\n");
+            st.write("STOREREF "+atributo.getOffset()+" # Guardo el valor en el atributo\n");
+        }
     }
 
 }

@@ -1,0 +1,241 @@
+.CODE
+   PUSH mainMainModule
+   CALL
+   HALT
+
+# ---------------- simple_heap_init ---------------- 
+simple_heap_init:RET 0 # Inicializacion simple del .heap
+
+# ---------------- simple_malloc ---------------- 
+simple_malloc:LOADFP # Inicializacion unidad
+              LOADSP
+              STOREFP # Finaliza inicializacion del RA
+              LOADHL # hl
+              DUP # hl
+              PUSH 1
+              ADD # hl + 1
+              STORE 4 # Guarda resultado (puntero a base del bloque)
+              LOAD 3 # Carga cantidad de celdas a alojar (parametro)
+              ADD
+              STOREHL # Mueve el heap limit (hl)
+              STOREFP
+              RET 1 # Retorna eliminando el parametro
+
+# ---------------- debugPrintObject ---------------- 
+debugPrintObject:LOADFP
+                 LOADSP
+                 STOREFP
+                 LOAD 3
+                 STOREFP
+                 RET 1
+
+# ---------------- readSystem ---------------- 
+readSystem:LOADFP
+           LOADSP
+           STOREFP
+           STOREFP
+           RET 0
+
+# ---------------- printBSystem ---------------- 
+printBSystem:LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             BPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printCSystem ---------------- 
+printCSystem:LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             CPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printISystem ---------------- 
+printISystem:LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             IPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printSSystem ---------------- 
+printSSystem:LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             SPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printlnSystem ---------------- 
+printlnSystem:LOADFP
+              LOADSP
+              STOREFP
+              PRNLN
+              STOREFP
+              RET 0
+
+# ---------------- printBlnSystem ---------------- 
+printBlnSystem:LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               BPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printClnSystem ---------------- 
+printClnSystem:LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               CPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printIlnSystem ---------------- 
+printIlnSystem:LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               IPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printSlnSystem ---------------- 
+printSlnSystem:LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               SPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+.DATA
+
+VT_A: DW m1A
+
+.CODE
+
+# ---------------- AA ---------------- 
+AA:LOADFP
+   LOADSP
+   STOREFP
+   FMEM 0 # Se elimina el espacio reservado para las variables locales.
+   STOREFP
+   RET 1
+
+# ---------------- m1A ---------------- 
+m1A:LOADFP
+    LOADSP
+    STOREFP
+    PUSH 1
+    LOAD 3 # this
+    SWAP # Pongo el valor de la expresion en el tope y this en tope-1
+    STOREREF 1 # Guardo valor de parte derecha en el atributo
+    RMEM 1 # Se guarda un espacio para la varLocal.
+    RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+    PUSH 2 # Parametro malloc, cant de atributos del objeto + 1 para VT
+    PUSH simple_malloc
+    CALL
+    DUP # de la referencia al nuevo CIR
+    PUSH VT_B
+    STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+    DUP # de la referencia al objeto
+    PUSH BB
+    CALL # Invoco el constructor
+    STORE 0 # Posicion de la var local.
+    LOAD 0 # Apilo el valor de la variable.
+    DUP # Duplico this
+    LOADREF 0 # Consumo un this y lo reemplazo por su VT
+    LOADREF 0 # Lugar de retorno
+    CALL # Realizo la llamada a metodo dinamico
+    LOAD 3 # this
+    LOADREF 1 # Apilo valor de atributo
+    LOAD 0 # Apilo el valor de la variable.
+    LOADREF 1 # Cargo el atributo en el tope
+    ADD
+    PUSH printISystem
+    CALL
+    FMEM 1 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+.DATA
+
+VT_B: DW mBB
+
+.CODE
+
+# ---------------- BB ---------------- 
+BB:LOADFP
+   LOADSP
+   STOREFP
+   FMEM 0 # Se elimina el espacio reservado para las variables locales.
+   STOREFP
+   RET 1
+
+# ---------------- mBB ---------------- 
+mBB:LOADFP
+    LOADSP
+    STOREFP
+    PUSH 7
+    LOAD 3 # this
+    SWAP # Pongo el valor de la expresion en el tope y this en tope-1
+    STOREREF 1 # Guardo valor de parte derecha en el atributo
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+.DATA
+
+VT_MainModule: NOP
+
+.CODE
+
+# ---------------- mainMainModule ---------------- 
+mainMainModule:LOADFP
+               LOADSP
+               STOREFP
+               RMEM 1 # Se guarda un espacio para la varLocal.
+               RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+               PUSH 2 # Parametro malloc, cant de atributos del objeto + 1 para VT
+               PUSH simple_malloc
+               CALL
+               DUP # de la referencia al nuevo CIR
+               PUSH VT_A
+               STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+               DUP # de la referencia al objeto
+               PUSH AA
+               CALL # Invoco el constructor
+               STORE 0 # Posicion de la var local.
+               LOAD 0 # Apilo el valor de la variable.
+               DUP # Duplico this
+               LOADREF 0 # Consumo un this y lo reemplazo por su VT
+               LOADREF 0 # Lugar de retorno
+               CALL # Realizo la llamada a metodo dinamico
+               LOAD 0 # Apilo el valor de la variable.
+               LOADREF 1 # Cargo el atributo en el tope
+               PUSH printISystem
+               CALL
+               FMEM 1 # Se elimina el espacio reservado para las variables locales.
+               STOREFP
+               RET 0
+
+# ---------------- MainModuleMainModule ---------------- 
+MainModuleMainModule:LOADFP
+                     LOADSP
+                     STOREFP
+                     FMEM 0 # Se elimina el espacio reservado para las variables locales.
+                     STOREFP
+                     RET 1
+
