@@ -72,7 +72,6 @@ public class AccesoMetEstaticoNodo extends PrimarioNodo {
 
     @Override
     public void generar(SymbolTable st) throws IOException {
-        //TODO generar
         if(m.needReturn()){
             st.write("RMEM 1 # Lugar de retorno.");
         }

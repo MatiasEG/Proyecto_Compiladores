@@ -96,5 +96,10 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
         st.write("LOADREF 0 # Consumo un this y lo reemplazo por su VT\n");
         st.write("LOADREF "+m.getOffsetMetodo()+" # Lugar de retorno\n");
         st.write("CALL # Realizo la llamada a metodo dinamico\n");
+
+        if(encadenadoOptNodo != null){
+            encadenadoOptNodo.esLadoIzquierdo(esLadoIzquierdo);
+            encadenadoOptNodo.generar(st);
+        }
     }
 }

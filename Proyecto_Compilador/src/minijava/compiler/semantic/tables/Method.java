@@ -28,7 +28,8 @@ public class Method {
         isStatic = false;
         parameterHashMap = new HashMap<>();
         block = null;
-        offsetParametro = 0;
+        offsetParametro = -1;
+        offsetMetodo = -1;
     }
 
     public void setActualBlock(Block actualBlock){ this.actualBlock = actualBlock; }
@@ -115,6 +116,22 @@ public class Method {
     public void setOffsetMetodo(int offsetMetodo){ this.offsetMetodo = offsetMetodo; }
 
     public int getOffsetMetodo(){ return offsetMetodo; }
+
+    public int getOffsetRetornoMetodo(){
+        if(!isStatic){
+            return parameterHashMap.size() + 1; // +1 ya que tiene this.
+        } else{
+            return parameterHashMap.size();
+        }
+    }
+
+    public int getOffsetStoreValorRetorno(){
+        if(!isStatic){
+            return 3 + parameterHashMap.size() + 1; // +3 ya que tiene la ED, el PR y this. +1 ya que FP esta apuntando a la primer varLocal
+        } else{
+            return 2 + parameterHashMap.size() + 1; // +2 ya que no tiene this.
+        }
+    }
 
     public void generarCodigoBloque(SymbolTable st) throws IOException {
         if(!getClassDeclaredMethod().equals("System") &&

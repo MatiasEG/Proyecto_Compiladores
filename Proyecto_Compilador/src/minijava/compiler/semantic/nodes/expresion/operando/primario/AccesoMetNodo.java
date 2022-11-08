@@ -13,6 +13,7 @@ import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Parameter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -20,6 +21,7 @@ import java.util.Iterator;
 public class AccesoMetNodo extends PrimarioNodo {
 
     private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
+    private Method m;
 
     public AccesoMetNodo(Token metToken) {
         this.idPrimario = metToken;
@@ -35,7 +37,7 @@ public class AccesoMetNodo extends PrimarioNodo {
         if(!st.getActualClass().getHashMapMethodsWithoutOverloaded().containsKey(idPrimario.getLexeme()))
             throw new SemanticExceptionMethodNotExistInCallerClass(idPrimario);
 
-        Method m = st.getActualClass().getHashMapMethodsWithoutOverloaded().get(idPrimario.getLexeme());
+        m = st.getActualClass().getHashMapMethodsWithoutOverloaded().get(idPrimario.getLexeme());
         ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
         Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
         if(actualArgsExpresionNodes.size() == tiposParametrosDeclarados.size()){
@@ -67,8 +69,20 @@ public class AccesoMetNodo extends PrimarioNodo {
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        st.write("LOAD 3 # This\n");
+        if(m.needReturn()){
+            st.write("RMEM 1 # Lugar de retorno\n");
+            st.write("SWAP # Muevo this al tope de la pila\n");
+        }
+        for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
+            argAtualExp.generar(st);
+            st.write("SWAP # Muevo this al tope de la pila\n");
+        }
+        st.write("DUP # Duplico this\n");
+        st.write("LOADREF 0 # Consumo un this y lo reemplazo por su VT\n");
+        st.write("LOADREF "+m.getOffsetMetodo()+" # Lugar de retorno\n");
+        st.write("CALL # Realizo la llamada a metodo dinamico\n");
     }
 
 }

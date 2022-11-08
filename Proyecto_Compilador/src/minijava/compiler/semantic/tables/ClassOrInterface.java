@@ -14,6 +14,7 @@ public abstract class ClassOrInterface {
     protected HashMap<String, Method> metodosSinSobrecargaMap;
     protected Token claseOrinterfaceToken;
     protected HashMap<String, Method> metodosDinamicos;
+    protected HashMap<Integer, Method> metodosPorOffset;
     protected int offsetMetodo;
 
     public void setListOfExtends(ArrayList<Token> extendsFrom){
@@ -25,10 +26,11 @@ public abstract class ClassOrInterface {
         metodoHashMap.put(method.getMapKey(), method);
 
         if(!metodosSinSobrecargaMap.containsKey(method.getMethodName())){
-            method.setOffsetMetodo(offsetMetodo++);
             metodosSinSobrecargaMap.put(method.getMethodName(), method);
             if(!method.isStatic()){
+                method.setOffsetMetodo(offsetMetodo++);
                 metodosDinamicos.put(method.getMethodName(), method);
+                metodosPorOffset.put(method.getOffsetMetodo(), method);
             }
         }
     }

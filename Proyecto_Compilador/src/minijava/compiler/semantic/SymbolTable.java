@@ -346,6 +346,7 @@ public class SymbolTable {
 
     public void writeLabel(String txt2write) throws IOException {
         writer.write(txt2write);
+
     }
 
     public void write(String txt2write) throws IOException {

@@ -11,6 +11,8 @@ import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
 import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public class ReturnNodo extends SentenciaNodo {
 
     private ExpresionNodo expresionNodo;
@@ -49,7 +51,16 @@ public class ReturnNodo extends SentenciaNodo {
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        st.write("FMEM "+st.getActualMethod().getActualBlock().getCantVarLocales()+" # Libero los lugares de las var locales\n");
+        if(st.getActualMethod().needReturn()){
+            expresionNodo.generar(st);
+            st.write("STORE "+st.getActualMethod().getOffsetStoreValorRetorno()+" # Se coloca el valor de retorno en su ubicacion reservada\n");
+            st.write("STOREFP \n");
+            st.write("RET "+st.getActualMethod().getOffsetRetornoMetodo()+" # Efectuamos el retorno liberando la cantidad de parametros\n");
+        }else{
+            st.write("STOREFP\n");
+            st.write("RET "+st.getActualMethod().getOffsetRetornoMetodo()+" # Efectuamos el retorno liberando la cantidad de parametros\n");
+        }
     }
 }

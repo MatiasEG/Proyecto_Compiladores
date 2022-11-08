@@ -29,6 +29,7 @@ public class Class extends ClassOrInterface {
         metodosDinamicos = new HashMap<>();
         offsetAtributo = 1;
         vtLabel = "VT_"+getNombre();
+        metodosPorOffset = new HashMap<>();
     }
 
     public void setListOfImplements(ArrayList<Token> implement){
@@ -86,8 +87,9 @@ public class Class extends ClassOrInterface {
         if(cantMetodosDinamicos>0){
             st.writeLabel("DW ");
             int comasNecesarias = cantMetodosDinamicos-1;
-            for(Map.Entry<String, Method> entry: metodosDinamicos.entrySet()){
-                st.writeLabel(entry.getValue().getMethodName()+getNombre());
+//            for(Map.Entry<Integer, Method> entry: metodosPorOffset.entrySet()){
+            for(int i = 0; i < offsetMetodo; i++){
+                st.writeLabel(metodosPorOffset.get(i).getMethodName()+getNombre());
                 if(comasNecesarias>0){
                     comasNecesarias--;
                     st.writeLabel(", ");
