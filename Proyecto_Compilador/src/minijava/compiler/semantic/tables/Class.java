@@ -30,6 +30,9 @@ public class Class extends ClassOrInterface {
         offsetAtributo = 1;
         vtLabel = "VT_"+getNombre();
         metodosPorOffset = new HashMap<>();
+        metodosHeredadosPorOffset = new HashMap<>();
+        metodosPorOffsetCompleto = new HashMap<>();
+        offsetMetodo = 0;
     }
 
     public void setListOfImplements(ArrayList<Token> implement){
@@ -80,7 +83,18 @@ public class Class extends ClassOrInterface {
 
     public String getVtLabel(){ return vtLabel; }
 
+    private void generarMapeoMetodosPorOffset(){
+        for(Map.Entry<Integer,Method> mHeredados: metodosHeredadosPorOffset.entrySet()){
+            metodosPorOffsetCompleto.put(mHeredados.getKey(), mHeredados.getValue());
+        }
+        for(Map.Entry<Integer,Method> mPropios: metodosPorOffset.entrySet()){
+            if(!metodosPorOffsetCompleto.containsKey(mPropios.getKey()))
+                metodosPorOffsetCompleto.put(mPropios.getKey(), mPropios.getValue());
+        }
+    }
+
     public void generarCodigoData(SymbolTable st) throws IOException {
+        this.generarMapeoMetodosPorOffset();
         st.writeLabel(".DATA\n\n");
         st.writeLabel(vtLabel+": ");
         int cantMetodosDinamicos = metodosDinamicos.size();
@@ -88,8 +102,9 @@ public class Class extends ClassOrInterface {
             st.writeLabel("DW ");
             int comasNecesarias = cantMetodosDinamicos-1;
 //            for(Map.Entry<Integer, Method> entry: metodosPorOffset.entrySet()){
+            // TODO intentar que arranque de 0
             for(int i = 0; i < offsetMetodo; i++){
-                st.writeLabel(metodosPorOffset.get(i).getMethodName()+getNombre());
+                st.writeLabel(metodosPorOffsetCompleto.get(i).getMethodName()+metodosPorOffsetCompleto.get(i).getClassDeclaredMethod());
                 if(comasNecesarias>0){
                     comasNecesarias--;
                     st.writeLabel(", ");

@@ -225,11 +225,27 @@ public class SymbolTable {
     }
 
     private void checkSignaturaMetodosRedefinidosPorHerencia(ClassOrInterface descendiente, ClassOrInterface padre) throws SemanticException{
-        for(Method m: padre.getMethods()){
-            if(!descendiente.getHashMapMethods().containsKey(m.getMapKey()) && !m.getMethodType().getLexemeType().equals(m.getMethodName())) {
-                descendiente.addMetodo(padre.getHashMapMethods().get(m.getMapKey()));
-            }else if(descendiente.getHashMapMethods().containsKey(m.getMapKey())){
-                if(!m.equals(descendiente.getHashMapMethods().get(m.getMapKey()))) throw new SemanticExceptionMethodNotRedefined(descendiente.getHashMapMethods().get(m.getMapKey()), descendiente);
+        if(padre.getExtendedClasses().size()==1)
+            checkSignaturaMetodosRedefinidosPorHerencia(classes.get(padre.getNombre()),classes.get(padre.getExtendedClasses().get(0).getLexeme()));
+        for(Map.Entry<String,Method> m: padre.getMetodosDinamicos().entrySet()){
+            if(!descendiente.getHashMapMethods().containsKey(m.getValue().getMapKey()) && !m.getValue().getMethodType().getLexemeType().equals(m.getValue().getMethodName())) {
+//                TODO descendiente.addMetodoHerencia(padre.getHashMapMethods().get(m.getMapKey()));
+                descendiente.addMetodo(padre.getHashMapMethods().get(m.getValue().getMapKey()));
+                descendiente.setOffsetMetodoPorHerencia(padre.getOffsetMetodo());
+                updateOffsetOriginalMethods(descendiente);
+            }else if(descendiente.getHashMapMethods().containsKey(m.getValue().getMapKey())){
+                if(!m.getValue().equals(descendiente.getHashMapMethods().get(m.getValue().getMapKey()))) throw new SemanticExceptionMethodNotRedefined(descendiente.getHashMapMethods().get(m.getValue().getMapKey()), descendiente);
+            }
+        }
+    }
+
+    private void updateOffsetOriginalMethods(ClassOrInterface descendiente){
+        for(Map.Entry<String,Method> m: descendiente.getMetodosDinamicos().entrySet()){
+//        for(Map.Entry<Integer, Method> metodoDefinidoEnDescendiente: descendiente.getMetodosPropios().entrySet())
+            if(m.getValue().getClassDeclaredMethod().equals(descendiente.getNombre())){
+                m.getValue().setOffsetMetodo(descendiente.getOffsetMetodo());
+                descendiente.setOffsetMetodoPorHerencia(descendiente.getOffsetMetodo()+1);
+                descendiente.getMetodosHeredadosPorOffset().put(m.getValue().getOffsetMetodo(), m.getValue());
             }
         }
     }

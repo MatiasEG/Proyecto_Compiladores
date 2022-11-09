@@ -53,6 +53,11 @@ public class VarEncadenadaNodo extends EncadenadoOptNodo {
             st.write("SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1\n");
             st.write("STOREREF "+atributo.getOffset()+" # Guardo el valor en el atributo\n");
         }
+
+        if(encadenadoOptNodo != null){
+            encadenadoOptNodo.esLadoIzquierdo(esLadoIzquierdo);
+            encadenadoOptNodo.generar(st);
+        }
     }
 
 }

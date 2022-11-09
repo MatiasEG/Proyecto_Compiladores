@@ -16,6 +16,7 @@ public class Interface_ extends ClassOrInterface {
         this.claseOrinterfaceToken = interfaceToken;
         metodosDinamicos = new HashMap<>();
         metodosPorOffset = new HashMap<>();
+        metodosHeredadosPorOffset = new HashMap<>();
     }
 
 

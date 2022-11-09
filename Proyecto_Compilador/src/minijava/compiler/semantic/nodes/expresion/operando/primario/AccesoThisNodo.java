@@ -7,6 +7,8 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.operando.PrimarioNodo;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public class AccesoThisNodo extends PrimarioNodo {
 
     private String nombreClase;
@@ -34,7 +36,7 @@ public class AccesoThisNodo extends PrimarioNodo {
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        st.write("LOAD 3 # This\n");
     }
 }
