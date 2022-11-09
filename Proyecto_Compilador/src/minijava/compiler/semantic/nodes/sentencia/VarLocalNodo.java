@@ -52,8 +52,9 @@ public class VarLocalNodo extends SentenciaNodo{
 
     @Override
     public void generar(SymbolTable st) throws IOException {
-        st.write("RMEM 1 # Se guarda un espacio para la varLocal.\n");
+        // TODO borrar
+//        st.write("RMEM 1 # Se guarda un espacio para la varLocal.\n");
         parteDerecha.generar(st);
-        st.write("STORE "+var.getOffset()+" # Posicion de la var local.\n");
+//        st.write("STORE "+var.getOffset()+" # Posicion de la var local.\n");
     }
 }
