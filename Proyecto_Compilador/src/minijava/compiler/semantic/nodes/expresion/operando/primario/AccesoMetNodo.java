@@ -55,7 +55,7 @@ public class AccesoMetNodo extends PrimarioNodo {
                 }
             }
 
-            if(st.getActualMethod().isStatic()) throw new SemanticExceptionCantCallDynamicMethodOnStaticMethod(idPrimario);
+            if(st.getActualMethod().isStatic() && !m.isStatic()) throw new SemanticExceptionCantCallDynamicMethodOnStaticMethod(idPrimario);
             
         }else{
             throw new SemanticExceptionWrongQuantityParameters(m.getMethodToken());
@@ -70,19 +70,30 @@ public class AccesoMetNodo extends PrimarioNodo {
 
     @Override
     public void generar(SymbolTable st) throws IOException {
-        st.write("LOAD 3 # This\n");
-        if(m.needReturn()){
-            st.write("RMEM 1 # Lugar de retorno\n");
-            st.write("SWAP # Muevo this al tope de la pila\n");
+        if(!m.isStatic()){
+            st.write("LOAD 3 # This\n");
+            if(m.needReturn()){
+                st.write("RMEM 1 # Lugar de retorno\n");
+                st.write("SWAP # Muevo this al tope de la pila\n");
+            }
+            for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
+                argAtualExp.generar(st);
+                st.write("SWAP # Muevo this al tope de la pila\n");
+            }
+            st.write("DUP # Duplico this\n");
+            st.write("LOADREF 0 # Consumo un this y lo reemplazo por su VT\n");
+            st.write("LOADREF "+m.getOffsetMetodo()+" # Lugar de retorno\n");
+            st.write("CALL # Realizo la llamada a metodo dinamico\n");
+        }else{
+            if(m.needReturn()){
+                st.write("RMEM 1 # Lugar de retorno\n");
+            }
+            for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
+                argAtualExp.generar(st);
+            }
+            st.write("PUSH "+m.getMethodName()+m.getClassDeclaredMethod()+"\n");
+            st.write("CALL\n");
         }
-        for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
-            argAtualExp.generar(st);
-            st.write("SWAP # Muevo this al tope de la pila\n");
-        }
-        st.write("DUP # Duplico this\n");
-        st.write("LOADREF 0 # Consumo un this y lo reemplazo por su VT\n");
-        st.write("LOADREF "+m.getOffsetMetodo()+" # Lugar de retorno\n");
-        st.write("CALL # Realizo la llamada a metodo dinamico\n");
     }
 
 }

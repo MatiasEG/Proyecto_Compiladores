@@ -28,7 +28,7 @@ public class Method {
         isStatic = false;
         parameterHashMap = new HashMap<>();
         block = null;
-        offsetParametro = -1;
+        offsetParametro = 3;
         offsetMetodo = -1;
     }
 
@@ -78,7 +78,7 @@ public class Method {
             }
         }
         parameters.add(parameter);
-        parameter.setOffset(offsetParametro--);
+        parameter.setOffset(offsetParametro++);
         parameterHashMap.put(parameter.getVarName(), parameter);
         return null;
     }

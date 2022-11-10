@@ -1,5 +1,5 @@
 .CODE
-   PUSH mainMainModule
+   PUSH mainA
    CALL
    HALT
 
@@ -122,7 +122,7 @@ printSlnSystem:LOADFP
 
 .DATA
 
-VT_A: DW enteroWW, enteroXX, enteroAA
+VT_A: NOP
 
 .CODE
 
@@ -134,12 +134,70 @@ AA:LOADFP
    STOREFP
    RET 1
 
-# ---------------- enteroAA ---------------- 
-enteroAA:LOADFP
+# ---------------- reverseAuxA ---------------- 
+reverseAuxA:LOADFP
+            LOADSP
+            STOREFP
+            RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+            PUSH 3 # Parametro malloc, cant de atributos del objeto + 1 para VT
+            PUSH simple_malloc
+            CALL
+            DUP # de la referencia al nuevo CIR
+            PUSH VT_Pair
+            STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+            DUP # de la referencia al objeto
+            PUSH PairPair
+            CALL # Invoco el constructor
+            PUSH 10
+            LOAD 0 # Apilo el valor de la variable.
+            SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
+            STOREREF 1 # Guardo el valor en el atributo
+            PUSH 20
+            LOAD 0 # Apilo el valor de la variable.
+            SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
+            STOREREF 2 # Guardo el valor en el atributo
+            FMEM 1 # Libero los lugares de las var locales
+            LOAD 0 # Apilo el valor de la variable.
+            STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
+            STOREFP 
+            RET 1 # Efectuamos el retorno liberando la cantidad de parametros
+            FMEM 1 # Se elimina el espacio reservado para las variables locales.
+            STOREFP
+            RET 1
+
+# ---------------- mainA ---------------- 
+mainA:LOADFP
+      LOADSP
+      STOREFP
+      PUSH 5
+      PUSH 9
+      RMEM 1 # Lugar de retorno
+      LOAD 0 # Apilo el valor de la variable.
+      PUSH reverseA
+      CALL
+      POP # Llamada con valor no asignado
+      RMEM 1 # Lugar de retorno
+      LOAD -1 # Apilo el valor de la variable.
+      PUSH reverseA
+      CALL
+      POP # Llamada con valor no asignado
+      FMEM 2 # Se elimina el espacio reservado para las variables locales.
+      STOREFP
+      RET 0
+
+# ---------------- reverseA ---------------- 
+reverseA:LOADFP
          LOADSP
          STOREFP
+         LOAD 3 # Apilo el valor del parametro.
+         PUSH printIlnSystem
+         CALL
          FMEM 0 # Libero los lugares de las var locales
-         PUSH 99
+         RMEM 1 # Lugar de retorno
+         LOAD 3 # Apilo el valor del parametro.
+         PUSH reverseAuxA
+         CALL
+         LOADREF 1 # Cargo el atributo en el tope
          STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
          STOREFP 
          RET 1 # Efectuamos el retorno liberando la cantidad de parametros
@@ -149,114 +207,15 @@ enteroAA:LOADFP
 
 .DATA
 
-VT_W: DW enteroWW
+VT_Pair: NOP
 
 .CODE
 
-# ---------------- WW ---------------- 
-WW:LOADFP
-   LOADSP
-   STOREFP
-   FMEM 0 # Se elimina el espacio reservado para las variables locales.
-   STOREFP
-   RET 1
-
-# ---------------- enteroWW ---------------- 
-enteroWW:LOADFP
+# ---------------- PairPair ---------------- 
+PairPair:LOADFP
          LOADSP
          STOREFP
-         FMEM 0 # Libero los lugares de las var locales
-         PUSH 1
-         STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
-         STOREFP 
-         RET 1 # Efectuamos el retorno liberando la cantidad de parametros
          FMEM 0 # Se elimina el espacio reservado para las variables locales.
          STOREFP
          RET 1
-
-.DATA
-
-VT_X: DW enteroWW, enteroXX
-
-.CODE
-
-# ---------------- XX ---------------- 
-XX:LOADFP
-   LOADSP
-   STOREFP
-   FMEM 0 # Se elimina el espacio reservado para las variables locales.
-   STOREFP
-   RET 1
-
-# ---------------- enteroXX ---------------- 
-enteroXX:LOADFP
-         LOADSP
-         STOREFP
-         FMEM 0 # Libero los lugares de las var locales
-         PUSH 101
-         STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
-         STOREFP 
-         RET 1 # Efectuamos el retorno liberando la cantidad de parametros
-         FMEM 0 # Se elimina el espacio reservado para las variables locales.
-         STOREFP
-         RET 1
-
-.DATA
-
-VT_MainModule: NOP
-
-.CODE
-
-# ---------------- mainMainModule ---------------- 
-mainMainModule:LOADFP
-               LOADSP
-               STOREFP
-               RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-               PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
-               PUSH simple_malloc
-               CALL
-               DUP # de la referencia al nuevo CIR
-               PUSH VT_A
-               STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-               DUP # de la referencia al objeto
-               PUSH AA
-               CALL # Invoco el constructor
-               LOAD 0 # Apilo el valor de la variable.
-               RMEM 1 # Lugar de retorno
-               SWAP # Muevo this al tope de la pila
-               DUP # Duplico this
-               LOADREF 0 # Consumo un this y lo reemplazo por su VT
-               LOADREF 1 # Lugar de retorno
-               CALL # Realizo la llamada a metodo dinamico
-               PUSH printIlnSystem
-               CALL
-               LOAD 0 # Apilo el valor de la variable.
-               RMEM 1 # Lugar de retorno
-               SWAP # Muevo this al tope de la pila
-               DUP # Duplico this
-               LOADREF 0 # Consumo un this y lo reemplazo por su VT
-               LOADREF 2 # Lugar de retorno
-               CALL # Realizo la llamada a metodo dinamico
-               PUSH printIlnSystem
-               CALL
-               LOAD 0 # Apilo el valor de la variable.
-               RMEM 1 # Lugar de retorno
-               SWAP # Muevo this al tope de la pila
-               DUP # Duplico this
-               LOADREF 0 # Consumo un this y lo reemplazo por su VT
-               LOADREF 0 # Lugar de retorno
-               CALL # Realizo la llamada a metodo dinamico
-               PUSH printIlnSystem
-               CALL
-               FMEM 1 # Se elimina el espacio reservado para las variables locales.
-               STOREFP
-               RET 0
-
-# ---------------- MainModuleMainModule ---------------- 
-MainModuleMainModule:LOADFP
-                     LOADSP
-                     STOREFP
-                     FMEM 0 # Se elimina el espacio reservado para las variables locales.
-                     STOREFP
-                     RET 1
 

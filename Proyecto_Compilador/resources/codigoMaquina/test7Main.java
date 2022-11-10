@@ -2,6 +2,7 @@ class MainModule{
     static void main(){
         var a = new A();
         System.printI(a.bMet().aMet().bMet().entero());
+
     }
 }
 class A{
@@ -12,6 +13,8 @@ class A{
 }
 
 class B{
+
+    public int varInstancia;
 
     A aMet(){
         return new A();

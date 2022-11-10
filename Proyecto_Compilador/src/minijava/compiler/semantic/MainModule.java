@@ -22,7 +22,7 @@ public class MainModule {
         File myObj = new File("CodigoMaquina.txt");
 
 //        FileManager fileManager = new FileManager(new File("resources/sinErrores/correcciones.java"));
-        FileManager fileManager = new FileManager(new File("resources/codigoMaquina/test11SubTipos2.java"));
+        FileManager fileManager = new FileManager(new File("resources/codigoMaquina/test13MetEstaticoEnMetEstatico.java"));
 //        FileManager fileManager = new FileManager(new File(args[0]));
 
         SymbolTable st = new SymbolTable();

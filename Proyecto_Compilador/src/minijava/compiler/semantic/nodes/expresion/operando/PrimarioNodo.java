@@ -11,6 +11,7 @@ public abstract class PrimarioNodo {
 
     protected Token idPrimario;
     protected boolean esLadoIzquierdo;
+    protected boolean tieneEncadenado;
 
     public Token getIdPrimario(){ return idPrimario; }
 
@@ -21,6 +22,8 @@ public abstract class PrimarioNodo {
     public boolean esLlamable(){ return true; }
 
     public void esLadoIzquierdo(boolean esLadoIzquierdo){ this.esLadoIzquierdo = esLadoIzquierdo; }
+
+    public void tieneEncadenado(boolean tieneEncadenado){ this.tieneEncadenado = tieneEncadenado; }
 
     public abstract void generar(SymbolTable st) throws IOException;
 }

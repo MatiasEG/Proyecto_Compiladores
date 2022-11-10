@@ -55,18 +55,18 @@ public class AccesoVarNodo extends PrimarioNodo {
     @Override
     public void generar(SymbolTable st) throws IOException {
         if(esVarLocal){
-            if(!esLadoIzquierdo)
+            if(!esLadoIzquierdo || tieneEncadenado)
                 st.write("LOAD "+var.getOffset()+" # Apilo el valor de la variable.\n");
             else
                 st.write("STORE "+var.getOffset()+" # Apilo el valor de la variable.\n");
         }else if(esParametro){
-            if(!esLadoIzquierdo)
-                st.write("LOAD "+(3-var.getOffset())+" # Apilo el valor del parametro.\n");
+            if(!esLadoIzquierdo || tieneEncadenado)
+                st.write("LOAD "+var.getOffset()+" # Apilo el valor del parametro.\n");
             else
                 st.write("STORE "+var.getOffset()+" # Apilo el valor del parametro.\n");
         }else if(esAtributo){
             st.write("LOAD 3 # this\n");
-            if(!esLadoIzquierdo){
+            if(!esLadoIzquierdo || tieneEncadenado){
                 st.write("LOADREF "+var.getOffset()+" # Apilo valor de atributo\n");
             }else{
                 st.write("SWAP # Pongo el valor de la expresion en el tope y this en tope-1\n");

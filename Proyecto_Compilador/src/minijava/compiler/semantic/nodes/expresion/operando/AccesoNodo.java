@@ -51,6 +51,7 @@ public class AccesoNodo extends OperandoNodo {
 
     @Override
     public void generar(SymbolTable st) throws IOException {
+        primarioNodo.tieneEncadenado(encadenadoOptNodo!=null);
         primarioNodo.generar(st);
 
         if(encadenadoOptNodo != null){
