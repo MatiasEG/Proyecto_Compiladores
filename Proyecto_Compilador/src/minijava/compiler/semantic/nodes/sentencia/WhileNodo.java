@@ -7,6 +7,8 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public class WhileNodo extends SentenciaNodo{
 
     protected Token whileToken;
@@ -31,7 +33,17 @@ public class WhileNodo extends SentenciaNodo{
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        String init_while = "init_while_"+SymbolTable.getNro_while()+"_"+st.getActualMethod().getMethodName();
+        String fin_while = "fin_while_"+SymbolTable.getNro_while()+"_"+st.getActualMethod().getMethodName();
+
+        st.write(init_while+": NOP\n");
+        condicion.generar(st);
+        st.write("BF "+fin_while+" # Evaluo condicion while\n");
+
+        sentenciaWhile.generar(st);
+
+        st.write("JUMP "+init_while+"\n");
+        st.write(fin_while+": NOP\n");
     }
 }

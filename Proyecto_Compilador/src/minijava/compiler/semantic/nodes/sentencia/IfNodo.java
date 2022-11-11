@@ -7,6 +7,8 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public class IfNodo extends SentenciaNodo{
 
     protected Token ifToken;
@@ -14,7 +16,10 @@ public class IfNodo extends SentenciaNodo{
     protected ExpresionNodo condicion;
     protected SentenciaNodo sentenciaElse;
 
-    public IfNodo(Token ifToken){ this.ifToken = ifToken; sentenciaElse = null; }
+    public IfNodo(Token ifToken){
+        this.ifToken = ifToken;
+        sentenciaElse = null;
+    }
 
     public void setCondicion(ExpresionNodo condicion){ this.condicion = condicion; }
 
@@ -27,8 +32,10 @@ public class IfNodo extends SentenciaNodo{
         Type tipoCondicion = condicion.check(st);
 
         if(tipoCondicion.getTypeForAssignment().equals("boolean")){
-            sentenciaIf.check(st);
-            if(sentenciaElse !=null ) sentenciaElse.check(st);
+            if(sentenciaIf != null)
+                sentenciaIf.check(st);
+            if(sentenciaElse != null )
+                sentenciaElse.check(st);
         }else{
             throw new SemanticExceptionWrongConditionType(ifToken);
         }
@@ -36,7 +43,26 @@ public class IfNodo extends SentenciaNodo{
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        String label_TerminaIf = "finIf_"+SymbolTable.getNro_TerminacionIf()+"_"+st.getActualMethod().getMethodName();
+        String label_else = "else_"+SymbolTable.getNro_else()+"_"+st.getActualMethod().getMethodName();
+
+        condicion.generar(st);
+
+        if(sentenciaElse == null){
+            st.write("BF "+label_TerminaIf+"\n");
+            if(sentenciaIf != null)
+                sentenciaIf.generar(st);
+            st.write(label_TerminaIf+": NOP\n");
+        }else{
+            st.write("BF "+label_else+"\n");
+            if(sentenciaIf != null){
+                sentenciaIf.generar(st);
+            }
+            st.write("JUMP "+label_TerminaIf+"\n");
+            st.write(label_else+": \n");
+            sentenciaElse.generar(st);
+            st.write(label_TerminaIf+": NOP\n");
+        }
     }
 }

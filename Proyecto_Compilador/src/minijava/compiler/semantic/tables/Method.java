@@ -141,10 +141,11 @@ public class Method {
             String spaces = String.format("%" + (espacios) + "s", "");
             st.setIdentacionParaCodigo(spaces);
             st.writeLabel("# ---------------- " + getMethodName() + "" + getClassDeclaredMethod() + " ---------------- \n");
-            st.writeLabel(this.getMethodName() + this.getClassDeclaredMethod() + ":LOADFP\n" +
-                    spaces + "LOADSP\n" +
-                    spaces + "STOREFP\n");
-            //setActualBlock(block);
+            st.writeLabel(this.getMethodName() + this.getClassDeclaredMethod() + ":\n");
+            st.write("LOADFP\n");
+            st.write("LOADSP\n");
+            st.write("STOREFP\n");
+//            setActualBlock(block);
             block.generarCodigoSentencias(st);
             st.write("STOREFP\n");
 

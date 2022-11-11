@@ -7,7 +7,8 @@
 simple_heap_init:RET 0 # Inicializacion simple del .heap
 
 # ---------------- simple_malloc ---------------- 
-simple_malloc:LOADFP # Inicializacion unidad
+simple_malloc:
+              LOADFP # Inicializacion unidad
               LOADSP
               STOREFP # Finaliza inicializacion del RA
               LOADHL # hl
@@ -22,7 +23,8 @@ simple_malloc:LOADFP # Inicializacion unidad
               RET 1 # Retorna eliminando el parametro
 
 # ---------------- debugPrintObject ---------------- 
-debugPrintObject:LOADFP
+debugPrintObject:
+                 LOADFP
                  LOADSP
                  STOREFP
                  LOAD 3
@@ -30,14 +32,16 @@ debugPrintObject:LOADFP
                  RET 1
 
 # ---------------- readSystem ---------------- 
-readSystem:LOADFP
+readSystem:
+           LOADFP
            LOADSP
            STOREFP
            STOREFP
            RET 0
 
 # ---------------- printBSystem ---------------- 
-printBSystem:LOADFP
+printBSystem:
+             LOADFP
              LOADSP
              STOREFP
              LOAD 3
@@ -46,7 +50,8 @@ printBSystem:LOADFP
              RET 1
 
 # ---------------- printCSystem ---------------- 
-printCSystem:LOADFP
+printCSystem:
+             LOADFP
              LOADSP
              STOREFP
              LOAD 3
@@ -55,7 +60,8 @@ printCSystem:LOADFP
              RET 1
 
 # ---------------- printISystem ---------------- 
-printISystem:LOADFP
+printISystem:
+             LOADFP
              LOADSP
              STOREFP
              LOAD 3
@@ -64,7 +70,8 @@ printISystem:LOADFP
              RET 1
 
 # ---------------- printSSystem ---------------- 
-printSSystem:LOADFP
+printSSystem:
+             LOADFP
              LOADSP
              STOREFP
              LOAD 3
@@ -73,7 +80,8 @@ printSSystem:LOADFP
              RET 1
 
 # ---------------- printlnSystem ---------------- 
-printlnSystem:LOADFP
+printlnSystem:
+              LOADFP
               LOADSP
               STOREFP
               PRNLN
@@ -81,7 +89,8 @@ printlnSystem:LOADFP
               RET 0
 
 # ---------------- printBlnSystem ---------------- 
-printBlnSystem:LOADFP
+printBlnSystem:
+               LOADFP
                LOADSP
                STOREFP
                LOAD 3
@@ -91,7 +100,8 @@ printBlnSystem:LOADFP
                RET 1
 
 # ---------------- printClnSystem ---------------- 
-printClnSystem:LOADFP
+printClnSystem:
+               LOADFP
                LOADSP
                STOREFP
                LOAD 3
@@ -101,7 +111,8 @@ printClnSystem:LOADFP
                RET 1
 
 # ---------------- printIlnSystem ---------------- 
-printIlnSystem:LOADFP
+printIlnSystem:
+               LOADFP
                LOADSP
                STOREFP
                LOAD 3
@@ -111,7 +122,8 @@ printIlnSystem:LOADFP
                RET 1
 
 # ---------------- printSlnSystem ---------------- 
-printSlnSystem:LOADFP
+printSlnSystem:
+               LOADFP
                LOADSP
                STOREFP
                LOAD 3
@@ -127,95 +139,118 @@ VT_A: NOP
 .CODE
 
 # ---------------- AA ---------------- 
-AA:LOADFP
+AA:
+   LOADFP
    LOADSP
    STOREFP
    FMEM 0 # Se elimina el espacio reservado para las variables locales.
    STOREFP
    RET 1
 
-# ---------------- reverseAuxA ---------------- 
-reverseAuxA:LOADFP
-            LOADSP
-            STOREFP
-            RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-            PUSH 3 # Parametro malloc, cant de atributos del objeto + 1 para VT
-            PUSH simple_malloc
-            CALL
-            DUP # de la referencia al nuevo CIR
-            PUSH VT_Pair
-            STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-            DUP # de la referencia al objeto
-            PUSH PairPair
-            CALL # Invoco el constructor
-            PUSH 10
-            LOAD 0 # Apilo el valor de la variable.
-            SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-            STOREREF 1 # Guardo el valor en el atributo
-            PUSH 20
-            LOAD 0 # Apilo el valor de la variable.
-            SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-            STOREREF 2 # Guardo el valor en el atributo
-            FMEM 1 # Libero los lugares de las var locales
-            LOAD 0 # Apilo el valor de la variable.
-            STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
-            STOREFP 
-            RET 1 # Efectuamos el retorno liberando la cantidad de parametros
-            FMEM 1 # Se elimina el espacio reservado para las variables locales.
-            STOREFP
-            RET 1
+# ---------------- printA ---------------- 
+printA:
+       LOADFP
+       LOADSP
+       STOREFP
+       PUSH 5
+       PUSH 7
+       LOAD 3 # Apilo el valor del parametro.
+       PUSH printIlnSystem
+       CALL
+       FMEM 2 # Se elimina el espacio reservado para las variables locales.
+       STOREFP
+       RET 1
+
+# ---------------- m1A ---------------- 
+m1A:
+    LOADFP
+    LOADSP
+    STOREFP
+    PUSH 111
+    PUSH 222
+    PUSH 333
+    LOAD 0 # Apilo el valor de la variable.
+    PUSH printA
+    CALL
+    LOAD -1 # Apilo el valor de la variable.
+    PUSH printA
+    CALL
+    LOAD -2 # Apilo el valor de la variable.
+    PUSH printA
+    CALL
+    LOAD 0 # Apilo el valor de la variable.
+    LOAD -2 # Apilo el valor de la variable.
+    ADD
+    PUSH printA
+    CALL
+    LOAD 3 # Apilo el valor del parametro.
+    PUSH 1
+    EQ
+    BF finIf_0_m1
+    FMEM 1 # Libero los lugares de las var locales
+    STOREFP
+    RET 1 # Efectuamos el retorno liberando la cantidad de parametros
+    finIf_0_m1: NOP
+    FMEM 1 # Se elimina el espacio reservado para las variables locales.
+    LOAD 0 # Apilo el valor de la variable.
+    LOAD -1 # Apilo el valor de la variable.
+    ADD
+    PUSH printA
+    CALL
+    LOAD 3 # Apilo el valor del parametro.
+    PUSH 2
+    EQ
+    BF finIf_1_m1
+    FMEM 1 # Libero los lugares de las var locales
+    STOREFP
+    RET 1 # Efectuamos el retorno liberando la cantidad de parametros
+    finIf_1_m1: NOP
+    FMEM 1 # Se elimina el espacio reservado para las variables locales.
+    PUSH 111
+    LOAD 0 # Apilo el valor de la variable.
+    LOAD -1 # Apilo el valor de la variable.
+    ADD
+    PUSH printA
+    CALL
+    LOAD 3 # Apilo el valor del parametro.
+    PUSH 3
+    EQ
+    BF finIf_2_m1
+    FMEM 1 # Libero los lugares de las var locales
+    STOREFP
+    RET 1 # Efectuamos el retorno liberando la cantidad de parametros
+    finIf_2_m1: NOP
+    LOAD 0 # Apilo el valor de la variable.
+    PUSH printA
+    CALL
+    FMEM 2 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
 
 # ---------------- mainA ---------------- 
-mainA:LOADFP
+mainA:
+      LOADFP
       LOADSP
       STOREFP
-      PUSH 5
-      PUSH 9
-      RMEM 1 # Lugar de retorno
-      LOAD 0 # Apilo el valor de la variable.
-      PUSH reverseA
+      PUSH 1
+      PUSH m1A
       CALL
-      POP # Llamada con valor no asignado
-      RMEM 1 # Lugar de retorno
-      LOAD -1 # Apilo el valor de la variable.
-      PUSH reverseA
+      PUSH printlnSystem
       CALL
-      POP # Llamada con valor no asignado
-      FMEM 2 # Se elimina el espacio reservado para las variables locales.
+      PUSH 2
+      PUSH m1A
+      CALL
+      PUSH printlnSystem
+      CALL
+      PUSH 3
+      PUSH m1A
+      CALL
+      PUSH printlnSystem
+      CALL
+      PUSH 4
+      PUSH m1A
+      CALL
+      FMEM 0 # Se elimina el espacio reservado para las variables locales.
       STOREFP
       RET 0
-
-# ---------------- reverseA ---------------- 
-reverseA:LOADFP
-         LOADSP
-         STOREFP
-         LOAD 3 # Apilo el valor del parametro.
-         PUSH printIlnSystem
-         CALL
-         FMEM 0 # Libero los lugares de las var locales
-         RMEM 1 # Lugar de retorno
-         LOAD 3 # Apilo el valor del parametro.
-         PUSH reverseAuxA
-         CALL
-         LOADREF 1 # Cargo el atributo en el tope
-         STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
-         STOREFP 
-         RET 1 # Efectuamos el retorno liberando la cantidad de parametros
-         FMEM 0 # Se elimina el espacio reservado para las variables locales.
-         STOREFP
-         RET 1
-
-.DATA
-
-VT_Pair: NOP
-
-.CODE
-
-# ---------------- PairPair ---------------- 
-PairPair:LOADFP
-         LOADSP
-         STOREFP
-         FMEM 0 # Se elimina el espacio reservado para las variables locales.
-         STOREFP
-         RET 1
 

@@ -32,6 +32,10 @@ public class SymbolTable {
     private String identacionParaCodigo;
     private String mainClass;
 
+    public static int nro_TerminacionIf = 0;
+    public static int nro_else = 0;
+    public static int nro_while = 0;
+
     public SymbolTable(){
         classes = new HashMap<>();
         interfaces = new HashMap<>();
@@ -311,7 +315,8 @@ public class SymbolTable {
             setActualClass(entry.getValue());
             for(Method m: entry.getValue().getMethods()){
                 setActualMethod(m);
-                if(m.getClassDeclaredMethod().equals(entry.getKey())) m.checkBlock(this);
+                if(m.getClassDeclaredMethod().equals(entry.getKey()))
+                    m.checkBlock(this);
             }
         }
     }
@@ -356,6 +361,24 @@ public class SymbolTable {
         }
     }
 
+    public static int getNro_TerminacionIf(){
+        int aux = nro_TerminacionIf;
+        nro_TerminacionIf++;
+        return aux;
+    }
+
+    public static int getNro_else(){
+        int aux = nro_else;
+        nro_else++;
+        return aux;
+    }
+
+    public static int getNro_while(){
+        int aux = nro_while;
+        nro_while++;
+        return aux;
+    }
+
     public void setWriter(FileWriter writer){
         this.writer = writer;
     }
@@ -378,7 +401,8 @@ public class SymbolTable {
 
         writeLabel("# ---------------- simple_malloc ---------------- \n");
         String spaces = String.format("%"+("simple_malloc".length()+1)+"s", "");
-        writeLabel("simple_malloc:LOADFP # Inicializacion unidad\n" +
+        writeLabel("simple_malloc:\n" +
+                spaces+"LOADFP # Inicializacion unidad\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP # Finaliza inicializacion del RA\n" +
                 spaces+"LOADHL # hl\n" +

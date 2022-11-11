@@ -4,6 +4,8 @@ import minijava.compiler.exception.SemanticException;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.tables.Block;
 
+import java.io.IOException;
+
 public class BloqueNodo extends SentenciaNodo {
 
     private Block block;
@@ -13,12 +15,11 @@ public class BloqueNodo extends SentenciaNodo {
     }
 
     public void check(SymbolTable st) throws SemanticException {
-        //TODO implementar bloques como sentencias
         block.check(st);
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        block.generarCodigoSentencias(st);
     }
 }

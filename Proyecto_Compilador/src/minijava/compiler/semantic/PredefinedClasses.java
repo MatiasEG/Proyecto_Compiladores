@@ -177,7 +177,8 @@ public class PredefinedClasses {
     public static void generarCodigoClasesXDefecto(SymbolTable st) throws IOException {
         st.writeLabel("# ---------------- debugPrintObject ---------------- \n");
         String spaces = String.format("%"+("debugPrint".length()+"Object".length()+1)+"s", "");
-        st.writeLabel("debugPrintObject:LOADFP\n" +
+        st.writeLabel("debugPrintObject:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"LOAD 3\n" +
@@ -189,7 +190,8 @@ public class PredefinedClasses {
 
         st.writeLabel("# ---------------- readSystem ---------------- \n");
         spaces = String.format("%"+("read".length()+"System".length()+1)+"s", "");
-        st.writeLabel("readSystem:LOADFP\n" +
+        st.writeLabel("readSystem:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 // TODO generar readSystem...
@@ -198,7 +200,8 @@ public class PredefinedClasses {
 
         st.writeLabel("# ---------------- printBSystem ---------------- \n");
         spaces = String.format("%"+("printB".length()+"System".length()+1)+"s", "");
-        st.writeLabel("printBSystem:LOADFP\n" +
+        st.writeLabel("printBSystem:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"LOAD 3\n" +
@@ -208,7 +211,8 @@ public class PredefinedClasses {
 
         st.writeLabel("# ---------------- printCSystem ---------------- \n");
         spaces = String.format("%"+("printC".length()+"System".length()+1)+"s", "");
-        st.writeLabel("printCSystem:LOADFP\n" +
+        st.writeLabel("printCSystem:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"LOAD 3\n" +
@@ -218,7 +222,8 @@ public class PredefinedClasses {
 
         st.writeLabel("# ---------------- printISystem ---------------- \n");
         spaces = String.format("%"+("printI".length()+"System".length()+1)+"s", "");
-        st.writeLabel("printISystem:LOADFP\n" +
+        st.writeLabel("printISystem:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"LOAD 3\n" +
@@ -228,7 +233,8 @@ public class PredefinedClasses {
 
         st.writeLabel("# ---------------- printSSystem ---------------- \n");
         spaces = String.format("%"+("printS".length()+"System".length()+1)+"s", "");
-        st.writeLabel("printSSystem:LOADFP\n" +
+        st.writeLabel("printSSystem:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"LOAD 3\n" +
@@ -238,7 +244,8 @@ public class PredefinedClasses {
 
         st.writeLabel("# ---------------- printlnSystem ---------------- \n");
         spaces = String.format("%"+("println".length()+"System".length()+1)+"s", "");
-        st.writeLabel("printlnSystem:LOADFP\n" +
+        st.writeLabel("printlnSystem:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"PRNLN\n" +
@@ -247,7 +254,8 @@ public class PredefinedClasses {
 
         st.writeLabel("# ---------------- printBlnSystem ---------------- \n");
         spaces = String.format("%"+("printBln".length()+"System".length()+1)+"s", "");
-        st.writeLabel("printBlnSystem:LOADFP\n" +
+        st.writeLabel("printBlnSystem:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"LOAD 3\n" +
@@ -258,7 +266,8 @@ public class PredefinedClasses {
 
         st.writeLabel("# ---------------- printClnSystem ---------------- \n");
         spaces = String.format("%"+("printCln".length()+"System".length()+1)+"s", "");
-        st.writeLabel("printClnSystem:LOADFP\n" +
+        st.writeLabel("printClnSystem:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"LOAD 3\n" +
@@ -269,7 +278,8 @@ public class PredefinedClasses {
 
         st.writeLabel("# ---------------- printIlnSystem ---------------- \n");
         spaces = String.format("%"+("printIln".length()+"System".length()+1)+"s", "");
-        st.writeLabel("printIlnSystem:LOADFP\n" +
+        st.writeLabel("printIlnSystem:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"LOAD 3\n" +
@@ -280,7 +290,8 @@ public class PredefinedClasses {
 
         st.writeLabel("# ---------------- printSlnSystem ---------------- \n");
         spaces = String.format("%"+("printSln".length()+"System".length()+1)+"s", "");
-        st.writeLabel("printSlnSystem:LOADFP\n" +
+        st.writeLabel("printSlnSystem:\n" +
+                spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"LOAD 3\n" +

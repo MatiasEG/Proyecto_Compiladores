@@ -43,6 +43,7 @@ public class Block {
         statements = new ArrayList<>();
         bloques = new ArrayList<>();
         this.bloquePadre = bloquePadre;
+        offset = bloquePadre.offset;
     }
 
     public Block getBloquePadre(){ return bloquePadre; }
@@ -52,6 +53,7 @@ public class Block {
     public void addSentenciaNodo(SentenciaNodo sentenciaNodo){ statements.add(sentenciaNodo); }
 
     public void addVar(VarLocal v) throws SemanticException {
+
         if (bloquePadre!= null && bloquePadre.contains(v.getVarName()) == null && !varsHashMap.containsKey(v.getVarName())){
             v.setOffset(offset);
             offset--;
@@ -90,6 +92,7 @@ public class Block {
     }
 
     public void generarCodigoSentencias(SymbolTable st) throws IOException {
+        method.setActualBlock(this);
         for(SentenciaNodo sentencia: statements){
             sentencia.generar(st);
         }
@@ -101,7 +104,7 @@ public class Block {
     public HashMap<String, VarLocal> getVarsAccesiblesDesdeElBloque(){
         if(bloquePadre!=null){
             HashMap<String, VarLocal> varsTotales = new HashMap<>();
-            HashMap<String, VarLocal> varsDelPadre = bloquePadre.getVarsHashMap();
+            HashMap<String, VarLocal> varsDelPadre = bloquePadre.getVarsAccesiblesDesdeElBloque();
 
             varsTotales.putAll(varsDelPadre);
             varsTotales.putAll(varsHashMap);
