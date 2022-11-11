@@ -134,7 +134,7 @@ printSlnSystem:
 
 .DATA
 
-VT_A: NOP
+VT_A: DW m1A
 
 .CODE
 
@@ -147,110 +147,68 @@ AA:
    STOREFP
    RET 1
 
-# ---------------- printA ---------------- 
-printA:
-       LOADFP
-       LOADSP
-       STOREFP
-       PUSH 5
-       PUSH 7
-       LOAD 3 # Apilo el valor del parametro.
-       PUSH printIlnSystem
-       CALL
-       FMEM 2 # Se elimina el espacio reservado para las variables locales.
-       STOREFP
-       RET 1
-
 # ---------------- m1A ---------------- 
 m1A:
     LOADFP
     LOADSP
     STOREFP
-    PUSH 111
-    PUSH 222
-    PUSH 333
-    LOAD 0 # Apilo el valor de la variable.
-    PUSH printA
-    CALL
-    LOAD -1 # Apilo el valor de la variable.
-    PUSH printA
-    CALL
-    LOAD -2 # Apilo el valor de la variable.
-    PUSH printA
-    CALL
-    LOAD 0 # Apilo el valor de la variable.
-    LOAD -2 # Apilo el valor de la variable.
-    ADD
-    PUSH printA
-    CALL
     LOAD 3 # Apilo el valor del parametro.
-    PUSH 1
-    EQ
-    BF finIf_0_m1
-    FMEM 1 # Libero los lugares de las var locales
-    STOREFP
-    RET 1 # Efectuamos el retorno liberando la cantidad de parametros
-    finIf_0_m1: NOP
-    FMEM 1 # Se elimina el espacio reservado para las variables locales.
-    LOAD 0 # Apilo el valor de la variable.
-    LOAD -1 # Apilo el valor de la variable.
-    ADD
-    PUSH printA
+    PUSH printIlnSystem
     CALL
-    LOAD 3 # Apilo el valor del parametro.
-    PUSH 2
-    EQ
-    BF finIf_1_m1
-    FMEM 1 # Libero los lugares de las var locales
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
     STOREFP
-    RET 1 # Efectuamos el retorno liberando la cantidad de parametros
-    finIf_1_m1: NOP
-    FMEM 1 # Se elimina el espacio reservado para las variables locales.
-    PUSH 111
-    LOAD 0 # Apilo el valor de la variable.
-    LOAD -1 # Apilo el valor de la variable.
-    ADD
-    PUSH printA
-    CALL
-    LOAD 3 # Apilo el valor del parametro.
-    PUSH 3
-    EQ
-    BF finIf_2_m1
-    FMEM 1 # Libero los lugares de las var locales
-    STOREFP
-    RET 1 # Efectuamos el retorno liberando la cantidad de parametros
-    finIf_2_m1: NOP
-    LOAD 0 # Apilo el valor de la variable.
-    PUSH printA
-    CALL
-    FMEM 2 # Se elimina el espacio reservado para las variables locales.
-    STOREFP
-    RET 1
+    RET 2
 
 # ---------------- mainA ---------------- 
 mainA:
       LOADFP
       LOADSP
       STOREFP
-      PUSH 1
-      PUSH m1A
+      RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+      PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+      PUSH simple_malloc
       CALL
-      PUSH printlnSystem
+      DUP # de la referencia al nuevo CIR
+      PUSH VT_A
+      STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+      DUP # de la referencia al objeto
+      PUSH AA
+      CALL # Invoco el constructor
+      PUSH 5
+      LOAD 0 # Apilo el valor de la variable.
+      LOAD -1 # Apilo el valor de la variable.
+      SWAP # Muevo this al tope de la pila
+      DUP # Duplico this
+      LOADREF 0 # Consumo un this y lo reemplazo por su VT
+      LOADREF 0 # Lugar de retorno
+      CALL # Realizo la llamada a metodo dinamico
+      RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+      PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+      PUSH simple_malloc
       CALL
-      PUSH 2
-      PUSH m1A
-      CALL
-      PUSH printlnSystem
-      CALL
-      PUSH 3
-      PUSH m1A
-      CALL
-      PUSH printlnSystem
-      CALL
-      PUSH 4
-      PUSH m1A
-      CALL
-      FMEM 0 # Se elimina el espacio reservado para las variables locales.
+      DUP # de la referencia al nuevo CIR
+      PUSH VT_A
+      STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+      DUP # de la referencia al objeto
+      PUSH AA
+      CALL # Invoco el constructor
+      STORE 0 # Apilo el valor de la variable.
+      LOAD 0 # Apilo el valor de la variable.
+      LOAD -1 # Apilo el valor de la variable.
+      SWAP # Muevo this al tope de la pila
+      DUP # Duplico this
+      LOADREF 0 # Consumo un this y lo reemplazo por su VT
+      LOADREF 0 # Lugar de retorno
+      CALL # Realizo la llamada a metodo dinamico
+      PUSH 5
+      LOAD 0 # Apilo el valor de la variable.
+      LOAD -2 # Apilo el valor de la variable.
+      SWAP # Muevo this al tope de la pila
+      DUP # Duplico this
+      LOADREF 0 # Consumo un this y lo reemplazo por su VT
+      LOADREF 0 # Lugar de retorno
+      CALL # Realizo la llamada a metodo dinamico
+      FMEM 3 # Se elimina el espacio reservado para las variables locales.
       STOREFP
       RET 0
 

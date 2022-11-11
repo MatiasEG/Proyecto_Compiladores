@@ -54,6 +54,7 @@ public class AccesoVarNodo extends PrimarioNodo {
 
     @Override
     public void generar(SymbolTable st) throws IOException {
+        //TODO arreglar esto, las var locales pasadas por parametro estan siendo recibidas como var locales
         if(esVarLocal){
             if(!esLadoIzquierdo || tieneEncadenado)
                 st.write("LOAD "+var.getOffset()+" # Apilo el valor de la variable.\n");

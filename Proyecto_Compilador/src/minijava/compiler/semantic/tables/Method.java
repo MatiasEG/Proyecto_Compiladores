@@ -28,7 +28,7 @@ public class Method {
         isStatic = false;
         parameterHashMap = new HashMap<>();
         block = null;
-        offsetParametro = 3;
+        offsetParametro = 4; // TODO esto esta bien?
         offsetMetodo = -1;
     }
 
@@ -56,7 +56,10 @@ public class Method {
         return type;
     }
 
-    public void setStatic(boolean isStatic) { this.isStatic = isStatic; }
+    public void setStatic(boolean isStatic) {
+        this.isStatic = isStatic;
+        offsetParametro = 3;
+    }
 
     public boolean isStatic() {
         return isStatic;
@@ -145,7 +148,6 @@ public class Method {
             st.write("LOADFP\n");
             st.write("LOADSP\n");
             st.write("STOREFP\n");
-//            setActualBlock(block);
             block.generarCodigoSentencias(st);
             st.write("STOREFP\n");
 

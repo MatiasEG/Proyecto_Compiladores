@@ -73,7 +73,7 @@ public class AccesoMetEstaticoNodo extends PrimarioNodo {
     @Override
     public void generar(SymbolTable st) throws IOException {
         if(m.needReturn()){
-            st.write("RMEM 1 # Lugar de retorno.");
+            st.write("RMEM 1 # Lugar de retorno.\n");
         }
         if(actualArgsExpresionNodes != null){
             ArrayList<ExpresionNodo> actualArgsExpresionNodesInvertido = actualArgsExpresionNodes;
