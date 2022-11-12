@@ -58,7 +58,7 @@ public class Method {
 
     public void setStatic(boolean isStatic) {
         this.isStatic = isStatic;
-        offsetParametro = 3;
+        if(isStatic) offsetParametro = 3;
     }
 
     public boolean isStatic() {

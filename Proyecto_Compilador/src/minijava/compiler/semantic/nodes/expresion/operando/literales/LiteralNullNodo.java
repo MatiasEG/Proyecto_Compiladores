@@ -6,6 +6,8 @@ import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.operando.LiteralNodo;
 import minijava.compiler.semantic.tables.Type;
 
+import java.io.IOException;
+
 public class LiteralNullNodo extends LiteralNodo {
 
     public LiteralNullNodo(Token nullToken){
@@ -18,7 +20,7 @@ public class LiteralNullNodo extends LiteralNodo {
     }
 
     @Override
-    public void generar(SymbolTable st) {
-        //TODO generar
+    public void generar(SymbolTable st) throws IOException {
+        st.write("PUSH 0 # null\n");
     }
 }

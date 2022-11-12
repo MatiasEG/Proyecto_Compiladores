@@ -22,6 +22,7 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
     private Method m;
 
     public MetEncadenadoNodo(){
+        primarioNodo = null;
         actualArgsExpresionNodes = null;
         encadenadoOptNodo = null;
         idMetVar = null;
@@ -84,22 +85,38 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
 
     @Override
     public void generar(SymbolTable st) throws IOException {
-        if(m.needReturn()){
-            st.write("RMEM 1 # Lugar de retorno\n");
-            st.write("SWAP # Muevo this al tope de la pila\n");
-        }
-        for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
-            argAtualExp.generar(st);
-            st.write("SWAP # Muevo this al tope de la pila\n");
-        }
-        st.write("DUP # Duplico this\n");
-        st.write("LOADREF 0 # Consumo un this y lo reemplazo por su VT\n");
-        st.write("LOADREF "+m.getOffsetMetodo()+" # Lugar de retorno\n");
-        st.write("CALL # Realizo la llamada a metodo dinamico\n");
+        if(!m.isStatic()){
+            if(m.needReturn()){
+                st.write("RMEM 1 # Lugar de retorno\n");
+                st.write("SWAP # Muevo this al tope de la pila\n");
+            }
+            //TODO ver si revertirlo es correcto
+            Collections.reverse(actualArgsExpresionNodes);
+            for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
+                argAtualExp.generar(st);
+                st.write("SWAP # Muevo this al tope de la pila\n");
+            }
+            st.write("DUP # Duplico this\n");
+            st.write("LOADREF 0 # Consumo un this y lo reemplazo por su VT\n");
+            st.write("LOADREF "+m.getOffsetMetodo()+" # Lugar de retorno\n");
+            st.write("CALL # Realizo la llamada a metodo dinamico\n");
 
-        if(encadenadoOptNodo != null){
-            encadenadoOptNodo.esLadoIzquierdo(esLadoIzquierdo);
-            encadenadoOptNodo.generar(st);
+            if(encadenadoOptNodo != null){
+                encadenadoOptNodo.esLadoIzquierdo(esLadoIzquierdo);
+                encadenadoOptNodo.generar(st);
+            }
+        }else{
+            st.write("POP # Tiramos la referencia a this\n");
+            if(m.needReturn()){
+                st.write("RMEM 1 # Lugar de retorno\n");
+            }
+            for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
+                argAtualExp.generar(st);
+            }
+            st.write("PUSH "+m.getMethodName()+m.getClassDeclaredMethod()+"\n");
+            st.write("CALL\n");
         }
+
+
     }
 }

@@ -21,20 +21,23 @@ public class EqualNodo extends ExpresionBinariaNodo {
 
         if(tipoLadoIzq.isClassRef() && tipoLadoDer.isClassRef()){
 //            return new Type(new Token("idKeyWord_boolean", "boolean", tipoLadoIzq.getTokenType().getRow()));
-
-//            TODO ver si este codigo sirve para la parte de ejecucion
-            String subtipo = st.bSubtipoA(tipoLadoIzq.getLexemeType(), tipoLadoDer.getLexemeType());
-            if(subtipo != null){
-                // TRUE
+            if(tipoLadoIzq.getLexemeType().equals(tipoLadoDer.getLexemeType())){
                 return new Type(new Token("idKeyWord_boolean", "boolean", tipoLadoIzq.getTokenType().getRow()));
             }else{
-                subtipo = st.bSubtipoA(tipoLadoDer.getLexemeType(), tipoLadoIzq.getLexemeType());
+//            TODO ver si este codigo sirve para la parte de ejecucion
+                String subtipo = st.bSubtipoA(tipoLadoIzq.getLexemeType(), tipoLadoDer.getLexemeType());
                 if(subtipo != null){
                     // TRUE
                     return new Type(new Token("idKeyWord_boolean", "boolean", tipoLadoIzq.getTokenType().getRow()));
                 }else{
-                    // FALSE
-                    throw new SemanticExceptionIncompatibleTypesOnEquals(this.operatorToken);
+                    subtipo = st.bSubtipoA(tipoLadoDer.getLexemeType(), tipoLadoIzq.getLexemeType());
+                    if(subtipo != null){
+                        // TRUE
+                        return new Type(new Token("idKeyWord_boolean", "boolean", tipoLadoIzq.getTokenType().getRow()));
+                    }else{
+                        // FALSE
+                        throw new SemanticExceptionIncompatibleTypesOnEquals(this.operatorToken);
+                    }
                 }
             }
         }else{

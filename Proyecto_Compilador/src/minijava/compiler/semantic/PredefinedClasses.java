@@ -182,7 +182,8 @@ public class PredefinedClasses {
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
                 spaces+"LOAD 3\n" +
-                // TODO generar debugPrintObject...
+                spaces+"IPRINT\n" +
+                spaces+"PRNLN\n"+
                 spaces+"STOREFP\n" +
                 spaces+"RET 1\n\n");
 
@@ -194,7 +195,8 @@ public class PredefinedClasses {
                 spaces+"LOADFP\n" +
                 spaces+"LOADSP\n" +
                 spaces+"STOREFP\n" +
-                // TODO generar readSystem...
+                spaces+"READ\n" +
+                spaces+"STORE 3\n" +
                 spaces+"STOREFP\n" +
                 spaces+"RET 0\n\n");
 

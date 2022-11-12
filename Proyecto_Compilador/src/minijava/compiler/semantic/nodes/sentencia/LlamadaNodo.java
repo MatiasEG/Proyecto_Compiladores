@@ -17,11 +17,12 @@ public class LlamadaNodo extends SentenciaNodo{
 
     @Override
     public void check(SymbolTable st) throws SemanticException {
-        if(accesoNodo.esLlamable()){
-            tipoAcceso = accesoNodo.check(st);
-        }else{
-            throw new SemanticExceptionThisNeedChained(accesoNodo.getIdPrimario());
-        }
+//        if(accesoNodo.esLlamable()){
+        accesoNodo.esLadoIzquierod(true);
+        tipoAcceso = accesoNodo.check(st);
+//        }else{
+//            throw new SemanticExceptionThisNeedChained(accesoNodo.getIdPrimario());
+//        }
     }
 
     @Override

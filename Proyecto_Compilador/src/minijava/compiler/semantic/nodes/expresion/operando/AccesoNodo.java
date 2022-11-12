@@ -4,6 +4,7 @@ import minijava.compiler.exception.SemanticException;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionThisNeedChained;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
+import minijava.compiler.semantic.nodes.expresion.operando.primario.AccesoThisNodo;
 import minijava.compiler.semantic.tables.Type;
 
 import java.io.IOException;
@@ -41,8 +42,13 @@ public class AccesoNodo extends OperandoNodo {
         Type tipoPrimarioNodo = primarioNodo.check(st);
 
         if(encadenadoOptNodo == null){
-            return tipoPrimarioNodo;
+            if(primarioNodo.esLadoIzquierdo && primarioNodo instanceof AccesoThisNodo){
+                throw new SemanticExceptionThisNeedChained(primarioNodo.getIdPrimario());
+            }else{
+                return tipoPrimarioNodo;
+            }
         }else{
+            encadenadoOptNodo.setPrimarioNodo(primarioNodo);
             return encadenadoOptNodo.check(tipoPrimarioNodo, st);
         }
     }

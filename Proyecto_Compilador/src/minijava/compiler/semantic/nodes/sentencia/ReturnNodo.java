@@ -36,7 +36,7 @@ public class ReturnNodo extends SentenciaNodo {
                 if (typeExp.isClassRef() && mType.isClassRef() &&
                         st.bSubtipoA(mType.getLexemeType(), typeExp.getLexemeType()) != null) {
                     // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
-                } else if (typeExp.getLexemeType().equals("null") && typeExp.isClassRef()) {
+                } else if (typeExp.getLexemeType().equals("null") && mType.isClassRef()) {
                     // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
                 } else if (!typeExp.getTypeForAssignment().equals(mType.getTypeForAssignment())) {
                     throw new SemanticExceptionWrongReturnType(st.getActualMethod(), typeExp.getTokenType());

@@ -12,9 +12,12 @@ public abstract class EncadenadoOptNodo {
     protected EncadenadoOptNodo encadenadoOptNodo;
     protected Token idMetVar;
     protected Type tipoPrimarioNodo;
+    protected PrimarioNodo primarioNodo;
     protected boolean esLadoIzquierdo;
 
     public void setIdMetVarToken(Token idMetVarToken){ idMetVar = idMetVarToken; }
+
+    public void setPrimarioNodo(PrimarioNodo primarioNodo){ this.primarioNodo = primarioNodo; }
 
     public void setChainedOptNode(EncadenadoOptNodo encadenadoOptNodo){ this.encadenadoOptNodo = encadenadoOptNodo; }
 

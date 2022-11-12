@@ -12,8 +12,4 @@ class A{
         var c = 5;
         a.debugPrint(c);
     }
-
-    void m1(int i){
-        System.printIln(i);
-    }
 }
