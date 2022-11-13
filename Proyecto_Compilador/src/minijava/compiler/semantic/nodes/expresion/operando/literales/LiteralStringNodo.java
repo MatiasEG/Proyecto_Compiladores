@@ -25,7 +25,7 @@ public class LiteralStringNodo extends LiteralNodo {
         string2push = string2push.substring(1, string2push.length()-1);
 
         st.write("RMEM 1 # Comienzo del String\n");
-        st.write("PUSH "+string2push.length()+1+" # Lugares del heap\n");
+        st.write("PUSH "+(string2push.length()+1)+" # Lugares del heap\n");
         st.write("PUSH simple_malloc\n");
         st.write("CALL\n");
 

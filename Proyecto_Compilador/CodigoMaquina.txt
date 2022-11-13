@@ -655,7 +655,7 @@ printList:
           LOAD 3 # this
           LOADREF 2 # Apilo valor de atributo
           RMEM 1 # Comienzo del String
-          PUSH 71 # Lugares del heap
+          PUSH 8 # Lugares del heap
           PUSH simple_malloc
           CALL
           DUP # Ref del comienzo del String
@@ -707,7 +707,7 @@ printList:
           LT
           BF finIf_4_print
           RMEM 1 # Comienzo del String
-          PUSH 21 # Lugares del heap
+          PUSH 3 # Lugares del heap
           PUSH simple_malloc
           CALL
           DUP # Ref del comienzo del String
