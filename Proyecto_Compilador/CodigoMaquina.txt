@@ -1,5 +1,5 @@
 .CODE
-   PUSH mainA
+   PUSH mainMain
    CALL
    HALT
 
@@ -21,6 +21,366 @@ simple_malloc:
               STOREHL # Mueve el heap limit (hl)
               STOREFP
               RET 1 # Retorna eliminando el parametro
+
+.DATA
+
+VT_A: DW m1A
+
+.CODE
+
+# ---------------- AConstructor ---------------- 
+AConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+# ---------------- m1A ---------------- 
+m1A:
+    LOADFP
+    LOADSP
+    STOREFP
+    RMEM 1 # Comienzo del String
+    PUSH 8 # Lugares del heap
+    PUSH simple_malloc
+    CALL
+    DUP # Ref del comienzo del String
+    PUSH 'm'
+    STOREREF 0
+    DUP # Ref del comienzo del String
+    PUSH '1'
+    STOREREF 1
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 2
+    DUP # Ref del comienzo del String
+    PUSH 'e'
+    STOREREF 3
+    DUP # Ref del comienzo del String
+    PUSH 'n'
+    STOREREF 4
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 5
+    DUP # Ref del comienzo del String
+    PUSH 'A'
+    STOREREF 6
+    DUP # Ref del comienzo del String
+    PUSH 0 # Caracter terminador
+    STOREREF 7
+    PUSH printSlnSystem
+    CALL
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+.DATA
+
+VT_B: DW m1A, m2B
+
+.CODE
+
+# ---------------- BConstructor ---------------- 
+BConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+# ---------------- m2B ---------------- 
+m2B:
+    LOADFP
+    LOADSP
+    STOREFP
+    RMEM 1 # Comienzo del String
+    PUSH 8 # Lugares del heap
+    PUSH simple_malloc
+    CALL
+    DUP # Ref del comienzo del String
+    PUSH 'm'
+    STOREREF 0
+    DUP # Ref del comienzo del String
+    PUSH '2'
+    STOREREF 1
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 2
+    DUP # Ref del comienzo del String
+    PUSH 'e'
+    STOREREF 3
+    DUP # Ref del comienzo del String
+    PUSH 'n'
+    STOREREF 4
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 5
+    DUP # Ref del comienzo del String
+    PUSH 'B'
+    STOREREF 6
+    DUP # Ref del comienzo del String
+    PUSH 0 # Caracter terminador
+    STOREREF 7
+    PUSH printSlnSystem
+    CALL
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+.DATA
+
+VT_C: DW m2C
+
+.CODE
+
+# ---------------- CConstructor ---------------- 
+CConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+# ---------------- m2C ---------------- 
+m2C:
+    LOADFP
+    LOADSP
+    STOREFP
+    RMEM 1 # Comienzo del String
+    PUSH 8 # Lugares del heap
+    PUSH simple_malloc
+    CALL
+    DUP # Ref del comienzo del String
+    PUSH 'm'
+    STOREREF 0
+    DUP # Ref del comienzo del String
+    PUSH '2'
+    STOREREF 1
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 2
+    DUP # Ref del comienzo del String
+    PUSH 'e'
+    STOREREF 3
+    DUP # Ref del comienzo del String
+    PUSH 'n'
+    STOREREF 4
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 5
+    DUP # Ref del comienzo del String
+    PUSH 'C'
+    STOREREF 6
+    DUP # Ref del comienzo del String
+    PUSH 0 # Caracter terminador
+    STOREREF 7
+    PUSH printSlnSystem
+    CALL
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+.DATA
+
+VT_D: DW m2C, m1D
+
+.CODE
+
+# ---------------- m1D ---------------- 
+m1D:
+    LOADFP
+    LOADSP
+    STOREFP
+    RMEM 1 # Comienzo del String
+    PUSH 8 # Lugares del heap
+    PUSH simple_malloc
+    CALL
+    DUP # Ref del comienzo del String
+    PUSH 'm'
+    STOREREF 0
+    DUP # Ref del comienzo del String
+    PUSH '1'
+    STOREREF 1
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 2
+    DUP # Ref del comienzo del String
+    PUSH 'e'
+    STOREREF 3
+    DUP # Ref del comienzo del String
+    PUSH 'n'
+    STOREREF 4
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 5
+    DUP # Ref del comienzo del String
+    PUSH 'D'
+    STOREREF 6
+    DUP # Ref del comienzo del String
+    PUSH 0 # Caracter terminador
+    STOREREF 7
+    PUSH printSlnSystem
+    CALL
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+# ---------------- DConstructor ---------------- 
+DConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+.DATA
+
+VT_Main: NOP
+
+.CODE
+
+# ---------------- mainMain ---------------- 
+mainMain:
+         LOADFP
+         LOADSP
+         STOREFP
+         RMEM 1 # Lugar de retorno
+         PUSH getBI1Main
+         CALL
+         DUP # Duplico this
+         LOADREF 0 # Consumo un this y lo reemplazo por su VT
+         LOADREF 0 # Lugar de retorno
+         CALL # Realizo la llamada a metodo dinamico
+         RMEM 1 # Lugar de retorno
+         PUSH getBI2Main
+         CALL
+         DUP # Duplico this
+         LOADREF 0 # Consumo un this y lo reemplazo por su VT
+         LOADREF 0 # Lugar de retorno
+         CALL # Realizo la llamada a metodo dinamico
+         RMEM 1 # Lugar de retorno
+         PUSH getDI1Main
+         CALL
+         DUP # Duplico this
+         LOADREF 0 # Consumo un this y lo reemplazo por su VT
+         LOADREF 0 # Lugar de retorno
+         CALL # Realizo la llamada a metodo dinamico
+         RMEM 1 # Lugar de retorno
+         PUSH getDI2Main
+         CALL
+         DUP # Duplico this
+         LOADREF 0 # Consumo un this y lo reemplazo por su VT
+         LOADREF 0 # Lugar de retorno
+         CALL # Realizo la llamada a metodo dinamico
+         FMEM 0 # Se elimina el espacio reservado para las variables locales.
+         STOREFP
+         RET 0
+
+# ---------------- getBI1Main ---------------- 
+getBI1Main:
+           LOADFP
+           LOADSP
+           STOREFP
+           FMEM 0 # Libero los lugares de las var locales
+           RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+           PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+           PUSH simple_malloc
+           CALL
+           DUP # de la referencia al nuevo CIR
+           PUSH VT_B
+           STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+           DUP # de la referencia al objeto
+           PUSH BConstructor
+           CALL # Invoco el constructor
+           STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
+           STOREFP 
+           RET 0 # Efectuamos el retorno liberando la cantidad de parametros
+           FMEM 0 # Se elimina el espacio reservado para las variables locales.
+           STOREFP
+           RET 0
+
+# ---------------- getBI2Main ---------------- 
+getBI2Main:
+           LOADFP
+           LOADSP
+           STOREFP
+           FMEM 0 # Libero los lugares de las var locales
+           RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+           PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+           PUSH simple_malloc
+           CALL
+           DUP # de la referencia al nuevo CIR
+           PUSH VT_B
+           STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+           DUP # de la referencia al objeto
+           PUSH BConstructor
+           CALL # Invoco el constructor
+           STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
+           STOREFP 
+           RET 0 # Efectuamos el retorno liberando la cantidad de parametros
+           FMEM 0 # Se elimina el espacio reservado para las variables locales.
+           STOREFP
+           RET 0
+
+# ---------------- MainConstructor ---------------- 
+MainConstructor:
+                LOADFP
+                LOADSP
+                STOREFP
+                FMEM 0 # Se elimina el espacio reservado para las variables locales.
+                STOREFP
+                RET 1
+
+# ---------------- getDI1Main ---------------- 
+getDI1Main:
+           LOADFP
+           LOADSP
+           STOREFP
+           FMEM 0 # Libero los lugares de las var locales
+           RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+           PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+           PUSH simple_malloc
+           CALL
+           DUP # de la referencia al nuevo CIR
+           PUSH VT_D
+           STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+           DUP # de la referencia al objeto
+           PUSH DConstructor
+           CALL # Invoco el constructor
+           STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
+           STOREFP 
+           RET 0 # Efectuamos el retorno liberando la cantidad de parametros
+           FMEM 0 # Se elimina el espacio reservado para las variables locales.
+           STOREFP
+           RET 0
+
+# ---------------- getDI2Main ---------------- 
+getDI2Main:
+           LOADFP
+           LOADSP
+           STOREFP
+           FMEM 0 # Libero los lugares de las var locales
+           RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+           PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+           PUSH simple_malloc
+           CALL
+           DUP # de la referencia al nuevo CIR
+           PUSH VT_D
+           STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+           DUP # de la referencia al objeto
+           PUSH DConstructor
+           CALL # Invoco el constructor
+           STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
+           STOREFP 
+           RET 0 # Efectuamos el retorno liberando la cantidad de parametros
+           FMEM 0 # Se elimina el espacio reservado para las variables locales.
+           STOREFP
+           RET 0
 
 # ---------------- debugPrintObject ---------------- 
 debugPrintObject:
@@ -135,773 +495,4 @@ printSlnSystem:
                PRNLN
                STOREFP
                RET 1
-
-.DATA
-
-VT_A: NOP
-
-.CODE
-
-# ---------------- AA ---------------- 
-AA:
-   LOADFP
-   LOADSP
-   STOREFP
-   FMEM 0 # Se elimina el espacio reservado para las variables locales.
-   STOREFP
-   RET 1
-
-# ---------------- mainA ---------------- 
-mainA:
-      LOADFP
-      LOADSP
-      STOREFP
-      RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-      PUSH 3 # Parametro malloc, cant de atributos del objeto + 1 para VT
-      PUSH simple_malloc
-      CALL
-      DUP # de la referencia al nuevo CIR
-      PUSH VT_List
-      STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-      DUP # de la referencia al objeto
-      PUSH ListList
-      CALL # Invoco el constructor
-      PUSH 4
-      init_while_0_main: NOP
-      LOAD -1 # Apilo el valor de la variable.
-      PUSH 15
-      LT
-      BF fin_while_1_main # Evaluo condicion while
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD -1 # Apilo el valor de la variable.
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 2 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      POP # Llamada con valor no asignado
-      LOAD -1 # Apilo el valor de la variable.
-      PUSH 3
-      ADD
-      STORE -1 # Apilo el valor de la variable.
-      FMEM 0 # Se elimina el espacio reservado para las variables locales.
-      JUMP init_while_0_main
-      fin_while_1_main: NOP
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      PUSH 7
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 9 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      PUSH 5
-      SWAP # Muevo this al tope de la pila
-      LOAD -2 # Apilo el valor de la variable.
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 4 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      POP # Llamada con valor no asignado
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      PUSH 6
-      SWAP # Muevo this al tope de la pila
-      LOAD -2 # Apilo el valor de la variable.
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 4 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      POP # Llamada con valor no asignado
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      PUSH 10
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 9 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      STORE -2 # Apilo el valor de la variable.
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      PUSH 11
-      SWAP # Muevo this al tope de la pila
-      LOAD -2 # Apilo el valor de la variable.
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 3 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      STORE -2 # Apilo el valor de la variable.
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      PUSH 12
-      SWAP # Muevo this al tope de la pila
-      LOAD -2 # Apilo el valor de la variable.
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 3 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      POP # Llamada con valor no asignado
-      PUSH 3
-      STORE -1 # Apilo el valor de la variable.
-      init_while_2_main: NOP
-      LOAD -1 # Apilo el valor de la variable.
-      PUSH 0
-      GT
-      BF fin_while_3_main # Evaluo condicion while
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD -1 # Apilo el valor de la variable.
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 1 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      POP # Llamada con valor no asignado
-      LOAD -1 # Apilo el valor de la variable.
-      PUSH 1
-      SUB
-      STORE -1 # Apilo el valor de la variable.
-      FMEM 0 # Se elimina el espacio reservado para las variables locales.
-      JUMP init_while_2_main
-      fin_while_3_main: NOP
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      PUSH 8
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 5 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 7 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 7 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 7 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 7 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 7 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 7 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 3 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      POP # Llamada con valor no asignado
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      PUSH 9
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      LOAD 0 # Apilo el valor de la variable.
-      RMEM 1 # Lugar de retorno
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 6 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 8 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 8 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 8 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      SWAP # Muevo this al tope de la pila
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 4 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      POP # Llamada con valor no asignado
-      LOAD 0 # Apilo el valor de la variable.
-      DUP # Duplico this
-      LOADREF 0 # Consumo un this y lo reemplazo por su VT
-      LOADREF 0 # Lugar de retorno
-      CALL # Realizo la llamada a metodo dinamico
-      FMEM 3 # Se elimina el espacio reservado para las variables locales.
-      STOREFP
-      RET 0
-
-.DATA
-
-VT_Node: NOP
-
-.CODE
-
-# ---------------- NodeNode ---------------- 
-NodeNode:
-         LOADFP
-         LOADSP
-         STOREFP
-         FMEM 0 # Se elimina el espacio reservado para las variables locales.
-         STOREFP
-         RET 1
-
-.DATA
-
-VT_List: DW printList, addFirstList, addLastList, addAfterList, addBeforeList, getFirstList, getLastList, getNextList, getPreviousList, getNodeList, getSizeList
-
-.CODE
-
-# ---------------- getPreviousList ---------------- 
-getPreviousList:
-                LOADFP
-                LOADSP
-                STOREFP
-                LOAD 3 # this
-                LOADREF 2 # Apilo valor de atributo
-                init_while_4_getPrevious: NOP
-                LOAD 0 # Apilo el valor de la variable.
-                PUSH 0 # null
-                NE
-                BF fin_while_5_getPrevious # Evaluo condicion while
-                LOAD 0 # Apilo el valor de la variable.
-                LOADREF 2 # Cargo el atributo en el tope
-                LOAD 4 # Apilo el valor del parametro.
-                EQ
-                BF else_0_getPrevious
-                FMEM 1 # Libero los lugares de las var locales
-                LOAD 0 # Apilo el valor de la variable.
-                STORE 5 # Se coloca el valor de retorno en su ubicacion reservada
-                STOREFP 
-                RET 2 # Efectuamos el retorno liberando la cantidad de parametros
-                JUMP finIf_0_getPrevious
-                else_0_getPrevious: 
-                LOAD 0 # Apilo el valor de la variable.
-                LOADREF 2 # Cargo el atributo en el tope
-                STORE 0 # Apilo el valor de la variable.
-                finIf_0_getPrevious: NOP
-                JUMP init_while_4_getPrevious
-                fin_while_5_getPrevious: NOP
-                FMEM 1 # Libero los lugares de las var locales
-                LOAD 0 # Apilo el valor de la variable.
-                STORE 5 # Se coloca el valor de retorno en su ubicacion reservada
-                STOREFP 
-                RET 2 # Efectuamos el retorno liberando la cantidad de parametros
-                FMEM 1 # Se elimina el espacio reservado para las variables locales.
-                STOREFP
-                RET 2
-
-# ---------------- getNextList ---------------- 
-getNextList:
-            LOADFP
-            LOADSP
-            STOREFP
-            FMEM 0 # Libero los lugares de las var locales
-            LOAD 4 # Apilo el valor del parametro.
-            LOADREF 2 # Cargo el atributo en el tope
-            STORE 5 # Se coloca el valor de retorno en su ubicacion reservada
-            STOREFP 
-            RET 2 # Efectuamos el retorno liberando la cantidad de parametros
-            FMEM 0 # Se elimina el espacio reservado para las variables locales.
-            STOREFP
-            RET 2
-
-# ---------------- getLastList ---------------- 
-getLastList:
-            LOADFP
-            LOADSP
-            STOREFP
-            LOAD 3 # this
-            LOADREF 2 # Apilo valor de atributo
-            PUSH 0 # null
-            EQ
-            BF else_1_getLast
-            FMEM 0 # Libero los lugares de las var locales
-            PUSH 0 # null
-            STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
-            STOREFP 
-            RET 1 # Efectuamos el retorno liberando la cantidad de parametros
-            JUMP finIf_1_getLast
-            else_1_getLast: 
-            LOAD 3 # this
-            LOADREF 2 # Apilo valor de atributo
-            init_while_6_getLast: NOP
-            LOAD 0 # Apilo el valor de la variable.
-            LOADREF 2 # Cargo el atributo en el tope
-            PUSH 0 # null
-            NE
-            BF fin_while_7_getLast # Evaluo condicion while
-            LOAD 0 # Apilo el valor de la variable.
-            LOADREF 2 # Cargo el atributo en el tope
-            STORE 0 # Apilo el valor de la variable.
-            JUMP init_while_6_getLast
-            fin_while_7_getLast: NOP
-            FMEM 1 # Libero los lugares de las var locales
-            LOAD 0 # Apilo el valor de la variable.
-            STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
-            STOREFP 
-            RET 1 # Efectuamos el retorno liberando la cantidad de parametros
-            FMEM 1 # Se elimina el espacio reservado para las variables locales.
-            finIf_1_getLast: NOP
-            FMEM 0 # Se elimina el espacio reservado para las variables locales.
-            STOREFP
-            RET 1
-
-# ---------------- addLastList ---------------- 
-addLastList:
-            LOADFP
-            LOADSP
-            STOREFP
-            RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-            PUSH 3 # Parametro malloc, cant de atributos del objeto + 1 para VT
-            PUSH simple_malloc
-            CALL
-            DUP # de la referencia al nuevo CIR
-            PUSH VT_Node
-            STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-            DUP # de la referencia al objeto
-            PUSH NodeNode
-            CALL # Invoco el constructor
-            LOAD 4 # Apilo el valor del parametro.
-            LOAD 0 # Apilo el valor de la variable.
-            SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-            STOREREF 1 # Guardo el valor en el atributo
-            LOAD 3 # this
-            LOADREF 2 # Apilo valor de atributo
-            PUSH 0 # null
-            EQ
-            BF else_2_addLast
-            LOAD 0 # Apilo el valor de la variable.
-            LOAD 3 # this
-            SWAP # Pongo el valor de la expresion en el tope y this en tope-1
-            STOREREF 2 # Guardo valor de parte derecha en el atributo
-            JUMP finIf_2_addLast
-            else_2_addLast: 
-            LOAD 3 # this
-            LOADREF 2 # Apilo valor de atributo
-            init_while_8_addLast: NOP
-            LOAD -1 # Apilo el valor de la variable.
-            LOADREF 2 # Cargo el atributo en el tope
-            PUSH 0 # null
-            NE
-            BF fin_while_9_addLast # Evaluo condicion while
-            LOAD -1 # Apilo el valor de la variable.
-            LOADREF 2 # Cargo el atributo en el tope
-            STORE -1 # Apilo el valor de la variable.
-            JUMP init_while_8_addLast
-            fin_while_9_addLast: NOP
-            LOAD 0 # Apilo el valor de la variable.
-            LOAD -1 # Apilo el valor de la variable.
-            SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-            STOREREF 2 # Guardo el valor en el atributo
-            FMEM 1 # Se elimina el espacio reservado para las variables locales.
-            finIf_2_addLast: NOP
-            LOAD 3 # this
-            LOADREF 1 # Apilo valor de atributo
-            PUSH 1
-            ADD
-            LOAD 3 # this
-            SWAP # Pongo el valor de la expresion en el tope y this en tope-1
-            STOREREF 1 # Guardo valor de parte derecha en el atributo
-            FMEM 1 # Libero los lugares de las var locales
-            LOAD 0 # Apilo el valor de la variable.
-            STORE 5 # Se coloca el valor de retorno en su ubicacion reservada
-            STOREFP 
-            RET 2 # Efectuamos el retorno liberando la cantidad de parametros
-            FMEM 1 # Se elimina el espacio reservado para las variables locales.
-            STOREFP
-            RET 2
-
-# ---------------- addBeforeList ---------------- 
-addBeforeList:
-              LOADFP
-              LOADSP
-              STOREFP
-              RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-              PUSH 3 # Parametro malloc, cant de atributos del objeto + 1 para VT
-              PUSH simple_malloc
-              CALL
-              DUP # de la referencia al nuevo CIR
-              PUSH VT_Node
-              STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-              DUP # de la referencia al objeto
-              PUSH NodeNode
-              CALL # Invoco el constructor
-              LOAD 5 # Apilo el valor del parametro.
-              LOAD 0 # Apilo el valor de la variable.
-              SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-              STOREREF 1 # Guardo el valor en el atributo
-              LOAD 3 # this
-              LOADREF 2 # Apilo valor de atributo
-              init_while_10_addBefore: NOP
-              LOAD -1 # Apilo el valor de la variable.
-              PUSH 0 # null
-              NE
-              BF fin_while_11_addBefore # Evaluo condicion while
-              LOAD -1 # Apilo el valor de la variable.
-              LOADREF 2 # Cargo el atributo en el tope
-              LOAD 4 # Apilo el valor del parametro.
-              EQ
-              BF else_3_addBefore
-              LOAD 0 # Apilo el valor de la variable.
-              LOAD -1 # Apilo el valor de la variable.
-              SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-              STOREREF 2 # Guardo el valor en el atributo
-              LOAD 4 # Apilo el valor del parametro.
-              LOAD 0 # Apilo el valor de la variable.
-              SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-              STOREREF 2 # Guardo el valor en el atributo
-              LOAD 3 # this
-              LOADREF 1 # Apilo valor de atributo
-              PUSH 1
-              ADD
-              LOAD 3 # this
-              SWAP # Pongo el valor de la expresion en el tope y this en tope-1
-              STOREREF 1 # Guardo valor de parte derecha en el atributo
-              FMEM 2 # Libero los lugares de las var locales
-              LOAD 0 # Apilo el valor de la variable.
-              STORE 6 # Se coloca el valor de retorno en su ubicacion reservada
-              STOREFP 
-              RET 3 # Efectuamos el retorno liberando la cantidad de parametros
-              FMEM 0 # Se elimina el espacio reservado para las variables locales.
-              JUMP finIf_3_addBefore
-              else_3_addBefore: 
-              LOAD -1 # Apilo el valor de la variable.
-              LOADREF 2 # Cargo el atributo en el tope
-              STORE -1 # Apilo el valor de la variable.
-              finIf_3_addBefore: NOP
-              JUMP init_while_10_addBefore
-              fin_while_11_addBefore: NOP
-              FMEM 2 # Libero los lugares de las var locales
-              LOAD -1 # Apilo el valor de la variable.
-              STORE 6 # Se coloca el valor de retorno en su ubicacion reservada
-              STOREFP 
-              RET 3 # Efectuamos el retorno liberando la cantidad de parametros
-              FMEM 2 # Se elimina el espacio reservado para las variables locales.
-              STOREFP
-              RET 3
-
-# ---------------- printList ---------------- 
-printList:
-          LOADFP
-          LOADSP
-          STOREFP
-          LOAD 3 # this
-          LOADREF 2 # Apilo valor de atributo
-          RMEM 1 # Comienzo del String
-          PUSH 8 # Lugares del heap
-          PUSH simple_malloc
-          CALL
-          DUP # Ref del comienzo del String
-          PUSH 's'
-          STOREREF 0
-          DUP # Ref del comienzo del String
-          PUSH 'i'
-          STOREREF 1
-          DUP # Ref del comienzo del String
-          PUSH 'z'
-          STOREREF 2
-          DUP # Ref del comienzo del String
-          PUSH 'e'
-          STOREREF 3
-          DUP # Ref del comienzo del String
-          PUSH ' '
-          STOREREF 4
-          DUP # Ref del comienzo del String
-          PUSH '='
-          STOREREF 5
-          DUP # Ref del comienzo del String
-          PUSH ' '
-          STOREREF 6
-          DUP # Ref del comienzo del String
-          PUSH 0 # Caracter terminador
-          STOREREF 7
-          PUSH printSSystem
-          CALL
-          LOAD 3 # this
-          LOADREF 1 # Apilo valor de atributo
-          PUSH printIlnSystem
-          CALL
-          PUSH 0
-          init_while_12_print: NOP
-          LOAD -1 # Apilo el valor de la variable.
-          LOAD 3 # this
-          LOADREF 1 # Apilo valor de atributo
-          LT
-          BF fin_while_13_print # Evaluo condicion while
-          LOAD 0 # Apilo el valor de la variable.
-          LOADREF 1 # Cargo el atributo en el tope
-          PUSH printISystem
-          CALL
-          LOAD -1 # Apilo el valor de la variable.
-          LOAD 3 # this
-          LOADREF 1 # Apilo valor de atributo
-          PUSH 1
-          SUB
-          LT
-          BF finIf_4_print
-          RMEM 1 # Comienzo del String
-          PUSH 3 # Lugares del heap
-          PUSH simple_malloc
-          CALL
-          DUP # Ref del comienzo del String
-          PUSH ','
-          STOREREF 0
-          DUP # Ref del comienzo del String
-          PUSH ' '
-          STOREREF 1
-          DUP # Ref del comienzo del String
-          PUSH 0 # Caracter terminador
-          STOREREF 2
-          PUSH printSSystem
-          CALL
-          LOAD 0 # Apilo el valor de la variable.
-          LOADREF 2 # Cargo el atributo en el tope
-          STORE 0 # Apilo el valor de la variable.
-          FMEM 0 # Se elimina el espacio reservado para las variables locales.
-          finIf_4_print: NOP
-          LOAD -1 # Apilo el valor de la variable.
-          PUSH 1
-          ADD
-          STORE -1 # Apilo el valor de la variable.
-          FMEM 0 # Se elimina el espacio reservado para las variables locales.
-          JUMP init_while_12_print
-          fin_while_13_print: NOP
-          PUSH printlnSystem
-          CALL
-          FMEM 2 # Se elimina el espacio reservado para las variables locales.
-          STOREFP
-          RET 1
-
-# ---------------- addAfterList ---------------- 
-addAfterList:
-             LOADFP
-             LOADSP
-             STOREFP
-             RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-             PUSH 3 # Parametro malloc, cant de atributos del objeto + 1 para VT
-             PUSH simple_malloc
-             CALL
-             DUP # de la referencia al nuevo CIR
-             PUSH VT_Node
-             STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-             DUP # de la referencia al objeto
-             PUSH NodeNode
-             CALL # Invoco el constructor
-             LOAD 5 # Apilo el valor del parametro.
-             LOAD 0 # Apilo el valor de la variable.
-             SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-             STOREREF 1 # Guardo el valor en el atributo
-             LOAD 4 # Apilo el valor del parametro.
-             LOADREF 2 # Cargo el atributo en el tope
-             LOAD 0 # Apilo el valor de la variable.
-             SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-             STOREREF 2 # Guardo el valor en el atributo
-             LOAD 0 # Apilo el valor de la variable.
-             LOAD 4 # Apilo el valor del parametro.
-             SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-             STOREREF 2 # Guardo el valor en el atributo
-             LOAD 3 # this
-             LOADREF 1 # Apilo valor de atributo
-             PUSH 1
-             ADD
-             LOAD 3 # this
-             SWAP # Pongo el valor de la expresion en el tope y this en tope-1
-             STOREREF 1 # Guardo valor de parte derecha en el atributo
-             FMEM 1 # Libero los lugares de las var locales
-             LOAD 0 # Apilo el valor de la variable.
-             STORE 6 # Se coloca el valor de retorno en su ubicacion reservada
-             STOREFP 
-             RET 3 # Efectuamos el retorno liberando la cantidad de parametros
-             FMEM 1 # Se elimina el espacio reservado para las variables locales.
-             STOREFP
-             RET 3
-
-# ---------------- getSizeList ---------------- 
-getSizeList:
-            LOADFP
-            LOADSP
-            STOREFP
-            FMEM 0 # Libero los lugares de las var locales
-            LOAD 3 # this
-            LOADREF 1 # Apilo valor de atributo
-            STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
-            STOREFP 
-            RET 1 # Efectuamos el retorno liberando la cantidad de parametros
-            FMEM 0 # Se elimina el espacio reservado para las variables locales.
-            STOREFP
-            RET 1
-
-# ---------------- getFirstList ---------------- 
-getFirstList:
-             LOADFP
-             LOADSP
-             STOREFP
-             FMEM 0 # Libero los lugares de las var locales
-             LOAD 3 # this
-             LOADREF 2 # Apilo valor de atributo
-             STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
-             STOREFP 
-             RET 1 # Efectuamos el retorno liberando la cantidad de parametros
-             FMEM 0 # Se elimina el espacio reservado para las variables locales.
-             STOREFP
-             RET 1
-
-# ---------------- ListList ---------------- 
-ListList:
-         LOADFP
-         LOADSP
-         STOREFP
-         FMEM 0 # Se elimina el espacio reservado para las variables locales.
-         STOREFP
-         RET 1
-
-# ---------------- getNodeList ---------------- 
-getNodeList:
-            LOADFP
-            LOADSP
-            STOREFP
-            LOAD 3 # this
-            LOADREF 2 # Apilo valor de atributo
-            init_while_14_getNode: NOP
-            LOAD 0 # Apilo el valor de la variable.
-            PUSH 0 # null
-            NE
-            BF fin_while_15_getNode # Evaluo condicion while
-            LOAD 0 # Apilo el valor de la variable.
-            LOADREF 1 # Cargo el atributo en el tope
-            LOAD 4 # Apilo el valor del parametro.
-            EQ
-            BF else_5_getNode
-            FMEM 1 # Libero los lugares de las var locales
-            LOAD 0 # Apilo el valor de la variable.
-            STORE 5 # Se coloca el valor de retorno en su ubicacion reservada
-            STOREFP 
-            RET 2 # Efectuamos el retorno liberando la cantidad de parametros
-            JUMP finIf_5_getNode
-            else_5_getNode: 
-            LOAD 0 # Apilo el valor de la variable.
-            LOADREF 2 # Cargo el atributo en el tope
-            STORE 0 # Apilo el valor de la variable.
-            finIf_5_getNode: NOP
-            JUMP init_while_14_getNode
-            fin_while_15_getNode: NOP
-            FMEM 1 # Libero los lugares de las var locales
-            LOAD 0 # Apilo el valor de la variable.
-            STORE 5 # Se coloca el valor de retorno en su ubicacion reservada
-            STOREFP 
-            RET 2 # Efectuamos el retorno liberando la cantidad de parametros
-            FMEM 1 # Se elimina el espacio reservado para las variables locales.
-            STOREFP
-            RET 2
-
-# ---------------- addFirstList ---------------- 
-addFirstList:
-             LOADFP
-             LOADSP
-             STOREFP
-             RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-             PUSH 3 # Parametro malloc, cant de atributos del objeto + 1 para VT
-             PUSH simple_malloc
-             CALL
-             DUP # de la referencia al nuevo CIR
-             PUSH VT_Node
-             STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-             DUP # de la referencia al objeto
-             PUSH NodeNode
-             CALL # Invoco el constructor
-             LOAD 4 # Apilo el valor del parametro.
-             LOAD 0 # Apilo el valor de la variable.
-             SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-             STOREREF 1 # Guardo el valor en el atributo
-             LOAD 3 # this
-             LOADREF 2 # Apilo valor de atributo
-             LOAD 0 # Apilo el valor de la variable.
-             SWAP # Dejo el valor en el tope y la referencia al atributo en tope-1
-             STOREREF 2 # Guardo el valor en el atributo
-             LOAD 0 # Apilo el valor de la variable.
-             LOAD 3 # this
-             SWAP # Pongo el valor de la expresion en el tope y this en tope-1
-             STOREREF 2 # Guardo valor de parte derecha en el atributo
-             LOAD 3 # this
-             LOADREF 1 # Apilo valor de atributo
-             PUSH 1
-             ADD
-             LOAD 3 # this
-             SWAP # Pongo el valor de la expresion en el tope y this en tope-1
-             STOREREF 1 # Guardo valor de parte derecha en el atributo
-             FMEM 1 # Libero los lugares de las var locales
-             LOAD 0 # Apilo el valor de la variable.
-             STORE 5 # Se coloca el valor de retorno en su ubicacion reservada
-             STOREFP 
-             RET 2 # Efectuamos el retorno liberando la cantidad de parametros
-             FMEM 1 # Se elimina el espacio reservado para las variables locales.
-             STOREFP
-             RET 2
 

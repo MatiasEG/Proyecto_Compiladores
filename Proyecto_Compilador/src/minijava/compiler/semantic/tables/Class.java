@@ -104,7 +104,7 @@ public class Class extends ClassOrInterface {
 //            for(Map.Entry<Integer, Method> entry: metodosPorOffset.entrySet()){
             // TODO intentar que arranque de 0
             for(int i = 0; i < offsetMetodo; i++){
-                st.writeLabel(metodosPorOffsetCompleto.get(i).getMethodName()+metodosPorOffsetCompleto.get(i).getClassDeclaredMethod());
+                st.writeLabel(metodosPorOffsetCompleto.get(i).getLabel());
                 if(comasNecesarias>0){
                     comasNecesarias--;
                     st.writeLabel(", ");

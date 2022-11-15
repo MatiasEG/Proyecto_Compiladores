@@ -91,7 +91,7 @@ public class AccesoMetNodo extends PrimarioNodo {
             for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
                 argAtualExp.generar(st);
             }
-            st.write("PUSH "+m.getMethodName()+m.getClassDeclaredMethod()+"\n");
+            st.write("PUSH "+m.getLabel()+"\n");
             st.write("CALL\n");
         }
     }

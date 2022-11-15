@@ -18,6 +18,8 @@ import java.util.Iterator;
 
 public class MetEncadenadoNodo extends EncadenadoOptNodo {
 
+    // TODO se agrego soporte para interfaces
+
     private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
     private Method m;
 
@@ -36,7 +38,7 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
 
     public boolean isAssignable(SymbolTable st){
         if(encadenadoOptNodo == null){
-            if(isMethod(tipoPrimarioNodo, st) && tipoPrimarioNodo.isClassRef())
+            if(isMethod(tipoPrimarioNodo, st)!=null && tipoPrimarioNodo.isClassRef())
                 return true;
             else
                 return false;
@@ -45,14 +47,29 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
         }
     }
 
-    private boolean isMethod(Type tipoPrimarioNodo, SymbolTable st){
-        return st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().containsKey(idMetVar.getLexeme());
+    private Method isMethod(Type tipoPrimarioNodo, SymbolTable st) {
+        if(st.getClass(tipoPrimarioNodo.getLexemeType()) != null){
+            if(st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().containsKey(idMetVar.getLexeme())){
+                return st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMetVar.getLexeme());
+            }else{
+                return null;
+            }
+        }else if(st.getInterface(tipoPrimarioNodo.getLexemeType()) != null) {
+            if(st.getInterface(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().containsKey(idMetVar.getLexeme())){
+                return st.getInterface(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMetVar.getLexeme());
+            }else{
+                return null;
+            }
+        }else{
+            return null;
+        }
     }
 
     public Type check(Type tipoPrimarioNodo, SymbolTable st) throws SemanticException {
         this.tipoPrimarioNodo = tipoPrimarioNodo;
-        if(isMethod(tipoPrimarioNodo, st)) {
-            m = st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMetVar.getLexeme());
+        m = isMethod(tipoPrimarioNodo, st);
+        if(m!=null) {
+//            m = st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMetVar.getLexeme());
             ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
             Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
             if (actualArgsExpresionNodes.size() == tiposParametrosDeclarados.size()) {
@@ -90,7 +107,6 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
                 st.write("RMEM 1 # Lugar de retorno\n");
                 st.write("SWAP # Muevo this al tope de la pila\n");
             }
-            //TODO ver si revertirlo es correcto
             Collections.reverse(actualArgsExpresionNodes);
             for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
                 argAtualExp.generar(st);
@@ -113,7 +129,7 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
             for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
                 argAtualExp.generar(st);
             }
-            st.write("PUSH "+m.getMethodName()+m.getClassDeclaredMethod()+"\n");
+            st.write("PUSH "+m.getLabel()+"\n");
             st.write("CALL\n");
         }
 

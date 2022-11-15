@@ -32,6 +32,15 @@ public class Method {
         offsetMetodo = -1;
     }
 
+    public static Method clonar(Method m){
+        Method method2return = new Method();
+        method2return.setMethodToken(new Token("idMetVar", "invalid"+m.getMethodName(), m.getMethodToken().getRow()));
+        method2return.setMethodType(m.getMethodType());
+        method2return.setClassDeclaredMethod(m.getClassDeclaredMethod());
+        method2return.setOffsetMetodo(m.getOffsetMetodo());
+        return method2return;
+    }
+
     public void setActualBlock(Block actualBlock){ this.actualBlock = actualBlock; }
 
     public Block getActualBlock(){ return actualBlock; }
@@ -136,15 +145,29 @@ public class Method {
         }
     }
 
+    public String getLabel(){
+        if(getMethodName().equals(getClassDeclaredMethod())){
+            return getMethodName()+"Constructor";
+        }else{
+            return getMethodName()+getClassDeclaredMethod();
+        }
+    }
+
     public void generarCodigoBloque(SymbolTable st) throws IOException {
         if(!getClassDeclaredMethod().equals("System") &&
                 !getClassDeclaredMethod().equals("Object") &&
                 !getClassDeclaredMethod().equals("String")) {
-            int espacios = this.getMethodName().length() + this.getClassDeclaredMethod().length() + 1;
+//            String label;
+//            if(this.getMethodName().equals(this.getClassDeclaredMethod())){
+//                label = this.getMethodName()+"Constructor";
+//            }else{
+//                label = this.getMethodName()+this.getClassDeclaredMethod();
+//            }
+            int espacios = getLabel().length() + 1;
             String spaces = String.format("%" + (espacios) + "s", "");
             st.setIdentacionParaCodigo(spaces);
-            st.writeLabel("# ---------------- " + getMethodName() + "" + getClassDeclaredMethod() + " ---------------- \n");
-            st.writeLabel(this.getMethodName() + this.getClassDeclaredMethod() + ":\n");
+            st.writeLabel("# ---------------- " + getLabel() + " ---------------- \n");
+            st.writeLabel(getLabel() + ":\n");
             st.write("LOADFP\n");
             st.write("LOADSP\n");
             st.write("STOREFP\n");

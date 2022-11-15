@@ -27,6 +27,10 @@ public abstract class ClassOrInterface {
         methods.add(method);
         metodoHashMap.put(method.getMapKey(), method);
 
+        if(method.getMethodName().equals("m1A")){
+            System.out.println("PASANDO POR ACA");
+        }
+
         if(!metodosSinSobrecargaMap.containsKey(method.getMethodName())){
             metodosSinSobrecargaMap.put(method.getMethodName(), method);
             if(!method.isStatic()){
@@ -88,7 +92,7 @@ public abstract class ClassOrInterface {
         return false;
     }
 
-    public void setOffsetMetodoPorHerencia(int herenciaOffset){ this.offsetMetodo = herenciaOffset; }
+    public void setOffsetMetodo(int herenciaOffset){ this.offsetMetodo = herenciaOffset; }
 
     public int getOffsetMetodo(){ return offsetMetodo; }
 }

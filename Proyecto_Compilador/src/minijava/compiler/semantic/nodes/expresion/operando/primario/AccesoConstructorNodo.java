@@ -80,7 +80,7 @@ public class AccesoConstructorNodo extends PrimarioNodo {
             parametroActualExp.generar(st);
             st.write("SWAP # Muevo al tope el this, por cada parametro generado\n");
         }
-        st.write("PUSH "+idPrimario.getLexeme()+idPrimario.getLexeme()+"\n");
+        st.write("PUSH "+idPrimario.getLexeme()+"Constructor"+"\n");
         st.write("CALL # Invoco el constructor\n");
     }
 }
