@@ -15,16 +15,29 @@ class A{
         return l;
     }
     static void main(){
+        System.printSln("HOLA");
+
         var list = new List();
         var iList = getAsIList(list);
         var iGet1 = getAsIGet1(iList);
         var iGet2 = getAsIGet2(iList);
         var iAdd = getAsIAdd(iList);
         var i = 4;
+
+        System.printSln("CHAU");
+
+
         while(i < 15){
+
             iAdd.addLast(i);
+
+            System.printSln("PASO!");
+
             i = i + 3;
         }
+
+
+
         var node = list.getNode(7);
         iAdd.addBefore(node, 5);
         iAdd.addBefore(node, 6);
@@ -32,6 +45,9 @@ class A{
         node = iAdd.addAfter(node, 11);
         iAdd.addAfter(node, 12);
         i = 3;
+
+
+
         while(i > 0){
             iAdd.addFirst(i);
             i -= 1;

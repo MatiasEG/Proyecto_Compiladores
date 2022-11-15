@@ -24,7 +24,7 @@ simple_malloc:
 
 .DATA
 
-VT_A: DW m1A
+VT_A: DW 0, m1A
 
 .CODE
 
@@ -78,7 +78,7 @@ m1A:
 
 .DATA
 
-VT_B: DW m1A, m2B
+VT_B: DW 0, m1A, m2B
 
 .CODE
 
@@ -132,7 +132,7 @@ m2B:
 
 .DATA
 
-VT_C: DW m2C
+VT_C: DW 0, 0, m2C
 
 .CODE
 
@@ -186,7 +186,7 @@ m2C:
 
 .DATA
 
-VT_D: DW m2C, m1D
+VT_D: DW 0, m1D, m2C
 
 .CODE
 
@@ -244,88 +244,218 @@ VT_Main: NOP
 
 .CODE
 
+# ---------------- getBAsI2Main ---------------- 
+getBAsI2Main:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Libero los lugares de las var locales
+             RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+             PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+             PUSH simple_malloc
+             CALL
+             DUP # de la referencia al nuevo CIR
+             PUSH VT_B
+             STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+             DUP # de la referencia al objeto
+             PUSH BConstructor
+             CALL # Invoco el constructor
+             STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
+             STOREFP 
+             RET 0 # Efectuamos el retorno liberando la cantidad de parametros
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 0
+
+# ---------------- getDAsI1Main ---------------- 
+getDAsI1Main:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Libero los lugares de las var locales
+             RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+             PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+             PUSH simple_malloc
+             CALL
+             DUP # de la referencia al nuevo CIR
+             PUSH VT_D
+             STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+             DUP # de la referencia al objeto
+             PUSH DConstructor
+             CALL # Invoco el constructor
+             STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
+             STOREFP 
+             RET 0 # Efectuamos el retorno liberando la cantidad de parametros
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 0
+
+# ---------------- getBAsI1Main ---------------- 
+getBAsI1Main:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Libero los lugares de las var locales
+             RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+             PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+             PUSH simple_malloc
+             CALL
+             DUP # de la referencia al nuevo CIR
+             PUSH VT_B
+             STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+             DUP # de la referencia al objeto
+             PUSH BConstructor
+             CALL # Invoco el constructor
+             STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
+             STOREFP 
+             RET 0 # Efectuamos el retorno liberando la cantidad de parametros
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 0
+
+# ---------------- getDAsI2Main ---------------- 
+getDAsI2Main:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Libero los lugares de las var locales
+             RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+             PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+             PUSH simple_malloc
+             CALL
+             DUP # de la referencia al nuevo CIR
+             PUSH VT_D
+             STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+             DUP # de la referencia al objeto
+             PUSH DConstructor
+             CALL # Invoco el constructor
+             STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
+             STOREFP 
+             RET 0 # Efectuamos el retorno liberando la cantidad de parametros
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 0
+
 # ---------------- mainMain ---------------- 
 mainMain:
          LOADFP
          LOADSP
          STOREFP
-         RMEM 1 # Lugar de retorno
-         PUSH getBI1Main
+         RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+         PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+         PUSH simple_malloc
          CALL
+         DUP # de la referencia al nuevo CIR
+         PUSH VT_A
+         STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+         DUP # de la referencia al objeto
+         PUSH AConstructor
+         CALL # Invoco el constructor
          DUP # Duplico this
          LOADREF 0 # Consumo un this y lo reemplazo por su VT
-         LOADREF 0 # Lugar de retorno
+         LOADREF 1 # Lugar de retorno
+         CALL # Realizo la llamada a metodo dinamico
+         RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+         PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+         PUSH simple_malloc
+         CALL
+         DUP # de la referencia al nuevo CIR
+         PUSH VT_B
+         STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+         DUP # de la referencia al objeto
+         PUSH BConstructor
+         CALL # Invoco el constructor
+         DUP # Duplico this
+         LOADREF 0 # Consumo un this y lo reemplazo por su VT
+         LOADREF 1 # Lugar de retorno
+         CALL # Realizo la llamada a metodo dinamico
+         RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+         PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+         PUSH simple_malloc
+         CALL
+         DUP # de la referencia al nuevo CIR
+         PUSH VT_B
+         STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+         DUP # de la referencia al objeto
+         PUSH BConstructor
+         CALL # Invoco el constructor
+         DUP # Duplico this
+         LOADREF 0 # Consumo un this y lo reemplazo por su VT
+         LOADREF 2 # Lugar de retorno
+         CALL # Realizo la llamada a metodo dinamico
+         RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+         PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+         PUSH simple_malloc
+         CALL
+         DUP # de la referencia al nuevo CIR
+         PUSH VT_C
+         STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+         DUP # de la referencia al objeto
+         PUSH CConstructor
+         CALL # Invoco el constructor
+         DUP # Duplico this
+         LOADREF 0 # Consumo un this y lo reemplazo por su VT
+         LOADREF 2 # Lugar de retorno
+         CALL # Realizo la llamada a metodo dinamico
+         RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+         PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+         PUSH simple_malloc
+         CALL
+         DUP # de la referencia al nuevo CIR
+         PUSH VT_D
+         STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+         DUP # de la referencia al objeto
+         PUSH DConstructor
+         CALL # Invoco el constructor
+         DUP # Duplico this
+         LOADREF 0 # Consumo un this y lo reemplazo por su VT
+         LOADREF 1 # Lugar de retorno
+         CALL # Realizo la llamada a metodo dinamico
+         RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+         PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+         PUSH simple_malloc
+         CALL
+         DUP # de la referencia al nuevo CIR
+         PUSH VT_D
+         STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+         DUP # de la referencia al objeto
+         PUSH DConstructor
+         CALL # Invoco el constructor
+         DUP # Duplico this
+         LOADREF 0 # Consumo un this y lo reemplazo por su VT
+         LOADREF 2 # Lugar de retorno
          CALL # Realizo la llamada a metodo dinamico
          RMEM 1 # Lugar de retorno
-         PUSH getBI2Main
+         PUSH getBAsI1Main
          CALL
          DUP # Duplico this
          LOADREF 0 # Consumo un this y lo reemplazo por su VT
-         LOADREF 0 # Lugar de retorno
+         LOADREF 1 # Lugar de retorno
          CALL # Realizo la llamada a metodo dinamico
          RMEM 1 # Lugar de retorno
-         PUSH getDI1Main
+         PUSH getBAsI2Main
          CALL
          DUP # Duplico this
          LOADREF 0 # Consumo un this y lo reemplazo por su VT
-         LOADREF 0 # Lugar de retorno
+         LOADREF 2 # Lugar de retorno
          CALL # Realizo la llamada a metodo dinamico
          RMEM 1 # Lugar de retorno
-         PUSH getDI2Main
+         PUSH getDAsI1Main
          CALL
          DUP # Duplico this
          LOADREF 0 # Consumo un this y lo reemplazo por su VT
-         LOADREF 0 # Lugar de retorno
+         LOADREF 1 # Lugar de retorno
+         CALL # Realizo la llamada a metodo dinamico
+         RMEM 1 # Lugar de retorno
+         PUSH getDAsI2Main
+         CALL
+         DUP # Duplico this
+         LOADREF 0 # Consumo un this y lo reemplazo por su VT
+         LOADREF 2 # Lugar de retorno
          CALL # Realizo la llamada a metodo dinamico
          FMEM 0 # Se elimina el espacio reservado para las variables locales.
          STOREFP
          RET 0
-
-# ---------------- getBI1Main ---------------- 
-getBI1Main:
-           LOADFP
-           LOADSP
-           STOREFP
-           FMEM 0 # Libero los lugares de las var locales
-           RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-           PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
-           PUSH simple_malloc
-           CALL
-           DUP # de la referencia al nuevo CIR
-           PUSH VT_B
-           STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-           DUP # de la referencia al objeto
-           PUSH BConstructor
-           CALL # Invoco el constructor
-           STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
-           STOREFP 
-           RET 0 # Efectuamos el retorno liberando la cantidad de parametros
-           FMEM 0 # Se elimina el espacio reservado para las variables locales.
-           STOREFP
-           RET 0
-
-# ---------------- getBI2Main ---------------- 
-getBI2Main:
-           LOADFP
-           LOADSP
-           STOREFP
-           FMEM 0 # Libero los lugares de las var locales
-           RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-           PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
-           PUSH simple_malloc
-           CALL
-           DUP # de la referencia al nuevo CIR
-           PUSH VT_B
-           STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-           DUP # de la referencia al objeto
-           PUSH BConstructor
-           CALL # Invoco el constructor
-           STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
-           STOREFP 
-           RET 0 # Efectuamos el retorno liberando la cantidad de parametros
-           FMEM 0 # Se elimina el espacio reservado para las variables locales.
-           STOREFP
-           RET 0
 
 # ---------------- MainConstructor ---------------- 
 MainConstructor:
@@ -335,52 +465,6 @@ MainConstructor:
                 FMEM 0 # Se elimina el espacio reservado para las variables locales.
                 STOREFP
                 RET 1
-
-# ---------------- getDI1Main ---------------- 
-getDI1Main:
-           LOADFP
-           LOADSP
-           STOREFP
-           FMEM 0 # Libero los lugares de las var locales
-           RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-           PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
-           PUSH simple_malloc
-           CALL
-           DUP # de la referencia al nuevo CIR
-           PUSH VT_D
-           STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-           DUP # de la referencia al objeto
-           PUSH DConstructor
-           CALL # Invoco el constructor
-           STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
-           STOREFP 
-           RET 0 # Efectuamos el retorno liberando la cantidad de parametros
-           FMEM 0 # Se elimina el espacio reservado para las variables locales.
-           STOREFP
-           RET 0
-
-# ---------------- getDI2Main ---------------- 
-getDI2Main:
-           LOADFP
-           LOADSP
-           STOREFP
-           FMEM 0 # Libero los lugares de las var locales
-           RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
-           PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
-           PUSH simple_malloc
-           CALL
-           DUP # de la referencia al nuevo CIR
-           PUSH VT_D
-           STOREREF 0 # Consume una de las dupicas de la referencia al CIR
-           DUP # de la referencia al objeto
-           PUSH DConstructor
-           CALL # Invoco el constructor
-           STORE 3 # Se coloca el valor de retorno en su ubicacion reservada
-           STOREFP 
-           RET 0 # Efectuamos el retorno liberando la cantidad de parametros
-           FMEM 0 # Se elimina el espacio reservado para las variables locales.
-           STOREFP
-           RET 0
 
 # ---------------- debugPrintObject ---------------- 
 debugPrintObject:

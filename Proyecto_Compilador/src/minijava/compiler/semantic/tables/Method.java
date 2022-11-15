@@ -22,6 +22,8 @@ public class Method {
     protected Block actualBlock;
     protected int offsetParametro;
     protected int offsetMetodo;
+    protected boolean esDeInterface;
+    protected boolean metodoEsRedefinido;
 
     public Method(){
         parameters = new ArrayList<>();
@@ -30,16 +32,42 @@ public class Method {
         block = null;
         offsetParametro = 4; // TODO esto esta bien?
         offsetMetodo = -1;
+        esDeInterface = false;
+        metodoEsRedefinido = false;
     }
 
-    public static Method clonar(Method m){
+    public static Method clonarInvalido(Method m){
         Method method2return = new Method();
         method2return.setMethodToken(new Token("idMetVar", "invalid"+m.getMethodName(), m.getMethodToken().getRow()));
         method2return.setMethodType(m.getMethodType());
         method2return.setClassDeclaredMethod(m.getClassDeclaredMethod());
         method2return.setOffsetMetodo(m.getOffsetMetodo());
+        method2return.setMetodoEsRedefinido();
         return method2return;
     }
+
+    public static Method clonar(Method m){
+        Method method2return = new Method();
+        method2return.setMethodToken(m.getMethodToken());
+        method2return.setMethodType(m.getMethodType());
+        method2return.setClassDeclaredMethod(m.getClassDeclaredMethod());
+        method2return.setOffsetMetodo(m.getOffsetMetodo());
+        method2return.setParameters(m.getParameters());
+        method2return.setMetodoEsRedefinido();
+        method2return.setStatic(m.isStatic);
+        method2return.setMainBlock(m.getBlock());
+        method2return.metodoEsRedefinido = false;
+        method2return.setEsDeInterface(m.esDeInterface);
+        return method2return;
+    }
+
+    public Block getBlock(){ return block; }
+
+    public void setParameters(ArrayList<Parameter> parameters){ this.parameters = parameters; }
+
+    public void setMetodoEsRedefinido(){ metodoEsRedefinido = true;}
+
+    public void setEsDeInterface(boolean esDeInterface){ this.esDeInterface = esDeInterface; }
 
     public void setActualBlock(Block actualBlock){ this.actualBlock = actualBlock; }
 

@@ -16,6 +16,7 @@ public class Class extends ClassOrInterface {
     private HashMap<String, Attribute> atributosHashMap;
     private int offsetAtributo;
     private String vtLabel;
+    private Map<Integer,Method> mapeoMetodosInterface;
 
     public Class(Token claseToken){
         extendsFrom = new ArrayList<>();
@@ -33,6 +34,8 @@ public class Class extends ClassOrInterface {
         metodosHeredadosPorOffset = new HashMap<>();
         metodosPorOffsetCompleto = new HashMap<>();
         offsetMetodo = 0;
+        mapeoDeMetodosFinal = new HashMap<>();
+        mapeoMetodosInterface = new HashMap<>();
     }
 
     public void setListOfImplements(ArrayList<Token> implement){
@@ -83,18 +86,7 @@ public class Class extends ClassOrInterface {
 
     public String getVtLabel(){ return vtLabel; }
 
-    private void generarMapeoMetodosPorOffset(){
-        for(Map.Entry<Integer,Method> mHeredados: metodosHeredadosPorOffset.entrySet()){
-            metodosPorOffsetCompleto.put(mHeredados.getKey(), mHeredados.getValue());
-        }
-        for(Map.Entry<Integer,Method> mPropios: metodosPorOffset.entrySet()){
-            if(!metodosPorOffsetCompleto.containsKey(mPropios.getKey()))
-                metodosPorOffsetCompleto.put(mPropios.getKey(), mPropios.getValue());
-        }
-    }
-
     public void generarCodigoData(SymbolTable st) throws IOException {
-        this.generarMapeoMetodosPorOffset();
         st.writeLabel(".DATA\n\n");
         st.writeLabel(vtLabel+": ");
         int cantMetodosDinamicos = metodosDinamicos.size();
@@ -103,14 +95,22 @@ public class Class extends ClassOrInterface {
             int comasNecesarias = cantMetodosDinamicos-1;
 //            for(Map.Entry<Integer, Method> entry: metodosPorOffset.entrySet()){
             // TODO intentar que arranque de 0
-            for(int i = 0; i < offsetMetodo; i++){
-                st.writeLabel(metodosPorOffsetCompleto.get(i).getLabel());
-                if(comasNecesarias>0){
-                    comasNecesarias--;
-                    st.writeLabel(", ");
+//            for(int i = 0; i < metodosDinamicos.size(); i++){
+            int i = 0;
+            while(true){
+                if(mapeoDeMetodosFinal.get(i) == null){
+                    st.writeLabel("0, ");
                 }else{
-                    st.writeLabel("\n\n");
+                    st.writeLabel(mapeoDeMetodosFinal.get(i).getLabel());
+                    if(comasNecesarias>0){
+                        comasNecesarias--;
+                        st.writeLabel(", ");
+                    }else{
+                        st.writeLabel("\n\n");
+                        break;
+                    }
                 }
+                i++;
             }
         }else{
             st.writeLabel("NOP\n\n");
@@ -119,11 +119,63 @@ public class Class extends ClassOrInterface {
         st.writeLabel(".CODE\n\n");
         for(Map.Entry<String, Method> entry: metodosSinSobrecargaMap.entrySet()){
             st.setActualMethod(entry.getValue());
-            if(entry.getValue().getClassDeclaredMethod().equals(getNombre())){
-                entry.getValue().generarCodigoBloque(st);
+            if(entry.getValue().metodoEsRedefinido){
+                st.writeLabel(entry.getValue().getLabel()+": NOP\n\n");
+            }else{
+                if(entry.getValue().getClassDeclaredMethod().equals(getNombre())){
+                    entry.getValue().generarCodigoBloque(st);
+                }
             }
         }
 
         //TODO seguir con esta generacion de codigo, generar bloque
+    }
+
+    public void ordenarMetodosFinal(SymbolTable st){
+        Method mAux;
+        offsetMetodo = 0;
+        if(extendsFrom.size()>1){
+            st.getClass(extendsFrom.get(1).getLexeme()).ordenarMetodosFinal(st);
+        }else{
+//            for(Map.Entry<Integer,Method> entry: metodosPorOffsetCompleto.entrySet()){
+            for(Map.Entry<String,Method> entry: metodosSinSobrecargaMap.entrySet()){
+                mAux = entry.getValue();
+                if(!mAux.esDeInterface && !mAux.isStatic()){
+                    mAux.setOffsetMetodo(offsetMetodo++);
+                    mapeoDeMetodosFinal.put(mAux.getOffsetMetodo(), mAux);
+                }
+            }
+        }
+
+    }
+
+    public void definirOffsetMetodosInterfaces(SymbolTable st){
+        this.generarMapeoMetodosPorOffset();
+        Method mAux;
+        Method mInterface;
+//        for(Map.Entry<Integer,Method> entry: metodosPorOffsetCompleto.entrySet()){
+        for(Map.Entry<String,Method> entry: metodosSinSobrecargaMap.entrySet()){
+            mAux = entry.getValue();
+            if(mAux.esDeInterface && !mAux.isStatic()){
+
+                for(Map.Entry<String,Interface_> interface_entry: st.getInterfaces().entrySet()){
+//                for(Token tInterface: implement){
+//                    for(Map.Entry<String,Method> metInterface: interface_entry.getValue().getHashMapMethods().entrySet()){
+                    mInterface = interface_entry.getValue().metodoPertenece(mAux);
+//                        mInterface = st.getInterface(tInterface.getLexeme()).metodoPertenece(mAux);
+                        if (mInterface != null) {
+                            mAux.setOffsetMetodo(mInterface.getOffsetMetodo());
+                            mapeoDeMetodosFinal.put(mAux.getOffsetMetodo(), mAux);
+                            break;
+                        }
+//                    }
+                }
+            }
+        }
+        System.out.println("-----------------------------------------");
+        System.out.println("Clase "+claseOrinterfaceToken.getLexeme());
+        System.out.println("FinalSize: "+mapeoDeMetodosFinal.size());
+        System.out.println("offset: "+offsetMetodo);
+        System.out.println("-----------------------------------------\n\n");
     }
 }

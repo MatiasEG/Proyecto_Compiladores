@@ -32,6 +32,7 @@ public class SymbolTable {
     private String identacionParaCodigo;
     private String mainClass;
     private int maxOffsetMetodo;
+    private int maxOffsetInterface;
 
     public static int nro_TerminacionIf = 0;
     public static int nro_else = 0;
@@ -42,6 +43,7 @@ public class SymbolTable {
         interfaces = new HashMap<>();
         identacionParaCodigo = "";
         maxOffsetMetodo = 0;
+        maxOffsetInterface = maxOffsetMetodo;
     }
 
     public void createConcreteClasses() throws SemanticException {
@@ -58,6 +60,8 @@ public class SymbolTable {
     public void setActualClassOrInterface(ClassOrInterface classOrInterface){
         actualClassOrInterface = classOrInterface;
     }
+
+    public Map<String,Interface_> getInterfaces(){ return interfaces; }
 
     public void setActualClassInterfaceListOfExtends(ArrayList<Token> extendsFrom){ actualClassOrInterface.setListOfExtends(extendsFrom); }
 
@@ -97,8 +101,10 @@ public class SymbolTable {
     public void actualClassInterfaceAddMethod(Method method) throws SemanticException{
         if(!actualClassOrInterface.sameMethodOverloaded(method)){
             actualClassOrInterface.addMetodo(method);
-            if(maxOffsetMetodo < actualClassOrInterface.getOffsetMetodo())
+            if(maxOffsetMetodo < actualClassOrInterface.getOffsetMetodo()) {
                 maxOffsetMetodo = actualClassOrInterface.getOffsetMetodo();
+                maxOffsetInterface = maxOffsetMetodo;
+            }
         }else{
             throw new SemanticExceptionDuplicatedMethod(method);
         }
@@ -126,7 +132,7 @@ public class SymbolTable {
             if(subAclaseBclase != null)
                 return subAclaseBclase;
         }else if(interfaces.containsKey(a) && interfaces.containsKey(b)) {
-            String subAinterfaceBinterface = interfaces.get(a).subtipo(this, interfaces.get(b));
+            String subAinterfaceBinterface = interfaces.get(b).subtipo(this, interfaces.get(a));
             if (subAinterfaceBinterface != null)
                 return subAinterfaceBinterface;
         }else if(classes.containsKey(a) && interfaces.containsKey(b)) {
@@ -239,17 +245,30 @@ public class SymbolTable {
     }
 
     private void checkSignaturaMetodosRedefinidosPorHerencia(ClassOrInterface descendiente, ClassOrInterface padre) throws SemanticException{
-        if(padre.getExtendedClasses().size()==1)
+        if(descendiente instanceof Class && padre.getExtendedClasses().size()==1){
             checkSignaturaMetodosRedefinidosPorHerencia(classes.get(padre.getNombre()),classes.get(padre.getExtendedClasses().get(0).getLexeme()));
+        }else if(descendiente instanceof Interface_ && padre.getExtendedClasses().size()>=1)
+            checkSignaturaMetodosRedefinidosPorHerencia(interfaces.get(padre.getNombre()),interfaces.get(padre.getExtendedClasses().get(0).getLexeme()));
         for(Map.Entry<String,Method> m: padre.getMetodosDinamicos().entrySet()){
 //            if(!descendiente.getHashMapMethods().containsKey(m.getValue().getMapKey()) && !m.getValue().getMethodType().getLexemeType().equals(m.getValue().getMethodName())) {
             if(!m.getValue().getMethodType().getLexemeType().equals(m.getValue().getMethodName())) {
                 if(!descendiente.getHashMapMethods().containsKey(m.getValue().getMapKey())){
-                    descendiente.addMetodo(padre.getHashMapMethods().get(m.getValue().getMapKey()));
-                    descendiente.setOffsetMetodo(padre.getOffsetMetodo());
-                    updateOffsetOriginalMethods(descendiente);
+                    // TODO ---
+//                    Method method = Method.clonar(m.getValue());
+                    Method method = m.getValue();
+                    // TODO ---
+//                    descendiente.addMetodo(padre.getHashMapMethods().get(m.getValue().getMapKey()));
+                    descendiente.addMetodo(method);
+                    if(descendiente instanceof Interface_){
+                        method.setOffsetMetodo(this.getMaxOffsetInterface());
+                        ((Interface_) descendiente).addMetodoHerencia(method);
+                        updateOffsetOriginalMethods(descendiente);
+                    }else{
+                        descendiente.setOffsetMetodo(m.getValue().getOffsetMetodo());
+                        updateOffsetOriginalMethods(descendiente);
+                    }
                 }else if(descendiente.getHashMapMethods().get(m.getValue().getMapKey()).getClassDeclaredMethod().equals(descendiente.getNombre())){
-                    Method method = Method.clonar(m.getValue());
+                    Method method = Method.clonarInvalido(m.getValue());
                     descendiente.addMetodo(method);
                     descendiente.setOffsetMetodo(padre.getOffsetMetodo());
                     updateOffsetOriginalMethods(descendiente);
@@ -276,22 +295,31 @@ public class SymbolTable {
                 m.getValue().setOffsetMetodo(descendiente.getOffsetMetodo());
                 descendiente.setOffsetMetodo(descendiente.getOffsetMetodo()+1);
                 descendiente.getMetodosHeredadosPorOffset().put(m.getValue().getOffsetMetodo(), m.getValue());
-                if(maxOffsetMetodo < descendiente.getOffsetMetodo())
+                if(maxOffsetMetodo < descendiente.getOffsetMetodo()){
                     maxOffsetMetodo = descendiente.getOffsetMetodo();
+                    maxOffsetInterface = maxOffsetMetodo;
+                }
             }
         }
     }
 
+    public int getMaxOffsetInterface(){
+        int aux = maxOffsetInterface;
+        maxOffsetInterface++;
+        return aux;
+    }
+
     public void consolidacion() throws SemanticException{
         for(Map.Entry<String, Class> entry: classes.entrySet()){
+            for(Token t: entry.getValue().getImplementedClasses()){
+                checkMetodosImplementados(entry.getValue(), interfaces.get(t.getLexeme()));
+            }
+
             for(Token t: entry.getValue().getExtendedClasses()){
                 consolidacionAtributosHeredados(entry.getValue(), classes.get(t.getLexeme()));
                 if(consolidacionHerenciaCircular(entry.getValue(), classes.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
             }
-
-            for(Token t: entry.getValue().getImplementedClasses()){
-                checkMetodosImplementados(entry.getValue(), interfaces.get(t.getLexeme()));
-            }
+//            setOffsetMetodos(entry.getValue());
         }
 
 
@@ -299,13 +327,27 @@ public class SymbolTable {
             for(Token t: entry.getValue().getExtendedClasses()){
                 if(consolidacionHerenciaCircular(entry.getValue(), interfaces.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
             }
+            entry.getValue().generarOffsetInterfaces(this);
         }
+
+        for(Map.Entry<String, Class> entry: classes.entrySet()){
+            entry.getValue().definirOffsetMetodosInterfaces(this);
+        }
+    }
+
+    private void setOffsetMetodos(Class clase){
+        clase.ordenarMetodosFinal(this);
+
     }
 
     private void checkMetodosImplementados(Class claseImplementa, Interface_ interface_) throws SemanticException{
         for(Method m: interface_.getMethods()){
             if(claseImplementa.getHashMapMethods().containsKey(m.getMapKey())){
-                if(!m.equals(claseImplementa.getHashMapMethods().get(m.getMapKey()))) throw new SemanticExceptionMethodWrongImplemented(claseImplementa, m);
+                if(!m.equals(claseImplementa.getHashMapMethods().get(m.getMapKey()))) {
+                    throw new SemanticExceptionMethodWrongImplemented(claseImplementa, m);
+                }else {
+                    claseImplementa.getHashMapMethods().get(m.getMapKey()).setEsDeInterface(true);
+                }
             }else{
                 throw new SemanticExceptionMethodNotImplemented(claseImplementa, m);
             }
@@ -316,7 +358,13 @@ public class SymbolTable {
         boolean resultado = false;
         for(Token herenciaDelPadre: classOrInterfacePadre.getExtendedClasses()){
             if(herenciaDelPadre.getLexeme().equals(classOrInterfaceDesc.getNombre())) resultado = true;
-            if(!resultado) resultado = consolidacionHerenciaCircular(classOrInterfaceDesc, classes.get(alreadyExist(herenciaDelPadre.getLexeme()).getNombre()));
+            if(!resultado){
+                if(classOrInterfaceDesc instanceof Class){
+                    resultado = consolidacionHerenciaCircular(classOrInterfaceDesc, classes.get(alreadyExist(herenciaDelPadre.getLexeme()).getNombre()));
+                }else{
+                    resultado = consolidacionHerenciaCircular(classOrInterfaceDesc, interfaces.get(alreadyExist(herenciaDelPadre.getLexeme()).getNombre()));
+                }
+            }
         }
         return resultado;
     }
@@ -382,9 +430,9 @@ public class SymbolTable {
 
         generarCodigoDeRutinasHeap();
 
-//        for(Map.Entry<String, Interface_> entry: interfaces.entrySet()){
-//            entry.getValue().generarCpdigo
-//        }
+        for(Map.Entry<String, Class> entry: classes.entrySet()){
+            setOffsetMetodos(entry.getValue());
+        }
 
         for(Map.Entry<String, Class> entry: classes.entrySet()){
             if(entry.getValue().getNombre()!="Object" &&
@@ -398,8 +446,27 @@ public class SymbolTable {
 
         PredefinedClasses.generarCodigoClasesXDefecto(this);
 
-        System.out.println("maxOffset: "+maxOffsetMetodo);
+
+        imprimirOffsets();
+//        System.out.println("maxOffset: "+maxOffsetMetodo);
+
     }
+
+    public void updateMethodOffset(Method met){
+        boolean encontre = false;
+        for(Map.Entry<String, Class> clase : classes.entrySet()){
+            for (Map.Entry<Integer, Method> metFinal : clase.getValue().getMapeoDeMetodosFinal().entrySet()) {
+                if (metFinal.getValue().getMethodName().equals(met.getMethodName())) {
+                    met.setOffsetMetodo(metFinal.getValue().getOffsetMetodo());
+                    encontre = true;
+                }
+                if (encontre) break;
+            }
+            if (encontre) break;
+        }
+    }
+
+    public int getMaxOffsetMetodo(){ return maxOffsetMetodo; }
 
     public static int getNro_TerminacionIf(){
         int aux = nro_TerminacionIf;
@@ -467,6 +534,18 @@ public class SymbolTable {
 
 
 
+
+    public void imprimirOffsets(){
+        for (Map.Entry<String,Class> clase: classes.entrySet()){
+            for (Map.Entry<Integer,Method> metClase: clase.getValue().getMapeoDeMetodosFinal().entrySet()){
+                System.out.println("-------------------");
+                System.out.println("Clase: "+clase.getValue().getNombre());
+                System.out.println("Metodo: "+metClase.getValue().getMethodName());
+                System.out.println("Offset: "+metClase.getValue().getOffsetMetodo());
+                System.out.println("");
+            }
+        }
+    }
 
     public void imprimirTablas(){
         System.out.println("\n--------------------------\n\n");

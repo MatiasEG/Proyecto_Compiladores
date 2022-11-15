@@ -5,6 +5,7 @@ import minijava.compiler.semantic.SymbolTable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class ClassOrInterface {
 
@@ -18,6 +19,7 @@ public abstract class ClassOrInterface {
     protected HashMap<Integer, Method> metodosPorOffset;
     protected int offsetMetodo;
     protected HashMap<Integer,Method> metodosPorOffsetCompleto;
+    protected Map<Integer,Method> mapeoDeMetodosFinal;
 
     public void setListOfExtends(ArrayList<Token> extendsFrom){
         this.extendsFrom =  extendsFrom;
@@ -63,6 +65,16 @@ public abstract class ClassOrInterface {
 //        }
 //    }
 
+    protected void generarMapeoMetodosPorOffset(){
+        for(Map.Entry<Integer,Method> mHeredados: metodosHeredadosPorOffset.entrySet()){
+            metodosPorOffsetCompleto.put(mHeredados.getKey(), mHeredados.getValue());
+        }
+        for(Map.Entry<Integer,Method> mPropios: metodosPorOffset.entrySet()){
+            if(!metodosPorOffsetCompleto.containsKey(mPropios.getKey()))
+                metodosPorOffsetCompleto.put(mPropios.getKey(), mPropios.getValue());
+        }
+    }
+
     public HashMap<Integer,Method> getMetodosHeredadosPorOffset(){ return metodosHeredadosPorOffset; }
 
     public HashMap<Integer,Method> getMetodosPropios(){ return metodosPorOffset; }
@@ -91,6 +103,8 @@ public abstract class ClassOrInterface {
         }
         return false;
     }
+
+    public Map<Integer,Method> getMapeoDeMetodosFinal(){ return mapeoDeMetodosFinal; }
 
     public void setOffsetMetodo(int herenciaOffset){ this.offsetMetodo = herenciaOffset; }
 

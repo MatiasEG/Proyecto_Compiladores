@@ -7,6 +7,8 @@ import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongTypeActualAr
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
 import minijava.compiler.semantic.nodes.expresion.operando.EncadenadoOptNodo;
+import minijava.compiler.semantic.tables.Class;
+import minijava.compiler.semantic.tables.Interface_;
 import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Parameter;
@@ -103,6 +105,10 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
     @Override
     public void generar(SymbolTable st) throws IOException {
         if(!m.isStatic()){
+
+            //TODO ver si hay que borrar esto
+//            st.updateMethodOffset(m);
+
             if(m.needReturn()){
                 st.write("RMEM 1 # Lugar de retorno\n");
                 st.write("SWAP # Muevo this al tope de la pila\n");

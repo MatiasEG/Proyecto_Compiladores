@@ -8,11 +8,18 @@
 class Main{
     static void main(){
         getAAsI1().m1();
+
         getAAsI2().m1();
+
         getAAsI2().m2();
+
         getBAsI1().m1();
+
         getBAsI2().m1();
+
         getBAsI2().m2();
+
+        System.printSln("PASO!!");
     }
 
     static I1 getAAsI1(){

@@ -1,6 +1,8 @@
 //size = 13
 //1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
 
+
+
 class A{
 
     static IList getAsIList(List l){
@@ -10,13 +12,17 @@ class A{
         var list = new List();
         var iList = getAsIList(list);
         var i = 4;
+
         while(i < 15){
             iList.addLast(i);
             i = i + 3;
         }
+
         var node = list.getNode(7);
+
         iList.addBefore(node, 5);
         iList.addBefore(node, 6);
+
         node = list.getNode(10);
         node = iList.addAfter(node, 11);
         iList.addAfter(node, 12);
@@ -85,6 +91,7 @@ class List implements IList{
     Node addLast(int element){
         var node = new Node();
         node.element = element;
+
         if(head == null)
             head = node;
         else {

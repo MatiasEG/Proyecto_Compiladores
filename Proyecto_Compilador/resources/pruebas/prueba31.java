@@ -17,6 +17,9 @@ class Main{
         new C().m2();
         new D().m1();
         new D().m2();
+
+        System.printSln("PASO!!!");
+
         getBAsI1().m1();
         getBAsI2().m2();
         getDAsI1().m1();
