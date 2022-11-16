@@ -187,7 +187,7 @@ public class PredefinedClasses {
                 spaces+"STOREFP\n" +
                 spaces+"RET 1\n\n");
 
-        // TODO generar codigo de clase String?
+        // TODO no hay que hacer nada para la clase String
 
         st.writeLabel("# ---------------- readSystem ---------------- \n");
         spaces = String.format("%"+("read".length()+"System".length()+1)+"s", "");

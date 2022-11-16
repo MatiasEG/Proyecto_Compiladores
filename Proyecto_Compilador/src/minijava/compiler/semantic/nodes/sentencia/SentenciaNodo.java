@@ -7,7 +7,6 @@ import java.io.IOException;
 
 public abstract class SentenciaNodo{
 
-
     public abstract void check(SymbolTable st) throws SemanticException;
 
     public abstract void generar(SymbolTable st) throws IOException;

@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class AccesoThisNodo extends PrimarioNodo {
 
-    private String nombreClase;
+    protected String nombreClase;
 
     public AccesoThisNodo(Token thisToken, String nombreClase){
         this.idPrimario = thisToken;

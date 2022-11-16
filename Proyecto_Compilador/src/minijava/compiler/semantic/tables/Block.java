@@ -11,18 +11,17 @@ import minijava.compiler.semantic.tables.variable.Variable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Block {
 
-    private Method method;
-    private ArrayList<VarLocal> vars;
-    private HashMap<String, VarLocal> varsHashMap;
-    private BloqueNodo bloqueNodo;
-    private ArrayList<SentenciaNodo> statements;
-    private Block bloquePadre;
-    private ArrayList<Block> bloques;
-    private int offset;
+    protected Method method;
+    protected ArrayList<VarLocal> vars;
+    protected HashMap<String, VarLocal> varsHashMap;
+    protected BloqueNodo bloqueNodo;
+    protected ArrayList<SentenciaNodo> statements;
+    protected Block bloquePadre;
+    protected ArrayList<Block> bloques;
+    protected int offset;
 
     public Block(Method method){
         this.method = method;
@@ -50,8 +49,9 @@ public class Block {
 
     public void addSentenciaNodo(SentenciaNodo sentenciaNodo){ statements.add(sentenciaNodo); }
 
-    public void addVar(VarLocal v) throws SemanticException {
+    public int getCantVarLocales(){ return -offset; }
 
+    public void addVar(VarLocal v) throws SemanticException {
         if (bloquePadre!= null && bloquePadre.contains(v.getVarName()) == null && !varsHashMap.containsKey(v.getVarName())){
             v.setOffset(offset);
             offset--;
@@ -67,8 +67,6 @@ public class Block {
         }
     }
 
-    public int getCantVarLocales(){ return -offset; }
-
     public Variable contains(String varName){
         if(method.getParameterHashMap().containsKey(varName)){
             return method.getParameterHashMap().get(varName);
@@ -78,6 +76,19 @@ public class Block {
             return bloquePadre.contains(varName);
         }else{
             return null;
+        }
+    }
+
+    public HashMap<String, VarLocal> getVarsAccesiblesDesdeElBloque(){
+        if(bloquePadre!=null){
+            HashMap<String, VarLocal> varsTotales = new HashMap<>();
+            HashMap<String, VarLocal> varsDelPadre = bloquePadre.getVarsAccesiblesDesdeElBloque();
+
+            varsTotales.putAll(varsDelPadre);
+            varsTotales.putAll(varsHashMap);
+            return varsTotales;
+        }else{
+            return varsHashMap;
         }
     }
 
@@ -96,18 +107,4 @@ public class Block {
         st.write("FMEM "+vars.size()+" # Se elimina el espacio reservado para las variables locales.\n");
     }
 
-    public HashMap<String, VarLocal> getVarsHashMap(){ return varsHashMap; }
-
-    public HashMap<String, VarLocal> getVarsAccesiblesDesdeElBloque(){
-        if(bloquePadre!=null){
-            HashMap<String, VarLocal> varsTotales = new HashMap<>();
-            HashMap<String, VarLocal> varsDelPadre = bloquePadre.getVarsAccesiblesDesdeElBloque();
-
-            varsTotales.putAll(varsDelPadre);
-            varsTotales.putAll(varsHashMap);
-            return varsTotales;
-        }else{
-            return varsHashMap;
-        }
-    }
 }

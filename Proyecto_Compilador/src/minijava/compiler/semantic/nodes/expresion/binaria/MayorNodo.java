@@ -15,7 +15,7 @@ public class MayorNodo extends ExpresionBinariaNodo {
 
     public MayorNodo(Token mayorToken, boolean mayorIgual){
         super(mayorToken);
-        this.mayorIgual = mayorIgual; // TODO me va a servir para la parte de ejecucion
+        this.mayorIgual = mayorIgual;
     }
 
     public Type check(SymbolTable st) throws SemanticException {

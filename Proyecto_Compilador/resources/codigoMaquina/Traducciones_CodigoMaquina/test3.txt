@@ -24,6 +24,84 @@ simple_malloc:
 
 .DATA
 
+VT_A: DW m1A
+
+.CODE
+
+# ---------------- AConstructor ---------------- 
+AConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+# ---------------- m1A ---------------- 
+m1A:
+    LOADFP
+    LOADSP
+    STOREFP
+    PUSH 1
+    LOAD 3 # this
+    SWAP # Pongo el valor de la expresion en el tope y this en tope-1
+    STOREREF 1 # Guardo valor de parte derecha en el atributo
+    RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+    PUSH 2 # Parametro malloc, cant de atributos del objeto + 1 para VT
+    PUSH simple_malloc
+    CALL
+    DUP # de la referencia al nuevo CIR
+    PUSH VT_B
+    STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+    DUP # de la referencia al objeto
+    PUSH BConstructor
+    CALL # Invoco el constructor
+    LOAD 0 # Apilo el valor de la variable.
+    DUP # Duplico this
+    LOADREF 0 # Consumo un this y lo reemplazo por su VT
+    LOADREF 0 # Lugar de retorno
+    CALL # Realizo la llamada a metodo dinamico
+    LOAD 3 # this
+    LOADREF 1 # Apilo valor de atributo
+    LOAD 0 # Apilo el valor de la variable.
+    LOADREF 1 # Cargo el atributo en el tope
+    ADD
+    PUSH printIlnSystem
+    CALL
+    FMEM 1 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+.DATA
+
+VT_B: DW mBB
+
+.CODE
+
+# ---------------- BConstructor ---------------- 
+BConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+# ---------------- mBB ---------------- 
+mBB:
+    LOADFP
+    LOADSP
+    STOREFP
+    PUSH 7
+    LOAD 3 # this
+    SWAP # Pongo el valor de la expresion en el tope y this en tope-1
+    STOREREF 1 # Guardo valor de parte derecha en el atributo
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+.DATA
+
 VT_MainModule: NOP
 
 .CODE
@@ -33,14 +111,26 @@ mainMainModule:
                LOADFP
                LOADSP
                STOREFP
-               PUSH 2
-               PUSH 3
-               LOAD 0 # Apilo el valor de la variable.
-               LOAD -1 # Apilo el valor de la variable.
-               ADD
-               PUSH printISystem
+               RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+               PUSH 2 # Parametro malloc, cant de atributos del objeto + 1 para VT
+               PUSH simple_malloc
                CALL
-               FMEM 2 # Se elimina el espacio reservado para las variables locales.
+               DUP # de la referencia al nuevo CIR
+               PUSH VT_A
+               STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+               DUP # de la referencia al objeto
+               PUSH AConstructor
+               CALL # Invoco el constructor
+               LOAD 0 # Apilo el valor de la variable.
+               DUP # Duplico this
+               LOADREF 0 # Consumo un this y lo reemplazo por su VT
+               LOADREF 0 # Lugar de retorno
+               CALL # Realizo la llamada a metodo dinamico
+               LOAD 0 # Apilo el valor de la variable.
+               LOADREF 1 # Cargo el atributo en el tope
+               PUSH printIlnSystem
+               CALL
+               FMEM 1 # Se elimina el espacio reservado para las variables locales.
                STOREFP
                RET 0
 

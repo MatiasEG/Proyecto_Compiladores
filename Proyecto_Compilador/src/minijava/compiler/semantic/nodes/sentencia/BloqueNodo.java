@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class BloqueNodo extends SentenciaNodo {
 
-    private Block block;
+    protected Block block;
 
     public BloqueNodo(Block block){
         this.block = block;

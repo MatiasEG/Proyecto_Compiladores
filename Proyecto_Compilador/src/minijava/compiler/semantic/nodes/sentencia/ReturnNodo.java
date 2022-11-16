@@ -4,20 +4,17 @@ import minijava.compiler.exception.SemanticException;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionEmptyReturn;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionReturn;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongReturnType;
-import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongTypeActualArgs;
 import minijava.compiler.lexical.analyzer.Token;
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
-import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Type;
 
 import java.io.IOException;
 
 public class ReturnNodo extends SentenciaNodo {
 
-    private ExpresionNodo expresionNodo;
-    private Token returnToken;
-
+    protected ExpresionNodo expresionNodo;
+    protected Token returnToken;
 
     public ReturnNodo(Token returnToken){
         this.returnToken = returnToken;
@@ -26,7 +23,6 @@ public class ReturnNodo extends SentenciaNodo {
     public void setExpressionNode(ExpresionNodo expresionNodo){ this.expresionNodo = expresionNodo; }
 
     public void check(SymbolTable st) throws SemanticException {
-        //TODO controlar expresion vacia
         if(expresionNodo != null) {
             Type typeExp = expresionNodo.check(st);
             Type mType = st.getActualMethod().getMethodType();

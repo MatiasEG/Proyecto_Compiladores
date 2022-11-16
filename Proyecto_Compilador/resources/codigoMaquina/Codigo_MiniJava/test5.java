@@ -1,7 +1,12 @@
+//56
+//64
+//4
+
 class MainModule{
     static void main(){
         var a = new A();
-        System.printI(a.m1()+4);
+        System.printIln(a.m1()+4);
+        System.printIln(a.entero);
     }
 }
 class A{

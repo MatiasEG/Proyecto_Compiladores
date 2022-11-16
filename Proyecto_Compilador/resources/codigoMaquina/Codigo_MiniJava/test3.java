@@ -1,8 +1,11 @@
+//8
+//1
+
 class MainModule{
     static void main(){
         var a = new A();
         a.m1();
-        System.printI(a.entero);
+        System.printIln(a.entero);
     }
 }
 class A{
@@ -12,7 +15,7 @@ class A{
         entero = 1;
         var b = new B();
         b.mB();
-        System.printI(entero+b.intB);
+        System.printIln(entero+b.intB);
     }
 }
 

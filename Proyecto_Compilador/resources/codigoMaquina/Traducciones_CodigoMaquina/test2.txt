@@ -24,6 +24,47 @@ simple_malloc:
 
 .DATA
 
+VT_A: NOP
+
+.CODE
+
+# ---------------- a1A ---------------- 
+a1A:
+    LOADFP
+    LOADSP
+    STOREFP
+    PUSH 99
+    LOAD 0 # Apilo el valor de la variable.
+    PUSH printIlnSystem
+    CALL
+    LOAD 4 # Apilo el valor del parametro.
+    PUSH printIlnSystem
+    CALL
+    LOAD 3 # Apilo el valor del parametro.
+    PUSH printIlnSystem
+    CALL
+    LOAD 0 # Apilo el valor de la variable.
+    LOAD 4 # Apilo el valor del parametro.
+    ADD
+    LOAD 3 # Apilo el valor del parametro.
+    SUB
+    PUSH printIlnSystem
+    CALL
+    FMEM 1 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 2
+
+# ---------------- AConstructor ---------------- 
+AConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+.DATA
+
 VT_MainModule: NOP
 
 .CODE
@@ -33,14 +74,12 @@ mainMainModule:
                LOADFP
                LOADSP
                STOREFP
-               PUSH 2
-               PUSH 3
+               PUSH 6
                LOAD 0 # Apilo el valor de la variable.
-               LOAD -1 # Apilo el valor de la variable.
-               ADD
-               PUSH printISystem
+               PUSH 4
+               PUSH a1A
                CALL
-               FMEM 2 # Se elimina el espacio reservado para las variables locales.
+               FMEM 1 # Se elimina el espacio reservado para las variables locales.
                STOREFP
                RET 0
 

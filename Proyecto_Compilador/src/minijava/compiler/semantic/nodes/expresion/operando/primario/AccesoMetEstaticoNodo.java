@@ -17,9 +17,9 @@ import java.util.Iterator;
 
 public class AccesoMetEstaticoNodo extends PrimarioNodo {
 
-    private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
-    private Type classType;
-    private Method m;
+    protected ArrayList<ExpresionNodo> actualArgsExpresionNodes;
+    protected Type classType;
+    protected Method m;
 
     public AccesoMetEstaticoNodo(Type classType, Token metVarToken) {
         this.idPrimario = metVarToken;

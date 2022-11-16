@@ -12,7 +12,7 @@ import java.util.Iterator;
 
 public class Method {
 
-    private boolean isStatic;
+    protected boolean isStatic;
     protected Token token;
     protected String definedClass;
     protected ArrayList<Parameter> parameters;
@@ -30,7 +30,7 @@ public class Method {
         isStatic = false;
         parameterHashMap = new HashMap<>();
         block = null;
-        offsetParametro = 4; // TODO esto esta bien?
+        offsetParametro = 4;
         offsetMetodo = -1;
         esDeInterface = false;
         metodoEsRedefinido = false;
@@ -46,24 +46,7 @@ public class Method {
         return method2return;
     }
 
-    public static Method clonar(Method m){
-        Method method2return = new Method();
-        method2return.setMethodToken(m.getMethodToken());
-        method2return.setMethodType(m.getMethodType());
-        method2return.setClassDeclaredMethod(m.getClassDeclaredMethod());
-        method2return.setOffsetMetodo(m.getOffsetMetodo());
-        method2return.setParameters(m.getParameters());
-        method2return.setMetodoEsRedefinido();
-        method2return.setStatic(m.isStatic);
-        method2return.setMainBlock(m.getBlock());
-        method2return.metodoEsRedefinido = false;
-        method2return.setEsDeInterface(m.esDeInterface);
-        return method2return;
-    }
-
-    public Block getBlock(){ return block; }
-
-    public void setParameters(ArrayList<Parameter> parameters){ this.parameters = parameters; }
+    public void setOffsetMetodo(int offsetMetodo){ this.offsetMetodo = offsetMetodo; }
 
     public void setMetodoEsRedefinido(){ metodoEsRedefinido = true;}
 
@@ -71,15 +54,22 @@ public class Method {
 
     public void setActualBlock(Block actualBlock){ this.actualBlock = actualBlock; }
 
-    public Block getActualBlock(){ return actualBlock; }
-
     public void setMainBlock(Block block){ this.block = block; }
 
-//    public Block getMainBlock(){ return block; }
-
-    public boolean alreadyHaveBlock(){ return block != null; }
-
     public void setMethodToken(Token token) { this.token = token; }
+
+    public void setStatic(boolean isStatic) {
+        this.isStatic = isStatic;
+        if(isStatic) offsetParametro = 3;
+    }
+
+    public void setClassDeclaredMethod(String claseDefinido){ this.definedClass = claseDefinido; }
+
+    public void setMethodType(Type type){ this.type = type; }
+
+    public Block getActualBlock(){ return actualBlock; }
+
+    public int getOffsetMetodo(){ return offsetMetodo; }
 
     public Token getMethodToken() { return token; }
 
@@ -87,16 +77,19 @@ public class Method {
 
     public String getMethodName(){ return token.getLexeme(); };
 
-    public void setMethodType(Type type){ this.type = type; }
-
     public Type getMethodType() {
         return type;
     }
 
-    public void setStatic(boolean isStatic) {
-        this.isStatic = isStatic;
-        if(isStatic) offsetParametro = 3;
+    public String getClassDeclaredMethod() { return definedClass; }
+
+    public ArrayList<Parameter> getParameters() {
+        return parameters;
     }
+
+    public HashMap<String, Parameter> getParameterHashMap(){ return parameterHashMap; }
+
+    public Parameter getParameter(String parameterName){ return parameterHashMap.get(parameterName); }
 
     public boolean isStatic() {
         return isStatic;
@@ -104,11 +97,7 @@ public class Method {
 
     public boolean needReturn(){ return !type.getLexemeType().equals("void"); }
 
-    public void setClassDeclaredMethod(String claseDefinido){ this.definedClass = claseDefinido; }
-
-    public String getClassDeclaredMethod() { return definedClass; }
-
-    public Parameter getParameter(String parameterName){ return parameterHashMap.get(parameterName); }
+    public boolean alreadyHaveBlock(){ return block != null; }
 
     public Parameter addParameter(Parameter parameter){
         parameter.setParameterPosition(parameters.size()+1);
@@ -122,12 +111,6 @@ public class Method {
         parameterHashMap.put(parameter.getVarName(), parameter);
         return null;
     }
-
-    public ArrayList<Parameter> getParameters() {
-        return parameters;
-    }
-
-    public HashMap<String, Parameter> getParameterHashMap(){ return parameterHashMap; }
 
     public String getMapKey(){
         String encabezadoMet = this.getMethodName();
@@ -152,10 +135,6 @@ public class Method {
     public void checkBlock(SymbolTable st) throws SemanticException {
         block.check(st);
     }
-
-    public void setOffsetMetodo(int offsetMetodo){ this.offsetMetodo = offsetMetodo; }
-
-    public int getOffsetMetodo(){ return offsetMetodo; }
 
     public int getOffsetRetornoMetodo(){
         if(!isStatic){
@@ -185,12 +164,6 @@ public class Method {
         if(!getClassDeclaredMethod().equals("System") &&
                 !getClassDeclaredMethod().equals("Object") &&
                 !getClassDeclaredMethod().equals("String")) {
-//            String label;
-//            if(this.getMethodName().equals(this.getClassDeclaredMethod())){
-//                label = this.getMethodName()+"Constructor";
-//            }else{
-//                label = this.getMethodName()+this.getClassDeclaredMethod();
-//            }
             int espacios = getLabel().length() + 1;
             String spaces = String.format("%" + (espacios) + "s", "");
             st.setIdentacionParaCodigo(spaces);

@@ -16,14 +16,15 @@ public class MainModule {
 
     // TODO cmd: java -jar CeIVM-cei2011.jar CodigoMaquina.txt
 
-    // TODO invocar metodos
-
     public static void main(String[]args){
-        File myObj = new File("CodigoMaquina.txt");
 
-//        FileManager fileManager = new FileManager(new File("resources/sinErrores/correcciones.java"));
-        FileManager fileManager = new FileManager(new File("resources/pruebas/prueba.java"));
-//        FileManager fileManager = new FileManager(new File(args[0]));
+        String nombre_test = "test10";
+        String archivo_codigoMaquina = "resources/codigoMaquina/Traducciones_CodigoMaquina/"+nombre_test+".txt";
+        String archivo_codigoMiniJava = "resources/codigoMaquina/Codigo_MiniJava/"+nombre_test+".java";
+
+        File myObj = new File(archivo_codigoMaquina);
+
+        FileManager fileManager = new FileManager(new File(archivo_codigoMiniJava));
 
         SymbolTable st = new SymbolTable();
 
@@ -40,8 +41,7 @@ public class MainModule {
                 myObj.createNewFile();
             }
 
-            FileWriter writer = new FileWriter("CodigoMaquina.txt");
-//            writer.write("HolaMundo\n");
+            FileWriter writer = new FileWriter(archivo_codigoMaquina);
 
             st.setWriter(writer);
 
@@ -77,7 +77,8 @@ public class MainModule {
 
         if(!error) {
             System.out.println("[SinErrores]");
-//            st.imprimirTablas();
+            // TODO codigo para debug:
+            // st.imprimirTablas();
         }
 
     }

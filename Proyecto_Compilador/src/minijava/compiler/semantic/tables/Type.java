@@ -3,7 +3,7 @@ package minijava.compiler.semantic.tables;
 import minijava.compiler.lexical.analyzer.Token;
 
 public class Type {
-    private Token typeToken;
+    protected Token typeToken;
 
     public Type(Token typeToken){
         this.typeToken = typeToken;

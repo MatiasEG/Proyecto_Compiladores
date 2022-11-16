@@ -7,8 +7,6 @@ import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongTypeActualAr
 import minijava.compiler.semantic.SymbolTable;
 import minijava.compiler.semantic.nodes.expresion.ExpresionNodo;
 import minijava.compiler.semantic.nodes.expresion.operando.EncadenadoOptNodo;
-import minijava.compiler.semantic.tables.Class;
-import minijava.compiler.semantic.tables.Interface_;
 import minijava.compiler.semantic.tables.Method;
 import minijava.compiler.semantic.tables.Type;
 import minijava.compiler.semantic.tables.variable.Parameter;
@@ -19,8 +17,6 @@ import java.util.Collections;
 import java.util.Iterator;
 
 public class MetEncadenadoNodo extends EncadenadoOptNodo {
-
-    // TODO se agrego soporte para interfaces
 
     private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
     private Method m;
@@ -71,7 +67,6 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
         this.tipoPrimarioNodo = tipoPrimarioNodo;
         m = isMethod(tipoPrimarioNodo, st);
         if(m!=null) {
-//            m = st.getClass(tipoPrimarioNodo.getLexemeType()).getHashMapMethodsWithoutOverloaded().get(idMetVar.getLexeme());
             ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
             Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
             if (actualArgsExpresionNodes.size() == tiposParametrosDeclarados.size()) {
@@ -88,13 +83,11 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
                         throw new SemanticExceptionWrongTypeActualArgs(idMetVar);
                     }
                 }
-
-            } else {
+            }else{
                 throw new SemanticExceptionWrongQuantityParameters(m.getMethodToken());
-            }
-            if (encadenadoOptNodo == null) {
+            }if(encadenadoOptNodo == null) {
                 return m.getMethodType();
-            } else {
+            }else{
                 return encadenadoOptNodo.check(m.getMethodType(), st);
             }
         }else{
@@ -105,9 +98,6 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
     @Override
     public void generar(SymbolTable st) throws IOException {
         if(!m.isStatic()){
-
-            //TODO ver si hay que borrar esto
-//            st.updateMethodOffset(m);
 
             if(m.needReturn()){
                 st.write("RMEM 1 # Lugar de retorno\n");
@@ -138,7 +128,5 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
             st.write("PUSH "+m.getLabel()+"\n");
             st.write("CALL\n");
         }
-
-
     }
 }

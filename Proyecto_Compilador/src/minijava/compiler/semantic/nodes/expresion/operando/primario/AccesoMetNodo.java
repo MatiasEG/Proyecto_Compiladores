@@ -20,8 +20,8 @@ import java.util.Iterator;
 
 public class AccesoMetNodo extends PrimarioNodo {
 
-    private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
-    private Method m;
+    protected ArrayList<ExpresionNodo> actualArgsExpresionNodes;
+    protected Method m;
 
     public AccesoMetNodo(Token metToken) {
         this.idPrimario = metToken;
@@ -71,8 +71,6 @@ public class AccesoMetNodo extends PrimarioNodo {
     @Override
     public void generar(SymbolTable st) throws IOException {
         if(!m.isStatic()){
-//            st.updateMethodOffset(m);
-
             st.write("LOAD 3 # This\n");
             if(m.needReturn()){
                 st.write("RMEM 1 # Lugar de retorno\n");

@@ -48,23 +48,6 @@ public abstract class ClassOrInterface {
         }
     }
 
-//    public void addMetodoHerencia(Method method){
-//        methods.add(method);
-//        metodoHashMap.put(method.getMapKey(), method);
-//
-//        if(!metodosSinSobrecargaMap.containsKey(method.getMethodName())){
-//            metodosSinSobrecargaMap.put(method.getMethodName(), method);
-//            if(!method.isStatic()){
-//                metodosDinamicos.put(method.getMethodName(), method);
-//                if(method.getClassDeclaredMethod().equals(this.getNombre())){
-//                    metodosPorOffset.put(method.getOffsetMetodo(), method);
-//                }else{
-//                    metodosHeredadosPorOffset.put(method.getOffsetMetodo(), method);
-//                }
-//            }
-//        }
-//    }
-
     protected void generarMapeoMetodosPorOffset(){
         for(Map.Entry<Integer,Method> mHeredados: metodosHeredadosPorOffset.entrySet()){
             metodosPorOffsetCompleto.put(mHeredados.getKey(), mHeredados.getValue());
@@ -76,10 +59,6 @@ public abstract class ClassOrInterface {
     }
 
     public HashMap<Integer,Method> getMetodosHeredadosPorOffset(){ return metodosHeredadosPorOffset; }
-
-    public HashMap<Integer,Method> getMetodosPropios(){ return metodosPorOffset; }
-
-    public HashMap<Integer, Method> getMetodosPorOffset(){ return metodosPorOffset; }
 
     public String getNombre() { return claseOrinterfaceToken.getLexeme(); }
 

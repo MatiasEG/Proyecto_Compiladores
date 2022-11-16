@@ -23,16 +23,16 @@ import java.util.Map;
 
 public class SymbolTable {
 
-    private ClassOrInterface actualClassOrInterface;
-    private HashMap<String, Class> classes;
-    private HashMap<String, Interface_> interfaces;
-    private Method actualMethod;
-    private Class actualClass;
-    private FileWriter writer;
-    private String identacionParaCodigo;
-    private String mainClass;
-    private int maxOffsetMetodo;
-    private int maxOffsetInterface;
+    protected ClassOrInterface actualClassOrInterface;
+    protected HashMap<String, Class> classes;
+    protected HashMap<String, Interface_> interfaces;
+    protected Method actualMethod;
+    protected Class actualClass;
+    protected FileWriter writer;
+    protected String identacionParaCodigo;
+    protected String mainClass;
+    protected int maxOffsetMetodo;
+    protected int maxOffsetInterface;
 
     public static int nro_TerminacionIf = 0;
     public static int nro_else = 0;
@@ -57,19 +57,64 @@ public class SymbolTable {
         classes.put(system.getNombre(), system);
     }
 
-    public void setActualClassOrInterface(ClassOrInterface classOrInterface){
-        actualClassOrInterface = classOrInterface;
-    }
+    public void setActualClassOrInterface(ClassOrInterface classOrInterface){ actualClassOrInterface = classOrInterface; }
 
-    public Map<String,Interface_> getInterfaces(){ return interfaces; }
+    public void setActualMethod(Method m){ this.actualMethod = m; }
+
+    private void setActualClass(Class class_){ this.actualClass = class_; }
 
     public void setActualClassInterfaceListOfExtends(ArrayList<Token> extendsFrom){ actualClassOrInterface.setListOfExtends(extendsFrom); }
 
     public void setActualClassListOfImplements(ArrayList<Token> implement){ ((Class) actualClassOrInterface).setListOfImplements(implement); }
 
+    private void setOffsetMetodos(Class clase){ clase.ordenarMetodosFinal(this); }
+
+    public Map<String,Interface_> getInterfaces(){ return interfaces; }
+
     public String getActualClassInterfaceName(){ return actualClassOrInterface.getNombre(); }
 
     public Token getObjectClassToken(){ return classes.get("Object").getClassOrinterfaceToken(); }
+
+    public int getMaxOffsetInterface(){
+        int aux = maxOffsetInterface;
+        maxOffsetInterface++;
+        return aux;
+    }
+
+    public Class getActualClass(){ return actualClass; }
+
+    public Class getClass(String className){
+        if (classes.containsKey(className)) return classes.get(className);
+        else return null;
+    }
+
+    public Interface_ getInterface(String interfaceName){
+        if (interfaces.containsKey(interfaceName)) return interfaces.get(interfaceName);
+        else return null;
+    }
+
+    public Method getActualMethod(){ return actualMethod; }
+
+    public static int getNro_TerminacionIf(){
+        int aux = nro_TerminacionIf;
+        nro_TerminacionIf++;
+        return aux;
+    }
+
+    public static int getNro_else(){
+        int aux = nro_else;
+        nro_else++;
+        return aux;
+    }
+
+    public static int getNro_while(){
+        int aux = nro_while;
+        nro_while++;
+        return aux;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // TODO metodos auxiliares
 
     public void insertarClase() throws SemanticException{
         if(alreadyExist(actualClassOrInterface.getNombre()) == null){
@@ -149,6 +194,9 @@ public class SymbolTable {
         return null;
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // TODO check declaraciones
+
     public void check() throws SemanticException{
         int main = 0;
         String s;
@@ -162,7 +210,6 @@ public class SymbolTable {
                 s = t.getLexeme();
                 if(interfaces.containsKey(s)) throw new SemanticExceptionClassExtendInterface(t);
                 if(!classes.containsKey(s)) throw new SemanticExceptionExtendedClassDoesNotExist(entry.getValue(), t);
-//                main += checkMetodos(main, entry.getValue(), entry.getValue().getMethods());
                 checkSignaturaMetodosRedefinidosPorHerencia(entry.getValue(), alreadyExist(s));
             }
 
@@ -250,14 +297,9 @@ public class SymbolTable {
         }else if(descendiente instanceof Interface_ && padre.getExtendedClasses().size()>=1)
             checkSignaturaMetodosRedefinidosPorHerencia(interfaces.get(padre.getNombre()),interfaces.get(padre.getExtendedClasses().get(0).getLexeme()));
         for(Map.Entry<String,Method> m: padre.getMetodosDinamicos().entrySet()){
-//            if(!descendiente.getHashMapMethods().containsKey(m.getValue().getMapKey()) && !m.getValue().getMethodType().getLexemeType().equals(m.getValue().getMethodName())) {
             if(!m.getValue().getMethodType().getLexemeType().equals(m.getValue().getMethodName())) {
                 if(!descendiente.getHashMapMethods().containsKey(m.getValue().getMapKey())){
-                    // TODO ---
-//                    Method method = Method.clonar(m.getValue());
                     Method method = m.getValue();
-                    // TODO ---
-//                    descendiente.addMetodo(padre.getHashMapMethods().get(m.getValue().getMapKey()));
                     descendiente.addMetodo(method);
                     if(descendiente instanceof Interface_){
                         method.setOffsetMetodo(this.getMaxOffsetInterface());
@@ -277,7 +319,6 @@ public class SymbolTable {
                 if(!m.getValue().equals(descendiente.getHashMapMethods().get(m.getValue().getMapKey()))) throw new SemanticExceptionMethodNotRedefined(descendiente.getHashMapMethods().get(m.getValue().getMapKey()), descendiente);
             }
         }
-        // TODO ver si no rompe nada el codigo de abajo
         for(Map.Entry<String,Method> m: padre.getHashMapMethodsWithoutOverloaded().entrySet()){
             if(!descendiente.getHashMapMethods().containsKey(m.getValue().getMapKey()) && !m.getValue().getMethodType().getLexemeType().equals(m.getValue().getMethodName())) {
                 if(m.getValue().isStatic()){
@@ -303,11 +344,8 @@ public class SymbolTable {
         }
     }
 
-    public int getMaxOffsetInterface(){
-        int aux = maxOffsetInterface;
-        maxOffsetInterface++;
-        return aux;
-    }
+    // -----------------------------------------------------------------------------------------------------------------
+    // TODO consolidacion declaraciones
 
     public void consolidacion() throws SemanticException{
         for(Map.Entry<String, Class> entry: classes.entrySet()){
@@ -319,9 +357,7 @@ public class SymbolTable {
                 consolidacionAtributosHeredados(entry.getValue(), classes.get(t.getLexeme()));
                 if(consolidacionHerenciaCircular(entry.getValue(), classes.get(t.getLexeme()))) throw new SemanticExceptionCircleExtend(t, entry.getValue());
             }
-//            setOffsetMetodos(entry.getValue());
         }
-
 
         for(Map.Entry<String, Interface_> entry: interfaces.entrySet()){
             for(Token t: entry.getValue().getExtendedClasses()){
@@ -333,11 +369,6 @@ public class SymbolTable {
         for(Map.Entry<String, Class> entry: classes.entrySet()){
             entry.getValue().definirOffsetMetodosInterfaces(this);
         }
-    }
-
-    private void setOffsetMetodos(Class clase){
-        clase.ordenarMetodosFinal(this);
-
     }
 
     private void checkMetodosImplementados(Class claseImplementa, Interface_ interface_) throws SemanticException{
@@ -385,6 +416,8 @@ public class SymbolTable {
         }
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // TODO check sentencias
 
     public void checkSentences() throws SemanticException {
         for(Map.Entry<String, Class> entry: classes.entrySet()){
@@ -397,30 +430,8 @@ public class SymbolTable {
         }
     }
 
-    private void setActualClass(Class class_){ this.actualClass = class_; }
-
-    public Class getActualClass(){ return actualClass; }
-
-    public Class getClass(String className){
-        if (classes.containsKey(className)) return classes.get(className);
-        else return null;
-    }
-
-    public Interface_ getInterface(String interfaceName){
-        if (interfaces.containsKey(interfaceName)) return interfaces.get(interfaceName);
-        else return null;
-    }
-
-    public void setActualMethod(Method m){ this.actualMethod = m; }
-
-    public Method getActualMethod(){ return actualMethod; }
-
-
-
-
-
-
-
+    // -----------------------------------------------------------------------------------------------------------------
+    // TODO generacion de codigo maquina
 
     public void generarCodigo() throws IOException {
         write(".CODE\n" +
@@ -446,58 +457,18 @@ public class SymbolTable {
 
         PredefinedClasses.generarCodigoClasesXDefecto(this);
 
+        // TODO codigo para debug:
+        // imprimirOffsets();
 
-        imprimirOffsets();
-//        System.out.println("maxOffset: "+maxOffsetMetodo);
-
-    }
-
-    public void updateMethodOffset(Method met){
-        boolean encontre = false;
-        for(Map.Entry<String, Class> clase : classes.entrySet()){
-            for (Map.Entry<Integer, Method> metFinal : clase.getValue().getMapeoDeMetodosFinal().entrySet()) {
-                if (metFinal.getValue().getMethodName().equals(met.getMethodName())) {
-                    met.setOffsetMetodo(metFinal.getValue().getOffsetMetodo());
-                    encontre = true;
-                }
-                if (encontre) break;
-            }
-            if (encontre) break;
-        }
-    }
-
-    public int getMaxOffsetMetodo(){ return maxOffsetMetodo; }
-
-    public static int getNro_TerminacionIf(){
-        int aux = nro_TerminacionIf;
-        nro_TerminacionIf++;
-        return aux;
-    }
-
-    public static int getNro_else(){
-        int aux = nro_else;
-        nro_else++;
-        return aux;
-    }
-
-    public static int getNro_while(){
-        int aux = nro_while;
-        nro_while++;
-        return aux;
     }
 
     public void setWriter(FileWriter writer){
         this.writer = writer;
     }
 
-    public void writeLabel(String txt2write) throws IOException {
-        writer.write(txt2write);
+    public void writeLabel(String txt2write) throws IOException { writer.write(txt2write); }
 
-    }
-
-    public void write(String txt2write) throws IOException {
-        writer.write(identacionParaCodigo+txt2write);
-    }
+    public void write(String txt2write) throws IOException { writer.write(identacionParaCodigo+txt2write); }
 
     public void setIdentacionParaCodigo(String espacios){ identacionParaCodigo = espacios; }
 
@@ -524,16 +495,8 @@ public class SymbolTable {
                 spaces+"RET 1 # Retorna eliminando el parametro\n\n");
     }
 
-
-
-
-
-
-
-
-
-
-
+    // -----------------------------------------------------------------------------------------------------------------
+    // TODO metodos para debug del codigo
 
     public void imprimirOffsets(){
         for (Map.Entry<String,Class> clase: classes.entrySet()){

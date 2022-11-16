@@ -9,7 +9,6 @@ import java.io.IOException;
 
 public class ExpresionUnariaSinOperador extends ExpresionUnariaNodo {
 
-
     public ExpresionUnariaSinOperador() {
         super(null);
     }

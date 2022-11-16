@@ -18,8 +18,8 @@ import java.util.Iterator;
 
 public class AccesoConstructorNodo extends PrimarioNodo {
 
-    private Type returnType;
-    private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
+    protected Type returnType;
+    protected ArrayList<ExpresionNodo> actualArgsExpresionNodes;
 
     public AccesoConstructorNodo(Token idClase){
         this.idPrimario = idClase;
@@ -80,6 +80,7 @@ public class AccesoConstructorNodo extends PrimarioNodo {
             parametroActualExp.generar(st);
             st.write("SWAP # Muevo al tope el this, por cada parametro generado\n");
         }
+
         st.write("PUSH "+idPrimario.getLexeme()+"Constructor"+"\n");
         st.write("CALL # Invoco el constructor\n");
     }

@@ -33,14 +33,74 @@ mainMainModule:
                LOADFP
                LOADSP
                STOREFP
-               PUSH 2
-               PUSH 3
-               LOAD 0 # Apilo el valor de la variable.
-               LOAD -1 # Apilo el valor de la variable.
+               PUSH 4
+               PUSH 10
                ADD
-               PUSH printISystem
+               PUSH 33
+               ADD
+               PUSH 12
+               GT
+               LOAD 0 # Apilo el valor de la variable.
+               PUSH printBlnSystem
                CALL
-               FMEM 2 # Se elimina el espacio reservado para las variables locales.
+               PUSH 99
+               PUSH 15
+               MUL
+               PUSH 23
+               EQ
+               STORE 0 # Apilo el valor de la variable.
+               LOAD 0 # Apilo el valor de la variable.
+               PUSH printBlnSystem
+               CALL
+               PUSH 97
+               PUSH 12
+               GE
+               PUSH printBlnSystem
+               CALL
+               PUSH 1
+               NOT # Negacion unaria
+               PUSH printBlnSystem
+               CALL
+               PUSH 4
+               PUSH 2
+               DIV
+               PUSH 2
+               NE
+               STORE 0 # Apilo el valor de la variable.
+               LOAD 0 # Apilo el valor de la variable.
+               PUSH printBlnSystem
+               CALL
+               PUSH 4
+               PUSH 10
+               ADD
+               PUSH 33
+               ADD
+               PUSH 12
+               GT
+               PUSH 99
+               PUSH 15
+               MUL
+               PUSH 23
+               EQ
+               OR
+               PUSH 97
+               PUSH 12
+               GE
+               AND
+               PUSH 1
+               NOT # Negacion unaria
+               OR
+               PUSH 4
+               PUSH 2
+               DIV
+               PUSH 2
+               NE
+               AND
+               STORE 0 # Apilo el valor de la variable.
+               LOAD 0 # Apilo el valor de la variable.
+               PUSH printBlnSystem
+               CALL
+               FMEM 1 # Se elimina el espacio reservado para las variables locales.
                STOREFP
                RET 0
 

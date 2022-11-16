@@ -11,12 +11,12 @@ import java.util.Map;
 
 public class Class extends ClassOrInterface {
 
-    private ArrayList<Token> implement;
-    private ArrayList<Attribute> attributes;
-    private HashMap<String, Attribute> atributosHashMap;
-    private int offsetAtributo;
-    private String vtLabel;
-    private Map<Integer,Method> mapeoMetodosInterface;
+    protected ArrayList<Token> implement;
+    protected ArrayList<Attribute> attributes;
+    protected HashMap<String, Attribute> atributosHashMap;
+    protected int offsetAtributo;
+    protected String vtLabel;
+    protected Map<Integer,Method> mapeoMetodosInterface;
 
     public Class(Token claseToken){
         extendsFrom = new ArrayList<>();
@@ -49,6 +49,8 @@ public class Class extends ClassOrInterface {
     public ArrayList<Attribute> getAttributes(){ return attributes; }
 
     public HashMap<String, Attribute> getHashMapAtributes(){ return atributosHashMap; }
+
+    public String getVtLabel(){ return vtLabel; }
 
     public void addAttribute(Attribute attribute){
         attributes.add(attribute);
@@ -84,8 +86,6 @@ public class Class extends ClassOrInterface {
         return false;
     }
 
-    public String getVtLabel(){ return vtLabel; }
-
     public void generarCodigoData(SymbolTable st) throws IOException {
         st.writeLabel(".DATA\n\n");
         st.writeLabel(vtLabel+": ");
@@ -93,9 +93,6 @@ public class Class extends ClassOrInterface {
         if(cantMetodosDinamicos>0){
             st.writeLabel("DW ");
             int comasNecesarias = cantMetodosDinamicos-1;
-//            for(Map.Entry<Integer, Method> entry: metodosPorOffset.entrySet()){
-            // TODO intentar que arranque de 0
-//            for(int i = 0; i < metodosDinamicos.size(); i++){
             int i = 0;
             while(true){
                 if(mapeoDeMetodosFinal.get(i) == null){
@@ -127,25 +124,30 @@ public class Class extends ClassOrInterface {
                 }
             }
         }
-
-        //TODO seguir con esta generacion de codigo, generar bloque
     }
 
     public void ordenarMetodosFinal(SymbolTable st){
         Method mAux;
         offsetMetodo = 0;
-        if(extendsFrom.size()>1){
-            st.getClass(extendsFrom.get(1).getLexeme()).ordenarMetodosFinal(st);
-        }else{
-//            for(Map.Entry<Integer,Method> entry: metodosPorOffsetCompleto.entrySet()){
-            for(Map.Entry<String,Method> entry: metodosSinSobrecargaMap.entrySet()){
-                mAux = entry.getValue();
-                if(!mAux.esDeInterface && !mAux.isStatic()){
-                    mAux.setOffsetMetodo(offsetMetodo++);
-                    mapeoDeMetodosFinal.put(mAux.getOffsetMetodo(), mAux);
-                }
+        if(extendsFrom.size()>=1)
+            st.getClass(extendsFrom.get(0).getLexeme()).ordenarMetodosFinal(st);
+
+        for(Map.Entry<String,Method> entry: metodosSinSobrecargaMap.entrySet()){
+            mAux = entry.getValue();
+            if(!mAux.esDeInterface && !mAux.isStatic() && !mAux.getClassDeclaredMethod().equals(getNombre())){
+                mAux.setOffsetMetodo(offsetMetodo++);
+                mapeoDeMetodosFinal.put(mAux.getOffsetMetodo(), mAux);
             }
         }
+
+        for(Map.Entry<String,Method> entry: metodosSinSobrecargaMap.entrySet()){
+            mAux = entry.getValue();
+            if(!mAux.esDeInterface && !mAux.isStatic() && mAux.getClassDeclaredMethod().equals(getNombre())){
+                mAux.setOffsetMetodo(offsetMetodo++);
+                mapeoDeMetodosFinal.put(mAux.getOffsetMetodo(), mAux);
+            }
+        }
+
 
     }
 
@@ -153,29 +155,19 @@ public class Class extends ClassOrInterface {
         this.generarMapeoMetodosPorOffset();
         Method mAux;
         Method mInterface;
-//        for(Map.Entry<Integer,Method> entry: metodosPorOffsetCompleto.entrySet()){
         for(Map.Entry<String,Method> entry: metodosSinSobrecargaMap.entrySet()){
             mAux = entry.getValue();
             if(mAux.esDeInterface && !mAux.isStatic()){
 
                 for(Map.Entry<String,Interface_> interface_entry: st.getInterfaces().entrySet()){
-//                for(Token tInterface: implement){
-//                    for(Map.Entry<String,Method> metInterface: interface_entry.getValue().getHashMapMethods().entrySet()){
                     mInterface = interface_entry.getValue().metodoPertenece(mAux);
-//                        mInterface = st.getInterface(tInterface.getLexeme()).metodoPertenece(mAux);
                         if (mInterface != null) {
                             mAux.setOffsetMetodo(mInterface.getOffsetMetodo());
                             mapeoDeMetodosFinal.put(mAux.getOffsetMetodo(), mAux);
                             break;
                         }
-//                    }
                 }
             }
         }
-        System.out.println("-----------------------------------------");
-        System.out.println("Clase "+claseOrinterfaceToken.getLexeme());
-        System.out.println("FinalSize: "+mapeoDeMetodosFinal.size());
-        System.out.println("offset: "+offsetMetodo);
-        System.out.println("-----------------------------------------\n\n");
     }
 }

@@ -1,3 +1,10 @@
+//true
+//false
+//true
+//false
+//false
+//false
+
 class MainModule{
     static void main(){
 
@@ -6,13 +13,13 @@ class MainModule{
         bool = ((99*15) == 23);
         System.printBln(bool);
 
-        System.printBln((97<=12));
+        System.printBln((97>=12));
         System.printBln(!true);
 
         bool = ((4/2) != 2);
         System.printBln(bool);
 
-        bool = ((4+ 10 + 33) > 12) || ((99*15) == 23) && (97<=12) || !true && ((4/2) != 2);
+        bool = ((4+ 10 + 33) > 12) || ((99*15) == 23) && (97>=12) || !true && ((4/2) != 2);
         System.printBln(bool);
 
     }

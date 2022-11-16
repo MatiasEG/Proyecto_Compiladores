@@ -15,11 +15,11 @@ import java.io.IOException;
 
 public class VarLocalNodo extends SentenciaNodo{
 
-    private Token idVarLocalToken;
-    private Variable var;
-    private String name;
-    private ExpresionNodo parteDerecha;
-    private Block bloqueVarLocal;
+    protected Token idVarLocalToken;
+    protected Variable var;
+    protected String name;
+    protected ExpresionNodo parteDerecha;
+    protected Block bloqueVarLocal;
 
     public VarLocalNodo(Block bloqueVarLocal){
         this.bloqueVarLocal = bloqueVarLocal;
@@ -52,9 +52,6 @@ public class VarLocalNodo extends SentenciaNodo{
 
     @Override
     public void generar(SymbolTable st) throws IOException {
-        // TODO borrar
-//        st.write("RMEM 1 # Se guarda un espacio para la varLocal.\n");
         parteDerecha.generar(st);
-//        st.write("STORE "+var.getOffset()+" # Posicion de la var local.\n");
     }
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class VarEncadenadaNodo extends EncadenadoOptNodo {
 
-    private Attribute atributo;
+    protected Attribute atributo;
 
     public VarEncadenadaNodo(){
         primarioNodo = null;

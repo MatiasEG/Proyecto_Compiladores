@@ -1,7 +1,6 @@
 package minijava.compiler.semantic.nodes.sentencia.asignacion;
 
 import minijava.compiler.exception.SemanticException;
-import minijava.compiler.exception.SemanticP2.SemanticExceptionAssignmentWithDiferentTypes;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionInvalidTypeForIntAsignation;
 import minijava.compiler.exception.SemanticP2.SemanticExceptionWrongLeftTypeInAssignment;
 import minijava.compiler.lexical.analyzer.Token;

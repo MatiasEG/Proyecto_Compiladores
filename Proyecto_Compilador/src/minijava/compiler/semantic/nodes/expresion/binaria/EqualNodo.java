@@ -20,11 +20,9 @@ public class EqualNodo extends ExpresionBinariaNodo {
         Type tipoLadoDer = ladoDerecho.check(st);
 
         if(tipoLadoIzq.isClassRef() && tipoLadoDer.isClassRef()){
-//            return new Type(new Token("idKeyWord_boolean", "boolean", tipoLadoIzq.getTokenType().getRow()));
             if(tipoLadoIzq.getLexemeType().equals(tipoLadoDer.getLexemeType())){
                 return new Type(new Token("idKeyWord_boolean", "boolean", tipoLadoIzq.getTokenType().getRow()));
             }else{
-//            TODO ver si este codigo sirve para la parte de ejecucion
                 String subtipo = st.bSubtipoA(tipoLadoIzq.getLexemeType(), tipoLadoDer.getLexemeType());
                 if(subtipo != null){
                     // TRUE

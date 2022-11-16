@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Interface_ extends ClassOrInterface {
 
-    private boolean offsetChequeados;
+    protected boolean offsetChequeados;
 
     public boolean isOffsetChequeados(){ return offsetChequeados; }
 
@@ -25,7 +25,6 @@ public class Interface_ extends ClassOrInterface {
         mapeoDeMetodosFinal = new HashMap<>();
         metodosPorOffsetCompleto = new HashMap<>();
     }
-
 
     public void addMetodoHerencia(Method metodoHeredado){
         metodosHeredadosPorOffset.put(metodoHeredado.getOffsetMetodo(), metodoHeredado);
@@ -43,7 +42,6 @@ public class Interface_ extends ClassOrInterface {
     public void generarOffsetInterfaces(SymbolTable st){
         this.generarMapeoMetodosPorOffset();
         Method mAux;
-//        offsetMetodo =
 
         if(!offsetChequeados){
             for(Token padre: extendsFrom){
@@ -51,10 +49,8 @@ public class Interface_ extends ClassOrInterface {
                     st.getInterface(padre.getLexeme()).setOffsetMetodo(st.getMaxOffsetInterface());
                     st.getInterface(padre.getLexeme()).generarOffsetInterfaces(st);
                 }
-    //            offsetMetodo = st.getInterface(padre.getLexeme()).getOffsetMetodo();
             }
 
-//            for(Map.Entry<Integer,Method> entry: metodosPorOffsetCompleto.entrySet()){
             for(Map.Entry<String,Method> entry: metodosSinSobrecargaMap.entrySet()){
                 mAux = entry.getValue();
                 if(!mAux.isStatic()){
@@ -62,9 +58,6 @@ public class Interface_ extends ClassOrInterface {
                         mAux.setOffsetMetodo(st.getMaxOffsetInterface());
                         mapeoDeMetodosFinal.put(mAux.getOffsetMetodo(), mAux);
                     }
-//                    else{
-//                        mapeoDeMetodosFinal.put(mAux.getOffsetMetodo(), mAux);
-//                    }
                 }
             }
             offsetChequeados = true;

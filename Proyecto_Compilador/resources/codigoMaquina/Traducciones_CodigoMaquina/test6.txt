@@ -24,6 +24,75 @@ simple_malloc:
 
 .DATA
 
+VT_A: DW bMetA
+
+.CODE
+
+# ---------------- AConstructor ---------------- 
+AConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+# ---------------- bMetA ---------------- 
+bMetA:
+      LOADFP
+      LOADSP
+      STOREFP
+      FMEM 0 # Libero los lugares de las var locales
+      RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+      PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+      PUSH simple_malloc
+      CALL
+      DUP # de la referencia al nuevo CIR
+      PUSH VT_B
+      STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+      DUP # de la referencia al objeto
+      PUSH BConstructor
+      CALL # Invoco el constructor
+      STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
+      STOREFP 
+      RET 1 # Efectuamos el retorno liberando la cantidad de parametros
+      FMEM 0 # Se elimina el espacio reservado para las variables locales.
+      STOREFP
+      RET 1
+
+.DATA
+
+VT_B: DW enteroB
+
+.CODE
+
+# ---------------- BConstructor ---------------- 
+BConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+# ---------------- enteroB ---------------- 
+enteroB:
+        LOADFP
+        LOADSP
+        STOREFP
+        FMEM 0 # Libero los lugares de las var locales
+        PUSH 5
+        PUSH 4
+        ADD
+        STORE 4 # Se coloca el valor de retorno en su ubicacion reservada
+        STOREFP 
+        RET 1 # Efectuamos el retorno liberando la cantidad de parametros
+        FMEM 0 # Se elimina el espacio reservado para las variables locales.
+        STOREFP
+        RET 1
+
+.DATA
+
 VT_MainModule: NOP
 
 .CODE
@@ -33,12 +102,31 @@ mainMainModule:
                LOADFP
                LOADSP
                STOREFP
-               PUSH 2
-               PUSH 3
+               RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+               PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+               PUSH simple_malloc
+               CALL
+               DUP # de la referencia al nuevo CIR
+               PUSH VT_A
+               STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+               DUP # de la referencia al objeto
+               PUSH AConstructor
+               CALL # Invoco el constructor
                LOAD 0 # Apilo el valor de la variable.
+               RMEM 1 # Lugar de retorno
+               SWAP # Muevo this al tope de la pila
+               DUP # Duplico this
+               LOADREF 0 # Consumo un this y lo reemplazo por su VT
+               LOADREF 0 # Lugar de retorno
+               CALL # Realizo la llamada a metodo dinamico
                LOAD -1 # Apilo el valor de la variable.
-               ADD
-               PUSH printISystem
+               RMEM 1 # Lugar de retorno
+               SWAP # Muevo this al tope de la pila
+               DUP # Duplico this
+               LOADREF 0 # Consumo un this y lo reemplazo por su VT
+               LOADREF 0 # Lugar de retorno
+               CALL # Realizo la llamada a metodo dinamico
+               PUSH printIlnSystem
                CALL
                FMEM 2 # Se elimina el espacio reservado para las variables locales.
                STOREFP
