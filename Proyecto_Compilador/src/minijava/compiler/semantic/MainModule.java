@@ -18,9 +18,18 @@ public class MainModule {
 
     public static void main(String[]args){
 
-        String nombre_test = "test10";
-        String archivo_codigoMaquina = "resources/codigoMaquina/Traducciones_CodigoMaquina/"+nombre_test+".txt";
-        String archivo_codigoMiniJava = "resources/codigoMaquina/Codigo_MiniJava/"+nombre_test+".java";
+//        String nombre_test = "test15";
+//        String archivo_codigoMaquina = "resources/codigoMaquina/Traducciones_CodigoMaquina/"+nombre_test+".txt";
+//        String archivo_codigoMiniJava = "resources/codigoMaquina/Codigo_MiniJava/"+nombre_test+".java";
+
+        String archivo_codigoMaquina = "";
+        if(args.length == 1){
+            archivo_codigoMaquina = "output.txt";
+        }else{
+            archivo_codigoMaquina = args[1];
+        }
+        String archivo_codigoMiniJava = args[0];
+
 
         File myObj = new File(archivo_codigoMaquina);
 

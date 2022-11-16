@@ -1,0 +1,364 @@
+.CODE
+   PUSH mainMainModule
+   CALL
+   HALT
+
+# ---------------- simple_heap_init ---------------- 
+simple_heap_init:RET 0 # Inicializacion simple del .heap
+
+# ---------------- simple_malloc ---------------- 
+simple_malloc:
+              LOADFP # Inicializacion unidad
+              LOADSP
+              STOREFP # Finaliza inicializacion del RA
+              LOADHL # hl
+              DUP # hl
+              PUSH 1
+              ADD # hl + 1
+              STORE 4 # Guarda resultado (puntero a base del bloque)
+              LOAD 3 # Carga cantidad de celdas a alojar (parametro)
+              ADD
+              STOREHL # Mueve el heap limit (hl)
+              STOREFP
+              RET 1 # Retorna eliminando el parametro
+
+.DATA
+
+VT_MainModule: NOP
+
+.CODE
+
+# ---------------- mainMainModule ---------------- 
+mainMainModule:
+               LOADFP
+               LOADSP
+               STOREFP
+               PUSH 0
+               init_while_0_main: NOP
+               LOAD 0 # Apilo el valor de la variable.
+               PUSH 10
+               LE
+               BF fin_while_1_main # Evaluo condicion while
+               RMEM 1 # Comienzo del String
+               PUSH 28 # Lugares del heap
+               PUSH simple_malloc
+               CALL
+               DUP # Ref del comienzo del String
+               PUSH 'V'
+               STOREREF 0
+               DUP # Ref del comienzo del String
+               PUSH 'a'
+               STOREREF 1
+               DUP # Ref del comienzo del String
+               PUSH 'l'
+               STOREREF 2
+               DUP # Ref del comienzo del String
+               PUSH 'o'
+               STOREREF 3
+               DUP # Ref del comienzo del String
+               PUSH 'r'
+               STOREREF 4
+               DUP # Ref del comienzo del String
+               PUSH ' '
+               STOREREF 5
+               DUP # Ref del comienzo del String
+               PUSH 'a'
+               STOREREF 6
+               DUP # Ref del comienzo del String
+               PUSH 'c'
+               STOREREF 7
+               DUP # Ref del comienzo del String
+               PUSH 't'
+               STOREREF 8
+               DUP # Ref del comienzo del String
+               PUSH 'u'
+               STOREREF 9
+               DUP # Ref del comienzo del String
+               PUSH 'a'
+               STOREREF 10
+               DUP # Ref del comienzo del String
+               PUSH 'l'
+               STOREREF 11
+               DUP # Ref del comienzo del String
+               PUSH ' '
+               STOREREF 12
+               DUP # Ref del comienzo del String
+               PUSH 'd'
+               STOREREF 13
+               DUP # Ref del comienzo del String
+               PUSH 'e'
+               STOREREF 14
+               DUP # Ref del comienzo del String
+               PUSH ' '
+               STOREREF 15
+               DUP # Ref del comienzo del String
+               PUSH 'i'
+               STOREREF 16
+               DUP # Ref del comienzo del String
+               PUSH 't'
+               STOREREF 17
+               DUP # Ref del comienzo del String
+               PUSH 'e'
+               STOREREF 18
+               DUP # Ref del comienzo del String
+               PUSH 'r'
+               STOREREF 19
+               DUP # Ref del comienzo del String
+               PUSH 'a'
+               STOREREF 20
+               DUP # Ref del comienzo del String
+               PUSH 'c'
+               STOREREF 21
+               DUP # Ref del comienzo del String
+               PUSH 'i'
+               STOREREF 22
+               DUP # Ref del comienzo del String
+               PUSH 'o'
+               STOREREF 23
+               DUP # Ref del comienzo del String
+               PUSH 'n'
+               STOREREF 24
+               DUP # Ref del comienzo del String
+               PUSH ':'
+               STOREREF 25
+               DUP # Ref del comienzo del String
+               PUSH ' '
+               STOREREF 26
+               DUP # Ref del comienzo del String
+               PUSH 0 # Caracter terminador
+               STOREREF 27
+               PUSH printSSystem
+               CALL
+               LOAD 0 # Apilo el valor de la variable.
+               PUSH printIlnSystem
+               CALL
+               LOAD 0 # Apilo el valor de la variable.
+               PUSH 2
+               MOD
+               PUSH 0
+               EQ
+               BF finIf_0_main
+               RMEM 1 # Comienzo del String
+               PUSH 12 # Lugares del heap
+               PUSH simple_malloc
+               CALL
+               DUP # Ref del comienzo del String
+               PUSH 'E'
+               STOREREF 0
+               DUP # Ref del comienzo del String
+               PUSH 'l'
+               STOREREF 1
+               DUP # Ref del comienzo del String
+               PUSH ' '
+               STOREREF 2
+               DUP # Ref del comienzo del String
+               PUSH 'n'
+               STOREREF 3
+               DUP # Ref del comienzo del String
+               PUSH 'u'
+               STOREREF 4
+               DUP # Ref del comienzo del String
+               PUSH 'm'
+               STOREREF 5
+               DUP # Ref del comienzo del String
+               PUSH 'e'
+               STOREREF 6
+               DUP # Ref del comienzo del String
+               PUSH 'r'
+               STOREREF 7
+               DUP # Ref del comienzo del String
+               PUSH 'o'
+               STOREREF 8
+               DUP # Ref del comienzo del String
+               PUSH ' '
+               STOREREF 9
+               DUP # Ref del comienzo del String
+               PUSH '('
+               STOREREF 10
+               DUP # Ref del comienzo del String
+               PUSH 0 # Caracter terminador
+               STOREREF 11
+               PUSH printSSystem
+               CALL
+               LOAD 0 # Apilo el valor de la variable.
+               PUSH printISystem
+               CALL
+               RMEM 1 # Comienzo del String
+               PUSH 11 # Lugares del heap
+               PUSH simple_malloc
+               CALL
+               DUP # Ref del comienzo del String
+               PUSH ')'
+               STOREREF 0
+               DUP # Ref del comienzo del String
+               PUSH ' '
+               STOREREF 1
+               DUP # Ref del comienzo del String
+               PUSH 'e'
+               STOREREF 2
+               DUP # Ref del comienzo del String
+               PUSH 's'
+               STOREREF 3
+               DUP # Ref del comienzo del String
+               PUSH ' '
+               STOREREF 4
+               DUP # Ref del comienzo del String
+               PUSH 'p'
+               STOREREF 5
+               DUP # Ref del comienzo del String
+               PUSH 'a'
+               STOREREF 6
+               DUP # Ref del comienzo del String
+               PUSH 'r'
+               STOREREF 7
+               DUP # Ref del comienzo del String
+               PUSH '!'
+               STOREREF 8
+               DUP # Ref del comienzo del String
+               PUSH '!'
+               STOREREF 9
+               DUP # Ref del comienzo del String
+               PUSH 0 # Caracter terminador
+               STOREREF 10
+               PUSH printSlnSystem
+               CALL
+               FMEM 0 # Se elimina el espacio reservado para las variables locales.
+               finIf_0_main: NOP
+               LOAD 0 # Apilo el valor de la variable.
+               LOAD 0 # Apilo el valor de la variable.
+               PUSH 1
+               ADD
+               LOAD 0 # Apilo el valor de la variable.
+               SUB
+               ADD
+               STORE 0 # Apilo el valor de la variable.
+               FMEM 0 # Se elimina el espacio reservado para las variables locales.
+               JUMP init_while_0_main
+               fin_while_1_main: NOP
+               FMEM 1 # Se elimina el espacio reservado para las variables locales.
+               STOREFP
+               RET 0
+
+# ---------------- MainModuleConstructor ---------------- 
+MainModuleConstructor:
+                      LOADFP
+                      LOADSP
+                      STOREFP
+                      FMEM 0 # Se elimina el espacio reservado para las variables locales.
+                      STOREFP
+                      RET 1
+
+# ---------------- debugPrintObject ---------------- 
+debugPrintObject:
+                 LOADFP
+                 LOADSP
+                 STOREFP
+                 LOAD 3
+                 IPRINT
+                 PRNLN
+                 STOREFP
+                 RET 1
+
+# ---------------- readSystem ---------------- 
+readSystem:
+           LOADFP
+           LOADSP
+           STOREFP
+           READ
+           STORE 3
+           STOREFP
+           RET 0
+
+# ---------------- printBSystem ---------------- 
+printBSystem:
+             LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             BPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printCSystem ---------------- 
+printCSystem:
+             LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             CPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printISystem ---------------- 
+printISystem:
+             LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             IPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printSSystem ---------------- 
+printSSystem:
+             LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             SPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printlnSystem ---------------- 
+printlnSystem:
+              LOADFP
+              LOADSP
+              STOREFP
+              PRNLN
+              STOREFP
+              RET 0
+
+# ---------------- printBlnSystem ---------------- 
+printBlnSystem:
+               LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               BPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printClnSystem ---------------- 
+printClnSystem:
+               LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               CPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printIlnSystem ---------------- 
+printIlnSystem:
+               LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               IPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printSlnSystem ---------------- 
+printSlnSystem:
+               LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               SPRINT
+               PRNLN
+               STOREFP
+               RET 1
+

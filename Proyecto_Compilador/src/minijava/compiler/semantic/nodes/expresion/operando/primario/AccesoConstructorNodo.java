@@ -14,6 +14,7 @@ import minijava.compiler.semantic.tables.variable.Parameter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 public class AccesoConstructorNodo extends PrimarioNodo {
@@ -26,7 +27,10 @@ public class AccesoConstructorNodo extends PrimarioNodo {
         returnType = new Type(idClase);
     }
 
-    public void setArgumentosActuales(ArrayList<ExpresionNodo> actualArgsExpresionNodes){ this.actualArgsExpresionNodes = actualArgsExpresionNodes; }
+    public void setArgumentosActuales(ArrayList<ExpresionNodo> actualArgsExpresionNodes){
+        Collections.reverse(actualArgsExpresionNodes);
+        this.actualArgsExpresionNodes = actualArgsExpresionNodes;
+    }
 
     @Override
     public Type check(SymbolTable st) throws SemanticException {

@@ -1,0 +1,443 @@
+.CODE
+   PUSH mainMainModule
+   CALL
+   HALT
+
+# ---------------- simple_heap_init ---------------- 
+simple_heap_init:RET 0 # Inicializacion simple del .heap
+
+# ---------------- simple_malloc ---------------- 
+simple_malloc:
+              LOADFP # Inicializacion unidad
+              LOADSP
+              STOREFP # Finaliza inicializacion del RA
+              LOADHL # hl
+              DUP # hl
+              PUSH 1
+              ADD # hl + 1
+              STORE 4 # Guarda resultado (puntero a base del bloque)
+              LOAD 3 # Carga cantidad de celdas a alojar (parametro)
+              ADD
+              STOREHL # Mueve el heap limit (hl)
+              STOREFP
+              RET 1 # Retorna eliminando el parametro
+
+.DATA
+
+VT_A: DW invalidm1B, invalidm2B, m1A, m2A, 0, 0, 0, m3B
+
+.CODE
+
+invalidm1B: NOP
+
+# ---------------- AConstructor ---------------- 
+AConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+# ---------------- m1A ---------------- 
+m1A:
+    LOADFP
+    LOADSP
+    STOREFP
+    RMEM 1 # Comienzo del String
+    PUSH 8 # Lugares del heap
+    PUSH simple_malloc
+    CALL
+    DUP # Ref del comienzo del String
+    PUSH 'm'
+    STOREREF 0
+    DUP # Ref del comienzo del String
+    PUSH '1'
+    STOREREF 1
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 2
+    DUP # Ref del comienzo del String
+    PUSH 'e'
+    STOREREF 3
+    DUP # Ref del comienzo del String
+    PUSH 'n'
+    STOREREF 4
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 5
+    DUP # Ref del comienzo del String
+    PUSH 'A'
+    STOREREF 6
+    DUP # Ref del comienzo del String
+    PUSH 0 # Caracter terminador
+    STOREREF 7
+    PUSH printSlnSystem
+    CALL
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+# ---------------- m2A ---------------- 
+m2A:
+    LOADFP
+    LOADSP
+    STOREFP
+    RMEM 1 # Comienzo del String
+    PUSH 8 # Lugares del heap
+    PUSH simple_malloc
+    CALL
+    DUP # Ref del comienzo del String
+    PUSH 'm'
+    STOREREF 0
+    DUP # Ref del comienzo del String
+    PUSH '2'
+    STOREREF 1
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 2
+    DUP # Ref del comienzo del String
+    PUSH 'e'
+    STOREREF 3
+    DUP # Ref del comienzo del String
+    PUSH 'n'
+    STOREREF 4
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 5
+    DUP # Ref del comienzo del String
+    PUSH 'A'
+    STOREREF 6
+    DUP # Ref del comienzo del String
+    PUSH 0 # Caracter terminador
+    STOREREF 7
+    PUSH printSlnSystem
+    CALL
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+invalidm2B: NOP
+
+.DATA
+
+VT_B: DW 0, 0, 0, 0, 0, 0, 0, m3B, 0, m2B, m1B
+
+.CODE
+
+# ---------------- BConstructor ---------------- 
+BConstructor:
+             LOADFP
+             LOADSP
+             STOREFP
+             FMEM 0 # Se elimina el espacio reservado para las variables locales.
+             STOREFP
+             RET 1
+
+# ---------------- m1B ---------------- 
+m1B:
+    LOADFP
+    LOADSP
+    STOREFP
+    RMEM 1 # Comienzo del String
+    PUSH 8 # Lugares del heap
+    PUSH simple_malloc
+    CALL
+    DUP # Ref del comienzo del String
+    PUSH 'm'
+    STOREREF 0
+    DUP # Ref del comienzo del String
+    PUSH '1'
+    STOREREF 1
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 2
+    DUP # Ref del comienzo del String
+    PUSH 'e'
+    STOREREF 3
+    DUP # Ref del comienzo del String
+    PUSH 'n'
+    STOREREF 4
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 5
+    DUP # Ref del comienzo del String
+    PUSH 'B'
+    STOREREF 6
+    DUP # Ref del comienzo del String
+    PUSH 0 # Caracter terminador
+    STOREREF 7
+    PUSH printSlnSystem
+    CALL
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+# ---------------- m2B ---------------- 
+m2B:
+    LOADFP
+    LOADSP
+    STOREFP
+    RMEM 1 # Comienzo del String
+    PUSH 8 # Lugares del heap
+    PUSH simple_malloc
+    CALL
+    DUP # Ref del comienzo del String
+    PUSH 'm'
+    STOREREF 0
+    DUP # Ref del comienzo del String
+    PUSH '2'
+    STOREREF 1
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 2
+    DUP # Ref del comienzo del String
+    PUSH 'e'
+    STOREREF 3
+    DUP # Ref del comienzo del String
+    PUSH 'n'
+    STOREREF 4
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 5
+    DUP # Ref del comienzo del String
+    PUSH 'B'
+    STOREREF 6
+    DUP # Ref del comienzo del String
+    PUSH 0 # Caracter terminador
+    STOREREF 7
+    PUSH printSlnSystem
+    CALL
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+# ---------------- m3B ---------------- 
+m3B:
+    LOADFP
+    LOADSP
+    STOREFP
+    RMEM 1 # Comienzo del String
+    PUSH 8 # Lugares del heap
+    PUSH simple_malloc
+    CALL
+    DUP # Ref del comienzo del String
+    PUSH 'm'
+    STOREREF 0
+    DUP # Ref del comienzo del String
+    PUSH '3'
+    STOREREF 1
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 2
+    DUP # Ref del comienzo del String
+    PUSH 'e'
+    STOREREF 3
+    DUP # Ref del comienzo del String
+    PUSH 'n'
+    STOREREF 4
+    DUP # Ref del comienzo del String
+    PUSH ' '
+    STOREREF 5
+    DUP # Ref del comienzo del String
+    PUSH 'B'
+    STOREREF 6
+    DUP # Ref del comienzo del String
+    PUSH 0 # Caracter terminador
+    STOREREF 7
+    PUSH printSlnSystem
+    CALL
+    FMEM 0 # Se elimina el espacio reservado para las variables locales.
+    STOREFP
+    RET 1
+
+.DATA
+
+VT_MainModule: NOP
+
+.CODE
+
+# ---------------- mainMainModule ---------------- 
+mainMainModule:
+               LOADFP
+               LOADSP
+               STOREFP
+               RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+               PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+               PUSH simple_malloc
+               CALL
+               DUP # de la referencia al nuevo CIR
+               PUSH VT_A
+               STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+               DUP # de la referencia al objeto
+               PUSH AConstructor
+               CALL # Invoco el constructor
+               LOAD 0 # Apilo el valor de la variable.
+               DUP # Duplico this
+               LOADREF 0 # Consumo un this y lo reemplazo por su VT
+               LOADREF 2 # Lugar de retorno
+               CALL # Realizo la llamada a metodo dinamico
+               LOAD 0 # Apilo el valor de la variable.
+               DUP # Duplico this
+               LOADREF 0 # Consumo un this y lo reemplazo por su VT
+               LOADREF 3 # Lugar de retorno
+               CALL # Realizo la llamada a metodo dinamico
+               LOAD 0 # Apilo el valor de la variable.
+               DUP # Duplico this
+               LOADREF 0 # Consumo un this y lo reemplazo por su VT
+               LOADREF 7 # Lugar de retorno
+               CALL # Realizo la llamada a metodo dinamico
+               PUSH printlnSystem
+               CALL
+               RMEM 1 # Resultado de malloc, referencia al CIR de un objeto
+               PUSH 1 # Parametro malloc, cant de atributos del objeto + 1 para VT
+               PUSH simple_malloc
+               CALL
+               DUP # de la referencia al nuevo CIR
+               PUSH VT_B
+               STOREREF 0 # Consume una de las dupicas de la referencia al CIR
+               DUP # de la referencia al objeto
+               PUSH BConstructor
+               CALL # Invoco el constructor
+               LOAD -1 # Apilo el valor de la variable.
+               DUP # Duplico this
+               LOADREF 0 # Consumo un this y lo reemplazo por su VT
+               LOADREF 10 # Lugar de retorno
+               CALL # Realizo la llamada a metodo dinamico
+               LOAD -1 # Apilo el valor de la variable.
+               DUP # Duplico this
+               LOADREF 0 # Consumo un this y lo reemplazo por su VT
+               LOADREF 9 # Lugar de retorno
+               CALL # Realizo la llamada a metodo dinamico
+               LOAD -1 # Apilo el valor de la variable.
+               DUP # Duplico this
+               LOADREF 0 # Consumo un this y lo reemplazo por su VT
+               LOADREF 7 # Lugar de retorno
+               CALL # Realizo la llamada a metodo dinamico
+               FMEM 2 # Se elimina el espacio reservado para las variables locales.
+               STOREFP
+               RET 0
+
+# ---------------- MainModuleConstructor ---------------- 
+MainModuleConstructor:
+                      LOADFP
+                      LOADSP
+                      STOREFP
+                      FMEM 0 # Se elimina el espacio reservado para las variables locales.
+                      STOREFP
+                      RET 1
+
+# ---------------- debugPrintObject ---------------- 
+debugPrintObject:
+                 LOADFP
+                 LOADSP
+                 STOREFP
+                 LOAD 3
+                 IPRINT
+                 PRNLN
+                 STOREFP
+                 RET 1
+
+# ---------------- readSystem ---------------- 
+readSystem:
+           LOADFP
+           LOADSP
+           STOREFP
+           READ
+           STORE 3
+           STOREFP
+           RET 0
+
+# ---------------- printBSystem ---------------- 
+printBSystem:
+             LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             BPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printCSystem ---------------- 
+printCSystem:
+             LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             CPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printISystem ---------------- 
+printISystem:
+             LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             IPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printSSystem ---------------- 
+printSSystem:
+             LOADFP
+             LOADSP
+             STOREFP
+             LOAD 3
+             SPRINT
+             STOREFP
+             RET 1
+
+# ---------------- printlnSystem ---------------- 
+printlnSystem:
+              LOADFP
+              LOADSP
+              STOREFP
+              PRNLN
+              STOREFP
+              RET 0
+
+# ---------------- printBlnSystem ---------------- 
+printBlnSystem:
+               LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               BPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printClnSystem ---------------- 
+printClnSystem:
+               LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               CPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printIlnSystem ---------------- 
+printIlnSystem:
+               LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               IPRINT
+               PRNLN
+               STOREFP
+               RET 1
+
+# ---------------- printSlnSystem ---------------- 
+printSlnSystem:
+               LOADFP
+               LOADSP
+               STOREFP
+               LOAD 3
+               SPRINT
+               PRNLN
+               STOREFP
+               RET 1
+

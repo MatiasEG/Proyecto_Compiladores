@@ -112,7 +112,10 @@ public class Class extends ClassOrInterface {
         }else{
             st.writeLabel("NOP\n\n");
         }
+        generarCodigoMetodos(st);
+    }
 
+    private void generarCodigoMetodos(SymbolTable st) throws IOException {
         st.writeLabel(".CODE\n\n");
         for(Map.Entry<String, Method> entry: metodosSinSobrecargaMap.entrySet()){
             st.setActualMethod(entry.getValue());

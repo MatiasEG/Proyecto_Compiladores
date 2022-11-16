@@ -18,12 +18,12 @@ import java.util.Iterator;
 
 public class MetEncadenadoNodo extends EncadenadoOptNodo {
 
-    private ArrayList<ExpresionNodo> actualArgsExpresionNodes;
+    private ArrayList<ExpresionNodo> argsActuales;
     private Method m;
 
     public MetEncadenadoNodo(){
         primarioNodo = null;
-        actualArgsExpresionNodes = null;
+        argsActuales = null;
         encadenadoOptNodo = null;
         idMetVar = null;
         tipoPrimarioNodo = null;
@@ -31,7 +31,7 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
 
     public void setArgumentos(ArrayList<ExpresionNodo> expresionNodos){
         Collections.reverse(expresionNodos);
-        actualArgsExpresionNodes = expresionNodos;
+        argsActuales = expresionNodos;
     }
 
     public boolean isAssignable(SymbolTable st){
@@ -68,8 +68,8 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
         m = isMethod(tipoPrimarioNodo, st);
         if(m!=null) {
             ArrayList<Parameter> tiposParametrosDeclarados = m.getParameters();
-            Iterator<ExpresionNodo> expresionNodosIterablre = actualArgsExpresionNodes.iterator();
-            if (actualArgsExpresionNodes.size() == tiposParametrosDeclarados.size()) {
+            Iterator<ExpresionNodo> expresionNodosIterablre = argsActuales.iterator();
+            if (argsActuales.size() == tiposParametrosDeclarados.size()) {
                 ExpresionNodo exp;
                 for (Parameter p : tiposParametrosDeclarados) {
                     exp = expresionNodosIterablre.next();
@@ -103,8 +103,8 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
                 st.write("RMEM 1 # Lugar de retorno\n");
                 st.write("SWAP # Muevo this al tope de la pila\n");
             }
-            Collections.reverse(actualArgsExpresionNodes);
-            for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
+            Collections.reverse(argsActuales);
+            for(ExpresionNodo argAtualExp: argsActuales){
                 argAtualExp.generar(st);
                 st.write("SWAP # Muevo this al tope de la pila\n");
             }
@@ -122,7 +122,7 @@ public class MetEncadenadoNodo extends EncadenadoOptNodo {
             if(m.needReturn()){
                 st.write("RMEM 1 # Lugar de retorno\n");
             }
-            for(ExpresionNodo argAtualExp: actualArgsExpresionNodes){
+            for(ExpresionNodo argAtualExp: argsActuales){
                 argAtualExp.generar(st);
             }
             st.write("PUSH "+m.getLabel()+"\n");

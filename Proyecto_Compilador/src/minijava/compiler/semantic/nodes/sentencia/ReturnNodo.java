@@ -30,7 +30,7 @@ public class ReturnNodo extends SentenciaNodo {
             if (st.getActualMethod().needReturn()) {
 
                 if (typeExp.isClassRef() && mType.isClassRef() &&
-                        st.bSubtipoA(mType.getLexemeType(), typeExp.getLexemeType()) != null) {
+                        st.bSubtipoA(typeExp.getLexemeType(), mType.getLexemeType()) != null) {
                     // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
                 } else if (typeExp.getLexemeType().equals("null") && mType.isClassRef()) {
                     // vacio, si se da el caso de que no coinciden el tercer if lo va a detectar
